@@ -1,0 +1,69 @@
+﻿The aim of Chapter Two is to take the simple class diagram shown at the end of Chapter One and explain
+how it is translated into Java source code. The code is explained in terms of its attributes, constructor and
+behaviour and a test class is used to explain how its constructor and behaviour elements are used.
+Before we embark on our first Java programme, let us recall the class diagram with which we concluded
+Chapter One. The class diagram is reproduced in Figure 2.1 below, with the omission of the constructor:
+this is to keep the code simple to begin with. We will replace the constructor in the class diagram and
+provide code for it later in this chapter.
+In Figure 2.1, let us be reminded that the qualifier ‘-‘ means private and the qualifier ‘+’ means public.
+The purpose of these qualifiers will be revealed when we write the code for the class.
+The next section explains how the information in the class diagram shown in Figure 2.1 is translated into
+Java source code.
+Remember that, in general, a class definition declares attributes and defines constructors and behaviour.
+The Java developer concentrates on writing types called classes, as a result of interpreting class diagrams
+and other elements of the OOA & D of an application’s domain. The Java developer also makes extensive
+use of the thousands of classes provided by the originators of the Java language (Sun Microsystems Inc.)
+that are documented in the Java Applications Programming Interface (API).
+We have established that classes typically comprise attributes and the behaviour that is used to manipulate
+these data. Attributes are implemented, in Java, as variables, whose value determines the condition or
+state of an object of that class and behaviour elements are implemented using a construct known as a
+method. When a method is executed, it is said to be called or invoked.
+As has been mentioned earlier, an instance of a class is also called an object, such that, perhaps somewhat
+confusingly, the terms instance and object are interchangeable in Java. The requirement to create an
+instance of a class from the definition of the class gives rise to a fundamental question: how do we actually
+create an instance of a class so that its methods can be executed? We will address this question in
+this section.
+One of the components of a class, which we haven’t explained fully so far in the discussion of the Member
+class, is its constructor. A constructor is used to create or construct an instance of that class. Object
+construction is required so that the Java run-time environment (JRE) can respond to a call to an object’s
+constructor to create an actual object and store it in memory. An instance does not exist in memory until
+its constructor is called; only its class definition is loaded by the (JRE). We will meet the constructor for
+the Member class later.
+Broadly, then, we can think of the Java developer as writing Java classes, from which objects can be
+constructed (by calling their constructors). Classes are to objects as an architect’s plan is to a house, i.e.
+we can produce many houses from a single plan and we can construct or instantiate many instances from a
+single template known as a class. Given that objects can communicate with other objects, this gives the
+developer the means to re-use classes from one application in another application. Therefore, with Java
+object technology, we can build software applications by combining re-useable and interchangeable
+objects, some of which can be standardised in terms of their interface. This is probably the single-most
+important advantage of object-oriented programming (OOP) compared with non-OOP in
+application development.
+We are now at the stage when we can translate the class diagram for the Member class into Java source
+code, often shortened to ‘code’. The code that follows is the class definition of the class named Member
+but includes only some of the attributes and methods that do not involve object types: this is to keep the
+example straightforward. The reason for this restriction is that if we were to declare attributes or
+parameters of the MembershipCard class type in the class Member, as required by the class diagram, the
+Java compiler would look for the class definition of the class MembershipCard. In order to keep the
+example straightforward, we will only write the class definition for the class Member for the time being;
+we will refer to the class definition of the class MembershipCard in a later chapter. Thus, in this section,
+we will work with a single class that includes only primitive data types; there are no class types included
+in the simplified class diagram.
+In order to make the example code even more straightforward, the class diagram is further simplified as
+shown in the next diagram. The class diagram that we will translate into Java code declares two variables
+and their corresponding ‘setter’ (or mutator) and ‘getter’ (or accessor) methods, as follows.
+The reason for the simplification (of the full class diagram) is so that the class definition can be more
+easily understood, compared to its full definition. In short, we well keep our first Java programme as
+simple as possible.
+In the class definition that follows below, ‘ // ‘ is a single-line comment and ‘ /** … */ ‘ is a block
+comment and, as such, are ignored by the Java compiler. For the purposes of the example, Java statements
+are written in bold and comments in normal typeface.
+// Class definition for the class diagram shown in Figure 2.2. Note that the name of
+// the class starts, by convention, with a capital letter and that it is declared as public.
+// The first Java statement is the class declaration. Note that the words public and
+// class must begin with a lower case letter.
+public class Member { // The class declaration.
+// Declare instance variables first. Things to note:
+// String types in Java are objects and are declared as ‘String’, not ‘string’.
+// The qualifier 'private' is used for variables.
+// 'String' is a type and 'userName' and ‘password’ are variable names, also
+// known as identifiers. Thus, we write the following:

@@ -1,0 +1,74 @@
+
+C:\Users\aerye\AppData\Local\Programs\Python\Python36\python.exe C:/Project/av-feature-generator/baselines/run.py
+INFO:root:Vectorization Method: char binary
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.475
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.5875
+INFO:root:Vectorization Method: char 1gram count
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.525
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.575
+INFO:root:Vectorization Method: char 1-5gram count
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.5625
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.35
+INFO:root:Vectorization Method: char 1gram tfidf
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.53125
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.525
+INFO:root:Vectorization Method: char 1-5gram tfidf
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.58125
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.325
+INFO:root:Vectorization Method: word binary
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.5375
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.35
+INFO:root:Vectorization Method: word 1gram count
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.575
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.375
+INFO:root:Vectorization Method: word 1-3gram count
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.5875
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.29375
+INFO:root:Vectorization Method: word 1gram tfidf
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.5625
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.325
+INFO:root:Vectorization Method: word 1-3gram tfidf
+INFO:root:loading data structure from PICKLE
+INFO:root:load data structure completed
+INFO:root:training LinearSVC
+INFO:root:ACC: 0.55
+INFO:root:training BernoulliNB
+INFO:root:ACC: 0.3
+
+Process finished with exit code 0

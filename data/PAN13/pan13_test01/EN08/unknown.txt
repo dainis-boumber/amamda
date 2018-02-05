@@ -1,0 +1,66 @@
+﻿You have already met constraints, in type definitions (Chapter 2), where they are used to define the set of
+values constituting a type. The major part of this chapter is about database constraints. Database constraints
+express the integrity rules that apply to the database. They express these rules to the DBMS. By enforcing
+them, the DBMS ensures that the database is at all times consistent with respect to those rules.
+In Chapter 1, Example 1.3, you saw a simple example of a database constraint declaration expressed in
+Tutorial D, repeated here as Example 6.1 (though now referencing IS_ENROLLED_ON rather than
+ENROLMENT).
+The first line tells the DBMS that a constraint named MAX_ENROLMENTS is being declared. The second
+line gives the expression to be evaluated whenever the DBMS decides to check that constraint. This
+particular constraint expresses a rule to the effect that there can never be more than 20000 enrolments
+altogether. It is perhaps an unrealistic rule and it was chosen in Chapter 1 for its simplicity. Now that you
+have learned the operators described in Chapters 4 and 5 you have all the equipment you need to express
+more complicated constraints and more typical ones. This chapter explains how to use those operators for
+that purpose.
+Now, if a database is currently consistent with its declared constraints, then there is clearly no need for the
+DBMS to test its consistency again until either some new constraint is declared to the DBMS, or, more
+likely, the database is updated. For that reason, it is also appropriate in this chapter to deal with methods
+of updating the database, for it is not a bad idea to think about which kinds of constraints might be
+violated by which kinds of updating operations, as we shall see.
+A constraint is defined by a truth-valued expression, such as a comparison. A database constraint is
+defined by a truth-valued expression that references the database. To be precise, the expression defines a
+condition that must be satisfied by the database at all times. We have previously used such terminology in
+connection with tuplesin relational restriction for example, which yields a relation containing just those
+tuples of a given relation that satisfy the given condition. We can justify the use of the terminology in
+connection with database constraints by considering the database valuexv at any particular point in time to
+be a tuple. The attributes of this tuple take their names and declared types from the variables constituting
+the database and their values are the values of those variables. Taking this view, the database itself is
+a tuple variable and every successful update operation conceptually assigns a tuple value to that
+variable, even if it actually assigns just one relation value to one relation variable, leaving the other
+relvars unchanged.
+What do we really mean when we say that the DBMS must ensure that the database is consistent at all
+times? Internally, the DBMS might have to perform several disk writes to complete what is perceived by
+the user as a single update operation, but intermediate states arising during this process are visible to
+nobody.xvi Because those intermediate states are invisible, we can state that if the database is guaranteed to
+be consistent immediately following completion of each single statement that updates it, then it will be
+consistent whenever it is visible. We say therefore that, conceptually at least, constraints are checked at all
+statement boundaries, and only at statement boundarieswe don’t care about the consistency of
+intermediate states arising during the DBMS’s processing of a statement because those states aren’t visible
+to us in any case.
+To clarify “all statement boundaries”, first, note that this includes statements that are contained inside
+other statements, such as IF … THEN … ELSE … constructs for example. Secondly, the conceptual
+checking need not take place at all for a statement that does no updating, but no harm is done to our model
+if we think of constraints as being checked at every statement boundary.
+In Tutorial D, as in many computer languages, a statement boundary is denoted by a semicolon, so we
+can usefully think of constraints as being effectively checked at every semicolon. If all the constraints are
+satisfied, then the updates brought about by the statement just completed are accepted and made visible;
+on the other hand, if some constraint is not satisfied, then the updates are rejected and the database reverts
+to the value it had immediately after the most recent successful statement execution.
+We can usually expect a database to be subject to quite a few separately declared constraints. To say that
+the database must satisfy all of the conditions specified by these constraints is equivalent to saying that it
+must satisfy the single condition that is the conjunction of those individually specified conditionsthe
+condition formed by connecting them all together using logical AND. We can conveniently refer to the
+resulting condition as the database constraint. Now we can state the principle governing correct
+maintenance of database integrity by the DBMS quite succinctly: the database constraint is guaranteed to
+be satisfied at every statement boundary.
+The condition for a database constraint must reference the database and therefore must mention at least
+one variable in that database. In the case of relational databases, that means that at least one relvar must be
+mentioned. Moreover, as the condition is specified by a single expression (a truth-valued expression), it
+must use relational operators if it involves more than one relvar and, as we shall soon see, is likely to use
+them even when it involves just one relvar.
+However, a relation isn’t a truth value, so we need some of the non-relational operators described in
+Chapter 5, in addition to the relational operators, to express conditions for declared constraints. In
+particular, the expression itself must denote an invocation of some truth-valued operator. In Example 6.1
+that operator is “=”. No relational operators are used in that example, because the only relation we need to
+operate on is the one that is the value of the relvar IS_ENROLLED_ON when the constraint is checked.
+The aggregate operator COUNT operates on that relation to give its cardinality, an integer.

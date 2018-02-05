@@ -1,0 +1,70 @@
+﻿The code for this model is shown in NetLogo Code 5.4. The model uses two types of agents – a
+wanderer breed for the big red agent that explores the environment with its vision cone sense as
+shown in the screenshots; and a stander breed that is used to draw 6000 randomly spread gray
+agents in the environment in the setup procedure.
+
+In the main go method, as for the Line of Sight example, the turtle agents perform a small random
+right, then a left turn, followed by moving forward 1 step. Then setting the colour of all standers in the
+vision cone defined by the vision-radius and vision-angle variables shows their current
+field of vision.
+Sensing in agents need not be restricted to the traditional senses such as vision, or touch. For example,
+equilibrioception (see Table 5.2), or the sense of balance, combined with other senses such as the
+visual system and proprioception, allows humans and animals to gain information about their body
+position in relation to their immediate surroundings. Sensing can involve the detection of any aspect of
+the environment, such as the presence, absence or change in a particular attribute. This then provides
+the agent with an ability to follow a gradient in the environment relating to the attribute. For example, a
+useful sense for real-life agents is the ability to detect changes in elevation, in order to be able to head
+in an upwards or downwards direction when required.
+The Hill Climbing Example model in the NetLogo Models Library shows how such a sense can be
+implemented. A screenshot of the model is shown in Figure 5.6 and the code is shown in NetLogo
+Code 5.5. The screenshot shows turtle agents that start out at random locations then move steadily
+upwards to the highest local point in their immediate surrounding landscape (i.e. towards the patches
+with the lightest shading). Since a single high point serves as the highest point for many of its
+surrounding patches, this results in the agents’ paths coalescing into linear patterns of lines as shown in
+the figure. The vertical line to the left of the figure, for example, represents the top of a ridgeline in the
+2D environment. As an analogy with real-life human agents, we can imagine a number of hill walkers
+climbing from different start positions up a ridge, and once they reach the ridge line, they all end up
+following a single path to the top.
+
+The model uses the uphill command in NetLogo that directs an agent to move to a neighbouring patch
+that has the highest value for a particular patch variable. The variable in this case is the patch’s color.
+The go method asks each turtle to head in an upward direction, until that is no longer possible, in
+which case the turtle variable peak? is set to true to indicate the turtle has reached the top. When all
+turtles have reached the top, then no more processing is done.
+
+Is it possible for an agent to perform a non-trivial task without knowing they are performing it? In
+other words, can an agent ‘solve’ a problem without cognitively being aware they are solving a
+problem? To answer this question, first we must ask what we mean by ‘cognitively being aware’.
+Cognition refers to the mental processes of an intelligent agent, either natural or artificial, such as
+comprehension, reasoning, decision-making, planning and learning. It can also be defined in a broader
+sense by linking it to the mental act of knowing or recognition of an agent in relation to a thought it is
+thinking or action it is performing. Thus, cognitive behaviour occurs when an agent knowingly
+processes its thoughts or actions.
+Under this definition, an autonomous agent exhibits cognitive behaviour if it knowingly processes sensory
+information, makes decisions, changes its preferences and applies any existing knowledge it may have
+while performing a task or mental thought process. Cognition is also related to perception. Perception for
+an agent is the mental process of attaining understanding or awareness of sensory information.
+Let us now return to the question posed at the beginning of this section. Consider an insect’s abilities to
+forage for food. Ants, for example, have the ability to quickly find food sources, but do this by sensing
+chemical scent laid down by other ants, and then react accordingly using a small set of rules. Despite
+not being cognitively aware of what they are doing, they achieve the goal of fully exploring the
+environment, efficiently locating nearby food sources and returning back to the nest.
+An Ants model provided in the NetLogo Models Library simulates one way how this might happen. A
+screenshot of the model is shown in Figure 5.7. It shows a colony of ants spread out throughout the
+environment, with its nest shown by the purple region at the centre of the image. Originally, there were
+three food sources, but at this stage in the simulation, the previous two have already been devoured and
+the remaining food source has been found and is in the process of being collected for return to the nest.
+The white and green shaded region represents how much chemical scent has been load down in the
+environment, with white representing the greatest amount.
+
+The code for the part of the model that defines the behaviour of the ants is shown in NetLogo Code 5.6.
+A full listing of the code can be found by selecting the Ants model from the Models Library, and then
+by clicking on the Procedures button at the top of the NetLogo interface.
+
+Each patch agent has a number of variables associated with it – for example, chemical stores the
+amount of chemical that ants have laid down on top of it, and nest-scent reflects how close the
+patch is to the nest. The recolor-patch procedure shows how the patch’s colour is reshaded
+according to how much chemical has been laid down on top it. The go procedure defines the behaviour
+of the ants. If the ant is not carrying food, it will look for it (by performing the look-for-food
+procedure) otherwise it will take the food back to the nest (by performing the return-to-nest
+procedure). As the agent is returning to the nest, it drops a chemical as it moves.

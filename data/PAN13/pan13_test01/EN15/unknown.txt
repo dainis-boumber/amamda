@@ -1,0 +1,76 @@
+﻿Another kind of “compliance” is compliance with the rules of court procedure.
+In the early stages of a civil case, each side is required to supply the other with copies of any
+documentation potentially relevant to the issues under dispute, so that the lawsuit can be settled
+by reference to the relative merits of either side’s case rather than by who happens to have the
+most telling pieces of evidence in their hands. The traditional term for this process was discovery.
+In Britain this was officially changed in 1999 to disclosure, but “discovery” is still current in the
+rest of the English-speaking world. Because the new, electronic version of this process has
+developed much further to date in the USA than in Britain, the term e-discovery is commonly
+used on both sides of the Atlantic, and I shall use it here (though e-disclosure is sometimes used
+in Britain).
+Before the IT revolution, discovery involved legal complexities, relating for instance to classes of
+document (such as letters between an organization and its lawyers) which were exempt from
+discovery, or privileged; but it posed no great practical problems. Correspondence on paper was
+filed in ways that made it fairly straightforward to locate relevant material. Phone calls were not
+normally recorded, so the question of discovery did not arise.
+This changed with the arrival of e-mail. An e-mail can be saved, in which case in principle it is as
+subject to the discovery process as a letter or inter-office memo on paper. But e-mails are far
+more numerous, and they tend to be dealt with directly by the people they are addressed to rather
+than by secretaries who are skilled at organizing filing systems. Many people file e-mails
+chaotically, or at least idiosyncratically. An e-mail may not be saved by the person it was sent to
+but may still be retrievable from backup tapes, held at department or organization level – in
+which case the messages that matter will probably be mixed up with a great deal of irrelevant
+material. So “e-discovery” is challenging in a practical way, apart from any legal niceties involved.
+The main reason why e-discovery is a hot topic is that American courts have begun awarding
+large sums in damages against organizations that fail to produce comprehensive collections of
+electronic documentation.
+The first significant example was the 2005 case Laura Zubulake v. UBS (Union Bank of
+Switzerland, then Europe’s largest bank). Laura Zubulake was an equities trader earning about
+$650,000 a year at the New York branch of UBS; she was sacked, and sued her employer for sex
+discrimination. She was awarded about $29 million, part of which was compensation for loss of
+earnings but $20 million of which was “punitive damages” connected with the fact that UBS had
+failed to produce all the e-mails demanded by her lawyers – backup tapes from years past were
+restored to retrieve the material, but some relevant material had gone missing despite instructions
+given that it should be preserved. Then in Coleman (Parent) Holdings Inc. v. Morgan Stanley
+(2005) the plaintiff was awarded $1.45 billion, including $850 million in punitive damages for
+similar reasons – this was reversed on appeal, but the huge initial award shows the risk that firms
+now face.
+In both of these cases there were claims that adverse electronic evidence had deliberately been
+destroyed. But UBS seems to have been punished in Zubulake less for actively destroying
+evidence than for failing to put in place adequate mechanisms to ensure preservation of relevant
+material – something which is technically not at all easy to achieve, when items are scattered
+across directories on different servers (together with portable PDAs, memory sticks, laptops, etc.)
+in a complex computing environment, and when the items may be of very diverse kinds (not just
+e-mails but, for instance, voicemails, blogs, spreadsheets, videoconferences).
+Zubulake and Coleman were at least concerned with very large sums of money. But e-discovery
+in the USA is becoming a large problem in lesser cases. In a linked pair of cases reported as
+ongoing in New Jersey in 2008, Beye v. Horizon and Foley v. Horizon, where a health-insurance
+company was resisting paying for two teenagers’ treatments for anorexia on the ground that it
+might be psychological in origin, the company demanded
+to see practically everything the teenagers had said on their Facebook and MySpace
+profiles, in instant-messaging threads, text messages, e-mails, blog posts and whatever
+else the girls might have done online … [The court supported this demand, so] hard disks
+and web pages are being scoured in order for the case to proceed.67
+Rebecca Love Kourlis, formerly a judge and now director of the academic Institute for the
+Advancement of the American Legal System, sees cases being settled out of court rather than
+fought to a conclusion purely because one side cannot afford the costs of e-discovery.
+What is more, the difficulties of e-discovery do not fall solely on the side giving the material.
+The receiving side then has the problem of winnowing nuggets of evidence that can actually be
+used to strengthen its case out of a sea of irrelevancies, peripheral material, duplicate copies,
+near-duplicates, messages about other people with the same surname, and so forth.
+Malcolm Wheeler describes e-discovery as “the single most significant change to the legal
+system” in his forty years as an American business lawyer.68 American companies are having to
+take radical steps to impose discipline on their internal communication practices, so that they will
+be equal to the e-discovery challenge if it arises – waiting until they are hit by a lawsuit is seen as
+unworkable. One suggestion, for instance, is to prohibit any use of company servers for personal
+e-mail – surely a draconian rule, considering how much of people’s waking lives is spent at work.
+A legal organization, the Sedona Conference, has been developing “Best Practice Guidelines …
+for Managing Information and Records in the Electronic Age” (over a hundred pages in the 2005
+version), and American courts are treating compliance with the Sedona guidelines as a test of
+whether an organization is meeting its discovery obligations. The court system of England and
+Wales revised its rules on discovery (or “disclosure”) in 2005 in line with the Sedona principles
+for electronic documents.
+The English rules do differ from the American rules, in ways that mean that e-discovery in
+England will not lead either to such vast quantities of electronic material being handed over, or to
+eye-catching punitive damages awards. An English court would not require the level of discovery
+we saw in Beye and Foley v. Horizon.

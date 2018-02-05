@@ -1,0 +1,82 @@
+﻿When writing the getClient() method the author was fully aware that a client may not be found and in
+this case decided to return a NULL value. However this relies on every programmer who ever uses
+this method to recognise and protect against this eventuality.
+If any programmer using this method failed to protect against a NULL return then their program could
+crash – potentially in this case losing the bank large sums of money. Of course in other applications,
+such as an aircraft control system, a program crash could have life threatening results.
+A more secure programming method is required to ensure that that a potential crash situation is always
+dealt with!
+Such a mechanism exists - it is a mechanism called ‘exceptions’.
+By using this mechanism we can ensure that other programmers who use our code will be alerted to
+potential crash situations and the compiler will ensure that these programmers deal with the ‘issue’.
+Thus we can ensure that no such situation is ‘forgotten’. How they are dealt with remains a choice
+with a programmer who uses our methods but the compiler will ensure that they at least recognise a
+potential crash situation.
+In the situation above rather than return a NULL value the getClient() method should generate an
+exception. By generating an exception the Java compiler will ensure that this situation is dealt with.
+In order to generate meaningful exceptions we need to extend the Exception classes built into the Java
+language – there are two of these (normal exceptions and run time exceptions).
+Subclasses of java.lang.Exception are used for anticipated problems which need to be managed. They
+must be declared in the originating method’s throws clause and a call to method must be placed in
+try/catch block.
+Subclasses of java.lang.RuntimeException are used for situations which lead to runtime failure and
+where it may not be possible to take any sensible remedial actions. They do not need to be declared in
+throws clause and a call need not be in try/catch block (but can be).
+Thus we have the choice as to whether the Java compiler should force us to explicitly deal with a
+particular kind of exception.
+Exception subclasses are appropriate for things which we know might go wrong and where we can
+take sensible recovery action – e.g. IO errors.
+RuntimeException subclasses are appropriate for things which should not happen at all and where
+there is probably nothing we can do to recover the situation, e.g. an out of memory error or
+discovering that the system is in an inconsistent state which should never be able to arise.
+When writing our own methods we should look for potential failure situations (e.g. value that cannot
+be returned, errors that may occur in calculation etc). When a potential error occurs we should
+generate an ‘Exception’ object i.e. an object of the Exception class. However it is best to first define a
+subclass of the general Exception i.e. to create a specialised class and throw an object of this subtype.
+A new exception is just like any new class in this case it is a subclass of java.lang.Exception
+In the case above an error could occur if no client is found with a specified ID. Therefore we could
+create a new exception class called ‘UnknownClientException’.
+The parameter to the constructor for the Exception requires a Sting thus the constructor for
+UnknownClientException also requires a String. This string is used to give details of the problem that
+may generate an exception.
+The code to create this new class is given below…..
+In some respects this looks rather odd. Here we are creating a subclass of Exception but our subclass
+does not contain any new methods – nor does it override any existing methods. Thus its functionality
+is identical to the superclass – however it is a subtype with a meaningful and descriptive name.
+If sublasses of Exception did not exist we would only be able to catch the most general type of
+exception i.e an Exception object. Thus we would only be able to write a catch block that would catch
+every single type of exception.
+Having defined a subclass we instead have a choice… a) we could define a catch block to catch
+objects of the general type ‘Exception’ i.e. it would catch ALL exceptions or b) we could define a
+catch block that would catch UnknownClientExceptions but would ignore other types of exception.
+By looking at the online API we can see that many predefined subclass of exception already exist.
+There are many of these including :-
+􀁸IOException
+o CharConversionException
+o EOFException
+o FileNotFoundException
+o ObjectStreamException
+􀁸NullPointerException
+􀁸PrinterException
+􀁸SQLexception
+Thus we could write a catch block that would react to any type of exception, or we could limited it to
+input \ output exceptions or we could be even more specific and limit it to FileNotFound exceptions.
+Having defined our own exception we must then instruct the getClient() method to throw this
+exception (assuming a client has not been found with the specified ID).
+To do this we must first tell the compiler that this class may generate an exception – the complier will
+then ensure that any future programmer who makes use of this method catches this exception.
+To tell the compiler this method throws an exception we add the following statement to the methods
+signature ‘throws UnknownClientException’.
+We must create a new instance of the UnknownClientException class and apply the throw keyword to
+this newly created object.
+We use the keyword ‘throw’ to throw an exception at the appropriate point within the body of
+the method.
+In the example above if a client is found the method will return the client object. However it will no
+longer return a NULL value. Instead if a client has not been found the constructor for
+UnknownClientException is invoked, using ‘new’. This constructor requires a String parameter – and
+the string we are passing here is an error message that is trying to be informative and helpful. The
+message is specifying :-
+􀁸the class which generated the exception (i.e. BookOfClients),
+􀁸the method within this class (i.e. getClient()),
+􀁸some text which explains what caused the exception and
+􀁸the value of the parameter for which a client could not be found.

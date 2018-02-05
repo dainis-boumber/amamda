@@ -1,0 +1,72 @@
+﻿The order of the filter can be increased to obtain a smaller passband width and to obtain a frequency
+response closer to the ideal ‘square’ filter. The sum filter in (4.3) had an order of 1; if we cascaded
+another first order sum filter, we will have the block diagram shown in Figure 4.18 (we’ll drop the
+constants for simplicity of discussion):
+Solving for z[n] in Figure 4.18 will give
+Eq. (4.5) could be easily verified by replacing values for x[n]. For example, using x[1]=3, x[2]=2 and
+x[3]=5 and computing z[3] for the single cascaded second order filter will give 12. Computation
+using two first order filters (i.e. y[2] and y[3]) will give the same result.
+It should be noted that z[n] in the example above will be defined only for n=3 onwards if x[1] is the
+starting point of the signal, i.e. for every order M, M initial data points will be lost in filtering.
+Likewise y[n] in (4.3) is defined only from y[2] onwards.
+For order M, we have
+As an example, for order M=3, we will have
+The magnitude response is given in Figure 4.19.
+The passband is about 0.302  rad or  Fs/6. It could be seen that with increasing order, the passband
+is becoming smaller without any change in stopband. Also, the response is becoming closer to the
+ideal ‘square’. So, we can increase/decrease M depending on the requirements. The 3-dB cut-off
+frequency is given by
+Similarly for the HPF with order N, we will have
+and the magnitude response as
+Similarly, a BPF can be designed using a combination of LPF and HPF. This BPF is known as sum
+and difference (SD) filter. Different orders, M and N can be chosen to obtain the required frequency
+response [1]:
+where Gaincf is the gain at centre frequency given by
+For example, with filter orders of M=28 and N=8 gives the centre frequency of 40 Hz when Fs=256
+Hz. The approximate 3 dB bandwidth is from 32 to 48 Hz (rounded to the nearest integer) and the
+gain amplification at 40 Hz is approximately 47.21. Figure 4.20 shows this example using different
+filter orders but with similar centre frequency (which is dependent on ratio of M/N).
+As another example, let us obtain the band pass FIR filter expression for orders, LPF, M=4 and HPF,
+N=1, i.e. obtain the band pass FIR equation that expresses z[n] in terms of x[n] and delays of x[n].
+Using (4.6), obtain y[n] in term of x[n] and using (4.10), obtain z[n] in terms y[n]. Next, replace y[n]
+in the latter expression to arrive at
+The SD filter that we studied in the previous section is simple to design but for practical purposes, we
+often need filters that can be tailored to suit our required specifications. Consider doing an inverse
+DFT of the ideal LPF shown in Figure 4.1 (a) to obtain what is known as the impulse response,
+which are basically the filter coefficients20.
+The impulse response is actually the sinc function given by
+It would be obvious that we will not be able to use hLPF as the filter coefficients as the length is
+infinite. So we could use a rectangular window, w[n] to truncate the impulse response. However, by
+using a finite set of coefficients (i.e. impulse response), the shape of the magnitude response is
+changed with ripples showing up as in Figure 4.20. This is known as the Gibbs phenomenon -
+oscillatory behaviour in the magnitude responses caused by truncating the ideal impulse response
+function (i.e. the rectangular window has an abrupt transition to zero). Gibbs phenomenon can be
+reduced by
+ using a window that tapers smoothly at each end such as Hamming, Hanning, triangular etc
+(refer to Section 3.5 in the previous chapter);
+ providing a smooth transition from passband to stopband in the magnitude specifications.
+But a question which one may now raise is on the appropriate length of the filter. The filter length
+(i.e. order) affects the magnitude response. With a length increase, the number of ripples in both
+passband and stopband increases21 but with a corresponding decrease in the ripple widths, i.e. as N
+increases, the magnitude response approaches closer to the ideal LPF (see Figure 4.21). Similar
+oscillatory behaviour could be observed in the magnitude responses of the truncated versions of other
+types of ideal filters.
+There are several methods such as Kaiser and Bellanger formulas to select the ‘suitable’ order i.e. the
+smallest length that can meet the requirements. Kaiser’s formula [2] is given by:
+where  p and  s are the ripples in the passband and stopband, respectively while fp and fs are
+passband and stopband edge frequencies. It should be obvious that the actual location of the
+transition band is immaterial, only the transition width matters.
+The next issue is on the choice of window, which could be decided using the areas under main lobe
+and side lobes. Figure 4.22 shows two windows, Hanning and Blackman designed using order 101;
+the main lobe is the first ripple while other ripples are known as side lobes.
+To ensure a fast transition from passband to stopband, the window should have a very small main
+lobe width (i.e. area under the main lobe should be small). For a reduction in the ripples, the area
+under the sidelobes should be small (i.e. to increase the stopband attenuation, we need to decrease the
+sidelobe amplitudes).
+Most of the time, a compromise has to be met with regards to these two requirements (smaller main
+lobe with smaller side lobes). Consider Figure 4.23, which shows LPF design with cut-off at Fs/2, i.e.
+0.5 in normalised frequency using the two windows shown in Figure 4.22. From Figure 4.23, we can
+see that Blackman window, which has smaller area under side lobes but bigger main lobe area, has a
+higher attenuation in the stopband but with a higher width transition band. The case for Hanning
+window is the opposite with smaller transition band but with lower stopband attenuation as it has
+smaller main lobe area but bigger side lobes area.

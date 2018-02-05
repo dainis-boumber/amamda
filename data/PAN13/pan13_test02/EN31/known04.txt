@@ -1,0 +1,75 @@
+﻿Whereas the problems considered thus far were taken from Artificial Intelligence, we are going now to apply
+Prolog to problems in text processing.
+The present chapter is in three parts.
+First, the Prolog implementation is described of a tool for removing from a file sections of text situated
+between marker strings. (The tool is therefore a primitive static program slicer; [32] and [12].) This tool then is
+used in a practical context for removing sample solutions from the LATEX source code of a solved exam script.
+It is also shown in this context how SWI-Prolog code can be embedded into a Linux shell script.
+The second part addresses the question of how Prolog can be used to generate LATEX code for drawing
+parametric curves. Some new features of Prolog will thereby also be introduced.
+The final part comprises a sequence of solved Prolog exercises, implementing a tool for drawing families of
+parametric curves in LATEX. The exercises are of increasing complexity and finally describe how SWI-Prolog
+can interact with Linux through a shell script.
+I use LATEX on Linux for preparing examination papers. This is done in the following steps.
+1. Create a LATEX source file in a text editor.
+2. Translate the LATEX file into a a DVI file.
+3. Translate the DVI file into a PDF file.
+4. View the PDF file.
+These steps are performed for exam.tex by running the Linux commands in Fig. 4.1.1 Upon execution of the
+last line in Fig. 4.1, a new window will pop up and the exam paper may be viewed.
+External examiners require examination papers with model answers. I create therefore a PDF file with model
+solutions in the first instance where answers are appended to each subquestion. The answers are placed between
+some marker strings enabling me eventually to locate and remove all text between them when creating the final
+LATEX source leading to the printed PDF for students. It is this text removal process which is automated by the
+Prolog implementation to be discussed here.
+Write a predicate sieve(+Infile,-Outfile,+Startmarker,+Endmarker) of arity 4 for removing all text in
+the file named in Infile in between all occurrences of lines starting with text in Startmarker and those
+starting with text in Endmarker. The result should be saved in the file named in Outfile . Outfile is without
+marker lines. If Outfile already exists, its old version should be overwritten, if it does not exist, it should be
+newly created. The file shown in Fig. 4.2 is an example of Infile with the marker phrases ‘water st’ and
+‘water e’, say. (The file comprises a random collection of geographical names.) After the Prolog query
+the file without_waters will have been created. This is shown in Fig. 4.3.
+The main predicate sieve/4 is defined in terms of sieve/2 , both are shown in (P-4.1).
+The predicates get line/1 (and its auxiliary get line/2 ), switch off/1 and switch on/1 are defined in
+(P-4.2).
+For the SWI-Prolog built-ins atom chars/2 and atom codes/2 , the reader is referred respectively to pages
+126 and 19 of [9].
+Noteworthy are three more built-in predicates used here: the standard Prolog predicates see/1 , seen/0 (respectively
+for directing the input stream to a file and redirecting it) and get char/1 for reading a character;
+the example below illustrates their use by reading the first three characters of the file with_waters in Fig. 4.2.
+The predicate get line/1 in (P-4.2) is defined in terms of get line/2 by the accumulator technique. It
+reads into its argument the next line from the input stream. Example:
+The following observations apply.
+1. It is seen from the above query that a line read by get line/1 is represented as a list of the characters
+it is composed of.
+2. By definition the last character of each line in a file is the new line character ‘\n’. That explains the
+line break seen in the above query.
+3. Finally (not demonstrated here), each file ends with the end-of-file marker ‘end_of_file’. The
+one-entry list [end_of_file] is deemed to be the last line of every file by the definition in (P-4.2).
+• The switches switch off/0 and switch on/0 are used, writing respectively switch(off) and switch(on)
+in the Prolog database, respectively for removal and retention of lines from the input file.
+• The main predicates are sieve/4 and sieve/2 in (P-4.1), the latter defined by recursion and called by
+the former.
+sieve/4 : this is the top level predicate.
+1. Line 2 opens the input file.
+2. The goals in lines 3-4 in (P-4.1) make sure that the earlier version of the output file (if there is such
+a file) is deleted.
+3. In line 5, the new output stream is opened via append/1 3.
+4. In line 6, the switch is set to the position (‘off’), anticipating that initially lines will be retained.
+5. In line 7, sieve/2 is invoked and processing is carried out.
+6. Lines 8 and 9 close respectively output and input.
+sieve/2 : this is called from sieve/4 .
+1. Lines 14 and 18 contain the most interesting feature of this predicate: append/3 is used in them for
+pattern matching. For example, the goal
+succeeds if the initial segment of the list Line is Start_List.
+2. atom chars/2 is used in sieve/2 to disassemble the start and end markers into lists in preparation
+for pattern matching.
+3. Notice that the built-in predicate atom codes/2 can be used in two roles as the interactive session
+below demonstrates.
+In line 16 of (P-4.1), atom codes/2 is used in its first role, i.e. to convert a list of characters to an
+atom. This atom is the current line, it is written to the output file.
+4. Recursion is stopped in sieve/2 (and control is returned to line 8 of sieve/4 ) when the end-of-file
+marker is read (line 15).
+Imbed the Prolog implementation from Sect. 4.1.3 into a Linux shell script for providing the same functionality
+as the predicate sieve/4 does. The application obtained thereby will run without explicitly having to use the
+SWI-Prolog system. The intended behaviour of the script is illustrated in Fig. 4.4.

@@ -1,0 +1,33 @@
+C:\Users\aerye\AppData\Local\Programs\Python\Python36\python.exe C:/Project/av-feature-generator/baselines/spacy_doc2vec_baselines.py
+INFO:root:SBS Vector TESTS =======================================
+INFO:root:loading spacy vector from PICKLE
+INFO:root:load spacy vector completed
+INFO:root:training LinearSVC
+INFO:root:param:{'C': 1.0, 'class_weight': None, 'dual': True, 'fit_intercept': True, 'intercept_scaling': 1, 'loss': 'squared_hinge', 'max_iter': 1000, 'multi_class': 'ovr', 'penalty': 'l2', 'random_state': None, 'tol': 0.0001, 'verbose': 0}
+INFO:root:0.475
+INFO:root:training BernoulliNB
+INFO:root:param:{'alpha': 1.0, 'binarize': 0.0, 'class_prior': None, 'fit_prior': True}
+INFO:root:0.51875
+INFO:root:training SVC
+INFO:root:param:{'C': 1.0, 'cache_size': 200, 'class_weight': None, 'coef0': 0.0, 'decision_function_shape': 'ovr', 'degree': 3, 'gamma': 'auto', 'kernel': 'rbf', 'max_iter': -1, 'probability': False, 'random_state': None, 'shrinking': True, 'tol': 0.001, 'verbose': False}
+INFO:root:0.50625
+INFO:root:training SVC
+INFO:root:param:{'C': 1.0, 'cache_size': 200, 'class_weight': None, 'coef0': 0.0, 'decision_function_shape': 'ovr', 'degree': 3, 'gamma': 'auto', 'kernel': 'poly', 'max_iter': -1, 'probability': False, 'random_state': None, 'shrinking': True, 'tol': 0.001, 'verbose': False}
+INFO:root:0.5375
+INFO:root:DIFF Vector TESTS =======================================
+INFO:root:loading spacy vector from PICKLE
+INFO:root:load spacy vector completed
+INFO:root:training LinearSVC
+INFO:root:param:{'C': 1.0, 'class_weight': None, 'dual': True, 'fit_intercept': True, 'intercept_scaling': 1, 'loss': 'squared_hinge', 'max_iter': 1000, 'multi_class': 'ovr', 'penalty': 'l2', 'random_state': None, 'tol': 0.0001, 'verbose': 0}
+INFO:root:0.61875
+INFO:root:training BernoulliNB
+INFO:root:param:{'alpha': 1.0, 'binarize': 0.0, 'class_prior': None, 'fit_prior': True}
+INFO:root:0.60625
+INFO:root:training SVC
+INFO:root:param:{'C': 1.0, 'cache_size': 200, 'class_weight': None, 'coef0': 0.0, 'decision_function_shape': 'ovr', 'degree': 3, 'gamma': 'auto', 'kernel': 'rbf', 'max_iter': -1, 'probability': False, 'random_state': None, 'shrinking': True, 'tol': 0.001, 'verbose': False}
+INFO:root:0.56875
+INFO:root:training SVC
+INFO:root:param:{'C': 1.0, 'cache_size': 200, 'class_weight': None, 'coef0': 0.0, 'decision_function_shape': 'ovr', 'degree': 3, 'gamma': 'auto', 'kernel': 'poly', 'max_iter': -1, 'probability': False, 'random_state': None, 'shrinking': True, 'tol': 0.001, 'verbose': False}
+INFO:root:0.5
+
+Process finished with exit code 0

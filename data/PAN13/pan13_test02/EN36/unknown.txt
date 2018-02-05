@@ -1,0 +1,39 @@
+﻿Every transaction is somehow dated and the relevant date of no transaction can precede the date on which the relevant account was opened. 
+In addition to the amount, the information associated with each transaction number varies according to the kind of transaction, as follows.
+Payments in:
+For a payment into an account, the account number, date, time, and source.
+BR9 Every payment in has exactly one account number, exactly one date, exactly one time of day, and exactly one source.
+Payment by cheque:
+A cheque on a particular account is uniquely identified within that account by its cheque number. For a payment by cheque, the account number, cheque number, date written (as shown on the cheque), date processed (by the bank), payee, and amount are recorded. 
+BR10 Every payment by cheque has exactly one account number, exactly one cheque number, exactly one date written (as shown on the cheque), exactly one date processed (by the bank), and exactly one payee.
+It is possible for more than one payment to be made by cheque to the same payee with the same date written and date processed. It is assumed that cheque books are not issued to a customer until the relevant account has been opened. A cheque cannot be processed before the date written as shown on the cheque.
+BR11 The date processed of a cheque cannot precede its date written.
+Payment by direct debit:
+For a payment by direct debit, the account number, date, time, payee, and amount are recorded. Note that is theoretically possible for more than one payment to be made by direct debit to the same payee at exactly the same time on the same day.
+BR12 Every payment by direct debit has exactly one account number, exactly one date, exactly one time, and exactly one payee.
+Payment by debit card:
+This includes cash withdrawals from ATMs. A customer can be issued with any number of debit cards. Each debit card is for a particular account and several debit cards can be issued for the same account, perhaps for use by various family members. Each debit card is identified by a card number. For every debit card, the relevant account number, cardholder’s name, and expiry date are recorded. For a payment by debit card, the card number, date, time, payee (which might refer to an ATM), and amount are recorded. It is not possible for the same debit card to be used more than once at exactly the same time on the same day. It is not possible to use a debit card for any payment on a date after the expiry date.
+BR13 Every debit card is uniquely identified by a card number and has exactly one account number (identifying an existing account), exactly one cardholder’s name, exactly one expiry date, and exactly one payee.
+BR14 Every payment by debit card is uniquely identified by the combination of its transaction number and card number of an existing card, also by the combination of its card number, date, and time, and has exactly one payee.
+BR15 The date of a payment by debit card cannot be later than the expiry date of the relevant card.
+BR16 Every transaction is either a payment in, or a payment by cheque, or a payment by direct debit, or a payment by debit card.
+BR17 No transaction is of more than one of the types mentioned in BR16.
+BR18 A transaction other than a payment by cheque cannot be dated earlier than the date on which the relevant account was opened.
+7. Based on your experiences with Exercise 7, suggest enhancements to Tutorial D to make it easier to express any constraints you declared that struck you as being of a common enough kind to warrant an additional shorthand.
+8. (For students familiar with SQL). Consider the following SQL definitions:
+a. What problem was the designer solving here? 
+b. What possible problem remains in this solution? 
+c. Describe and comment on the particular features of SQL that make this solution possible.
+1. Explore Rel’s catalogue. It consists of a relvar named sys.Catalog. Use the following trick to see sys.Catalog’s heading only:
+From their names, you might be able to guess which attributes are of most interest (possibly Name, Owner, and isVirtual?).
+Create a virtual relvar named myvars giving the Name, Owner, and isVirtual of every relvar not owned by 'Rel'. Virtual relvars are created like this:
+Test your virtual relvar definition by entering the queries
+2. If you haven’t already done so, load the file OperatorsChar.d, provided in the Scripts subdirectory of the Rel program directory, and execute it. One of the relvars mentioned in sys.Catalog is named sys.Operators. Display the contents of that relvar. How many attributes does it have? What is the declared type of the attribute named Implementations?
+3. Evaluate the expression
+What are the “ReturnsTypes” of LENGTH, IS_DIGITS, and SUBSTRING?
+4. Note that if s is a value of type CHAR, then LENGTH(s) gives the number of characters in s, IS_DIGITS(s) gives TRUE if and only if every character of s is a decimal digit. SUBSTRING(s,0,l) gives the string consisting of the first l characters of s (note that strings are considered to start at position 0, not 1). SUBSTRING(s,f) gives the string consisting of all the characters of s from position f to the end.
+What is the result of IS_DIGITS('')? Is it what you expected? Is it consistent with the definition given above?
+5. Using operators defined by OperatorsChar.d, define types for supplier numbers and part numbers, following Example 2.4 from Chapter 2.
+Define relvars Srev, Prev, and SPrev as replacements for S, P and SP, using the types you have just defined as the declared types of attributes S# and P#.
+Write relvar assignments to copy the contents of S, P and SP to Srev, Prev, and SPrev, respectively. Note that if SNO is the type name for supplier numbers in S and Srev, then SNO(S#) “converts” an S# value in S to one for use in Srev.
+6. Using the relvars defined in Exercise 5, repeat Exercise 6 from the set headed “Working with A Database in Rel” given with the exercises for Chapter 4. Which of your solutions need revisions beyond the obvious changes in relvar names?

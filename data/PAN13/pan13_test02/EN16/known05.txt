@@ -1,0 +1,29 @@
+﻿Sometimes we want to repeat an action, perhaps with variations. One way to do this is with the word for. Suppose we want to print out a hundred lines containing the messages: 
+
+Here is a code snippet which does that: 
+
+The brackets following for contain: a variable created for the purpose of this for loop and given an initial value; a condition for repeating the loop; and an action to be executed after each pass. The variable $i begins with the value 1, ++$i increments it by one on each pass, and the instruction within the curly brackets is executed for each value of $i until $i reaches 101, when control moves on to whatever follows the closing curly bracket. We saw earlier that, within double quotation marks, a symbol like \n is translated into what it stands for (newline, in this case), rather than being taken literally as the two characters \ followed by n. Similarly, a variable name such as $i is translated into its current value; the lines displayed by the code above read e.g. Next number is 3, not Next number is $i. If you really wanted the latter, you would need to “escape” the dollar sign: 
+
+The little examples in earlier chapters often ended with statements such as 
+
+In practice, it would usually be far preferable to write 
+
+so that the result appears on a line of its own, rather than jammed together with the next system prompt. Within the output of the above code snippet, 1 is not a “next” number but the first number. So we might want the message on the first line to read differently. By now, we know various ways to achieve that. Here are two – a straightforward, plodding way, and a more concise way: 
+
+or (quicker to type, though less clear when you come back to it weeks later): 
+
+Another way to set up a repeating loop is the while construction. Here is another code snippet which achieves the same as the two we have just looked at: 
+
+Here, $i is incremented within the loop body, and control falls out of the loop after the pass in which $i begins with the value 99. The while condition reads $i < 100, not $i <= 100: within the curly brackets, $i is incremented before its value is displayed, so if <= had been used in the while line, the lines displayed would have reached 101. The while construction is often used for reading input lines in from a text file, so the next chapter will show us how that is done. 
+
+In general, a file you want to get data into your program from will not necessarily be in the same directory as the program itself; it may have to be located by a pathname which could be long and complicated. The structure of pathnames differs between operating systems; if you are working in a Unix environment, for instance, the pathname might be something like: 
+
+Whatever pathnames look like in your computing environment, to read data into a Perl program you have to begin by defining a convenient handle which the program will use to stand for that pathname. For instance, if your program will be using only one input file, you might choose the handle INFILE (it is usual to use capitals for filehandles). The code: 
+
+says that, from now until we hit a line close(INFILE), any reference to INFILE in the program will be reading in data from the annualRecords file specified in the pathname. 
+
+Having “opened” a file for input, we use the symbol <> to actually read a line in. Thus: 
+
+will read in a line from the annualRecords file and assign that string of characters as the value of $a. A line from a multi-line file will terminate in one or more line-end characters, and the identity of these may depend on the system which created the file (different operating systems use different line-end characters). Commonly, before doing anything else with the line we will want to convert it into an ordinary string by removing the line-end characters, and the built-in function chomp() does that. This is an example of a function whose main purpose is to change its argument rather than to return a value; chomp() does in fact return a value, namely the number of line-end characters found and removed, but programs will often ignore that value – they will say e.g. chomp($line), rather than saying e.g. $n = chomp($line), with follow-up code using the value of $n. (If no filehandle is specified, $a = <> will read in from the keyboard – the program will wait for the user to type a sequence of characters ending in a newline, and will assign that sequence to $a.11) Assuming that we are reading data from a file rather than from the keyboard, what we often want to do is to read in the whole of the input file, line by line, doing something or other with each successive line. An easy way to achieve that is like this: 
+
+The word while tests for the truth of a condition; in this case, it tests whether the assignment statement, and hence the expression <INFILE>, is true or false. So long as lines are being read in from the input file, <INFILE> counts as “true”, but when the file is exhausted <INFILE> will give the value “false”. Hence while ($a = <INFILE>) assigns each line of the input file in turn to $a, and ceases reading when there is nothing more to read. (It is a good idea then to include an explicit close(INFILE) statement, though that is not strictly necessary.) Our open … statement assumed that the annualRecords file was waiting ready to be opened at the place identified by the pathname. But, of course, that kind of assumption is liable to be confounded! Even supposing we copied the pathname accurately when we typed out the program, if that was a while ago then perhaps the annualRecords file has subsequently been moved, or even deleted. In practice it is virtually mandatory, whenever we try to open a file, to provide for the possibility that it does not get opened – normally, by using a die statement, which causes the program to terminate after printing a message about the problem encountered. A good way to code the open statement will be:

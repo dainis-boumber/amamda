@@ -1,0 +1,77 @@
+﻿The Java language provides a number of constructs that enable the developer to control the sequence of
+execution of Java statements. Chapter Two provides examples of how these constructs are used to control
+the flow of execution through a block of code that is typically contained in the body of a method.
+Sequential flow of execution of statements is the execution of Java source code in a statement-bystatement
+sequence in the order in which they are written, with no conditions. Most of the examples of
+methods that are discussed in previous chapters exhibit sequential flow. In general terms, such a method is
+written as follows.
+A number of the main methods, presented in previous chapters, are structured in this sequential way in
+order to satisfy straightforward testing criteria.
+While sequential flow is useful, it is likely to be highly restrictive in terms of its logic. Executing
+statements conditionally gives the developer a mechanism to control the flow of execution in order to
+repeat the execution of one or more statements or change the normal, sequential flow of control.
+Constructs for conditional flow control in Java are very similar to those provided by other programming
+languages. Table 2.1 on the next page identifies the flow control constructs provided by the Java language.
+The sub-sections that follow show, by example, how these constructs are used.
+Using a decision-making construct allows the developer to execute a block of code only if a condition is
+true. The sub-sections that follow illustrate how decision-making constructs are used.
+The if … then construct is the most basic of the decision-making constructs provided by the Java language.
+If a condition is true, the block of code is executed: otherwise, control skips to the first statement after the
+if block. The following code snippet illustrates a simple use of the if … then construct.
+When the code snippet is run (in a main method), the output when age = 20 is:
+You can drink legally.
+The rest of the programme is next.
+and when age = 17, the output is:
+The rest of the programme is next.
+In some programming languages, the word ‘then’ is included in the then clause. As the code snippet
+above shows, this is not the case in Java.
+An example taken from the themed application shows an if … then construct in action in one of the
+methods of the Member class. The method adds a member to the array of members only if there is room in
+the array of (arbitrary) size 6.
+If there is no room in the array because noOfMembers is equal to or greater than 6, control skips to the
+print statement that outputs the message “No room for another member.”
+The if … else construct (sometimes known as the if … then … else construct) provides an alternative path
+of execution if the if condition evaluates to false. Figure 2.1 illustrates, diagrammatically, the logic of the
+if … else construct.
+Flow of control enters the if clause and the if condition is tested. The result of evaluating the if condition
+returns either true or false and one or other of the paths of execution are followed depending on this value.
+The else block is executed if the if condition is false.
+The next code snippet illustrates a simple use of the if … else construct by modifying the first code snippet
+in Section 2.4.1.
+When the code snippet is run (in a main method), the output when age = 20 is:
+You can drink legally.
+The rest of the programme is next.
+and when age = 17, the output is:
+You are too young to drink alcohol!
+The rest of the programme is next.
+Another example taken from the themed application shows an if … else construct in action in another of
+the methods of the Member class. The setCard method is used to associate a member of the Media Store
+with a virtual membership card. Each member may have up to two cards, so the method checks whether
+another card can be allocated to a member.
+The if … else construct in the method is used to return either true or false, depending upon the result of
+evaluating the if condition that determined whether or not the member has fewer than two cards.
+There is another form of the else part of the if .. else construct: else … if. This form of compound or
+cascading construct executes a code block depending on the evaluation of an if condition immediately
+after the initial if condition. The compound if … else construct is illustrated diagrammatically in Figure
+2.2 below.
+The figure shows that any number of else … if statements can follow the initial if statement.
+The example on the next page illustrates how the if .. else construct is used to identify the classification
+for degrees awarded by universities in the United Kingdom, based on the average mark achieved in the
+final year.
+Running the code with an average of 30 % produces the following output:
+Your result is: You are going to have to tell your mother about this!
+and with an average of 65 %, the output is as follows:
+Your result is: Upper Second
+When the value of average is equal to 65, this satisfies more than one of the else … if statements in the
+code above. However, the output confirms that the first time that a condition is met – when average >= 60
+– control passes out of the initial if statement without evaluating the remaining conditions. When a
+condition is met in the code above, the output shows that control skips to the first statement after the initial
+if statement, i.e. to the statement
+It is worthwhile alerting learners to the use of braces in compound else … if constructs. Care must be taken
+when coding compound else .. if constructs due to the number of pairs of brackets involved: a common
+error is to omit one or more of these brackets. In cases where there is only one statement in an if block, it
+is good practice to include braces – as shown in the example above – in anticipation of if blocks that
+include more than one statement.
+The final example in this sub-section shows a compound else … if construct in action in the Member class
+of the themed application. The method scans the array of (virtual) cards held by a member and outputs
+some information that is stored against each card. (for loops are discussed in a later section of this chapter.)

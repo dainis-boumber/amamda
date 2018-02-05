@@ -1,0 +1,39 @@
+﻿Within hierarchical classification of animals
+Pinky is a pig (species sus scrofa)
+Pinky is (also, more generally) a mammal
+Pinky is (also, even more generally) an animal
+We can specify the type of thing an organism is at different levels of detail:
+higher level = less specific
+lower level = more specific
+If you were asked to give someone a pig you could give them Pinky or any other pig. 
+If you were asked to give someone a mammal you could give them Pinky, any other pig or any other mammal (e.g. any lion, or any mouse, or any cat). 
+If you were asked to give someone an animal you could give them Pinky, any other pig, any other mammal, or any other animal (bird, fish, insect etc). 
+The idea here is that an object in a classification hierarchy has an ‘is a’ relationship with every class from which it is descended and each classification represents a type of animal.
+This is true in object oriented programs as well. Every time we define a class we create a new ‘type’. Types determine compatibility between variables, parameters etc. 
+A subclass type is a subtype of the superclass type and we can substitute a subtype wherever a ‘supertype’ is expected. Following this we can substitute objects of a subtype whenever objects of a supertype are required (as in the example above).
+The class diagram below shows a hierarchical relationship of types of object – or classes.
+In other words we can ‘substitute’ an object of any subclass where an object of a superclass is required. This is NOT true in reverse!
+When designing class/type hierarchies, the type mechanism allows us to place a subclass object where a superclass is specified. However this has implications for the design of subclasses – we need to make sure they are genuinely substitutable for the superclass. If a subclass object is substitutable then clearly it must implement all of the methods of the superclass – this is easy to guarantee as all of the methods defined in the superclass are inherited by the subclass. Thus while a subclass may have additional methods it must at least have all of the methods defined in the superclass and should therefore be substitutable. However what happens if a method is overridden in the subclass?
+When overriding methods we must ensure that they are still substitutable for the method being replaced. Therefore when overriding methods, while it is perfectly acceptable to tailor the method to the needs of the subclass a method should not be overridden with functionality which performs an inherently different operation.
+For example, RecNewIssue() in DiscMag overrides RecNewIssue() from Magazine but does the same basic job (“fulfils the contract”) as the inherited version with respect to updating the number of copies and the current issue. While it extends that functionality in a way specifically relevant to DiscMags by displaying a reminder to check the cover discs, essentially these two methods perform the same operation.
+What do we know about a ‘Publication’?
+Answer: It’s an object which supports (at least) the operations:
+void SellCopy()
+String ToString()
+and it has properties that allow us to 
+set the price,
+get the number of copies
+set the number of copies.
+Inheritance guarantees that objects of any subclass of Publications provides at least these. 
+Note that a subclass can never remove an operation inherited from its superclass(es) – this would break the guarantee. Because subclasses extend the capabilities of their superclasses, the superclass functionality can be assumed. 
+It is quite likely that we would choose to override the ToString() method (initially defined within ‘Object’) within Publication and override it again within Magazine so that the String returned provides a better description of Publications and Magazines. However we should not override the ToString() method in order to return the price – this would be changing the functionality of the method so that the method performs an inherently different function. Doing this would break the substitutability principle.
+Because an instance of a subclass is an instance of its superclass we can handle subclass objects as if they were superclass objects. Furthermore because a superclass guarantees certain operations in its subclasses we can invoke those operations without caring which subclass the actual object is an instance of.
+This characteristic is termed ‘polymorphism’, originally meaning ‘having multiple shapes’. 
+Thus a Publication comes in various shapes … it could be a Book, Magazine or DiscMag. We can invoke the SellCopy() method on any of these Publications irrespective of their specific details.
+Polymorphism is a fancy name for a common idea. Someone who knows how to drive can get into and drive most cars because they have a set of shared key characteristics – steering wheel, gear stick, pedals for clutch, brake and accelerator etc – which the driver knows how to use. There will be lots of differences between any two cars, but you can think of them as subclasses of a superclass which defines these crucial shared ‘operations’.
+If ‘p’ ‘is a’ Publication, it might be a Book or a Magazine or a DiscMag.
+Whichever it is we know that it has a SellCopy() method.
+So we can invoke p.SellCopy() without worrying about what exactly ‘p’ is.
+This can make life a lot simpler when we are manipulating objects within an inheritance hierarchy. We can create new types of Publication e.g. a Newspaper and invoke p,SellCopy() on a Newspaper without have to create any functionality within the new class – all the functionality required is already defined in Publication.
+Polymorphism makes it very easy to extend the functionality of our programs as we will see now and we will see this again in the case study (in Chapter 11).
+Huge sums of money are spent annually creating new computer programs but over the years even more is spent changing and adapting those programs to meet the changing needs of an organisation. Thus as professional software engineers we have a duty to facilitate this and help to make those programs easier to maintain and adapt. Of course the application of good programming standards, commenting and layout etc, have a part to play here but also polymorphism can help as it allows programs to be made that are easily extended.

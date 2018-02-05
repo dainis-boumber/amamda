@@ -1,0 +1,59 @@
+﻿When the View is set to Navigator, the pane to the left of the Slide Canvas is labelled Slides. Change the View to Outline
+and the pane is labelled Outline. The other view modes include Slide Only and Light Table. The Navigator View is probably
+the best option for creating and editing presentations, as thumbnails of the slide appear in the Slides Pane. This allows
+thumbnails to be click–dragged into new positions and slides to be duplicated and deleted with ease.
+Click-dragging a slide in Navigator View will reposition it in the running order. Holding down the Alt key whilst doing
+this will copy the slide to a new location. As with nearly all keyboard short–cuts the modifier key, in this case the Alt
+Key, should only be released after the mouse button is released. Other operations can be accessed using right–click on
+the Slides Pane.
+Other operations include the ability to skip slides. This is useful when shorter versions of a presentation are required;
+perhaps a thirty minute slot has been cut to twenty. The Skip function is a safe way to trim a presentation without deleting
+any data. Skipped slides won’t display as part of a Slide Show, but can be easily un–skipped too; the context menu command
+for this is Don’t Skip Slide.
+In teaching scenarios a Keynote can be prepared with extra sections that might be useful in class, but can be set to Skip
+by default, and only revealed if the teacher thinks it prudent to explore such areas. Skipping slides avoids the need to have
+several similar Keynote documents on the same subject. So rather than having to update several Keynotes as data changes,
+just the one document needs updating and the Skip function helps tailor the presentation for a variety of audiences and
+durations.
+Only revealed when the View is set to Show Master Slides, the Master Slide Pane appears above the Slides or Outline
+Pane to the left of the Slide Canvas. From here the current slide’s format can be changed from one Master to another.
+Simply click the slide or slides to be changed and click on the desired Master. This operation can also be achieved using
+the Master button in the Tool Bar.
+The Presenter Notes Pane appears under the Slide Canvas when set from the View menu in the Tool Bar.
+Presenter notes can be copied and pasted from other applications such as Pages or typed directly into the Presenter Notes
+Pane. They can be a great aid to memory when making presentations. Presenter Notes can also be included in handouts
+printed from Keynote.
+The Inspector is a key feature in Apple’s iLife and iWork software. Users new to Apple Mac software need to embrace the
+use of the Inspector. Inspectors control nearly all the parameters in iWork software. Numbers, Pages and Keynote have
+some unique Inspectors and some in common. For instance all the applications have a Document Inspector containing
+slightly different parameters in each.
+The Inspector is launched by either clicking the Inspector icon in the Toolbar or View > Show Inspector.
+Keynote has ten inspector tabs. They are:
+• Document Inspector –
+The Document Inspector should be used when first setting up a document. Divided into three tabs. The first tab contains
+slideshow preferences with options for Looping the slideshow. From here the Presentation mode can be changed, along
+with the Slide Size.
+The bottom section is Require Password To Open. For additional security a password can be entered to lock a Keynote
+document. The password would then be required every-time the document is opened.
+The next tab is Audio. There are several ways to add audio to a presentation, and using this tab this may not be the most
+flexible option.
+The last tab is Spotlight. Completing the fields for Author, Title, Keywords, and Comments is recommended practice. It
+makes documents easier to search for, especially when using the Mac Spotlight search engine. All of these fields are for
+metadata. Author and Title are self-explanatory. Adding Keywords helps classify a document. For example a Keynote
+document designed for a seminar on Apple’s Aperture could have the keywords, ‘Apple’, ‘Aperture’, ‘photography’, ‘digital
+imaging’ and ’45 minutes’. The list could go on. There are five keywords here. Keywords are denoted by commas, ‘Apple,
+Aperture, photography’ ‘digital imaging’ and ‘45 minutes’ are all single keywords.
+Searches can be case-sensitive, but using ‘apple’ and ‘Apple’ as keywords is not strictly necessary. When choosing keywords
+it is helpful to invoke the spirit of the librarian. A less rigorous form of applying metadata is using the Comments field. Here
+paragraphs of descriptive text can add be added. In the example of the Apple Aperture Keynote document, the comments
+field could read, ‘Seminar Presentation for Apple’s Aperture, aimed at the serious amateur and professional audience…’
+• Slide Inspector –
+The Slide Inspector has two tabs, Transition and Appearance. Transitions can be applied to one or more slides at a time.
+There are currently forty-eight transition effects and something known as Magic Move, located in the Effect menu of the
+Transition tab. Experiment with the transitions to learn more, try changing the transition duration as this may enhance the
+effect. Some transitions have a direction, moving from left to right, or top to bottom. When this is the case the Direction
+menu becomes active. The Start Transition menu is set to On Click by default, meaning that to move the the next slide a
+mouse click or an alternative to click has to be made†. Transitions can be triggered in other ways, as listed in the Start
+Transition menu.
+† Alternatives to a mouse click, include clicking a trackpad, tapping the Spacebar, using a keyboard’s forward arrow key,
+using a remote control device

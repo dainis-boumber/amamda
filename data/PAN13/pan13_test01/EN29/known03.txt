@@ -1,0 +1,49 @@
+﻿Many kinds of things in the world fall into related groups of ‘families’. ‘Inheritance’ is the idea ‘passing down’ characteristics from parent to child, and plays an important part in Object Oriented design and programming.
+While you are probably already familiar with constructors, and access control (public/private), there are particular issues in relating these to inheritance we need to consider.
+Additionally we need to consider the use of Abstract classes and method overriding as these are important concepts in the context of inheritance.
+Finally we will look at the ‘Object’ class which has a special role in relation to all other classes in C#.
+Classes are a generalized form from which objects with differing details can be created. Objects are thus ‘instances’ of their class. For example Student 051234567 is an instance of class Student. More concisely, 051234567 is a Student. Constructors are special methods that create an object from the class definition.
+Classes themselves can often be organised by a similar kind of relationship.
+One hierarchy, that we all have some familiarity with, is that which describes the animal kingdom :-
+• Kingdom (e.g. animals)
+• Phylum (e.g. vertebrates)
+• Class (e.g. mammal)
+• Order (e.g. carnivore)
+• Family (e.g. cat)
+• Genus (e.g. felix)
+• Species (e.g. felix leo)
+We can represent this hierarchy graphically ….
+Of course to draw the complete diagram would take more time and space than we have available.
+Here we can see one specific animal shown here :-‘Fred’. Fred is not a class of animal but an actual animal.
+Fred is a felix leo is a felix is a cat is a carnivore
+Carnivores eat meat so Fred has the characteristic ‘eats meat’.
+Fred is a felix leo is a felix is a cat is a carnivore is a mammal is a vertebrate
+Vertebrates have a backbone so Fred has the characteristic ‘has a backbone’.
+The ‘is a’ relationship links an individual to a hierarchy of characteristics. This sort of relationship applies to many real world entities, e.g. BonusSuperSaver is a SavingsAccount is a BankAccount.
+We specify the general characteristics high up in the hierarchy and more specific characteristics lower down. An important principle in OO – we call this generalization and specialization.
+All the characteristics from classes above in a class/object in the hierarchy are automatically featured in it – we call this inheritance.
+Consider books and magazines - both are specific types of publication.
+We can show classes to represent these on a UML class diagram. In doing so we can see some of the instance variables and methods these classes may have.
+Attributes ‘title’, ‘author’ and ‘price’ are obvious. Less obvious is ‘copies’ this is how many are currently in stock. 
+For books, OrderCopies() takes a parameter specifying how many extra copies are added to stock.
+For magazines, orderQty is the number of copies received of each new issue and currIssue is the date/period of the current issue (e.g. “January 2011”, “Fri 6 Jan”, “Spring 2011” etc.) When a new issue is received the old issues are discarded and orderQty copies are placed in stock. Therefore RecNewIssue() sets currIssue to the date of new issue and restores copies to orderQty. AdjustQty() modifies orderQty to alter how many copies of subsequent issues will be stocked.
+We can separate out (‘factor out’) these common members of the classes into a superclass called Publication. In C# a superclass is often called a base class.
+The differences will need to be specified as additional members for the ‘subclasses’ Book and Magazine.
+In this is a UML Class Diagram the hollow-centred arrow denotes inheritance.
+Note the subclass has the generalized superclass (or base class) characteristics + additional specialized characteristics. Thus the Book class has four instance variables (title, price, copies and author) it also has two methods (SellCopy() and OrderCopies()).
+The inherited characteristics are not listed in subclasses. The arrow shows they are acquired from the superclass.
+No special features are required to create a superclass. Thus any class can be a superclass unless specifically prevented.
+A subclass specifies it is inheriting features from a superclass using the : symbol. For example….
+Constructors are methods that create objects from a class. Each class (whether sub or super) should encapsulate its own initialization in a constructor, usually relating to setting the initial state of its instance variables. Constructors are methods given the same name as the class.
+A constructor for a superclass, or base class, should deal with general initialization.
+Each subclass can have its own constructor for specialised initialization but it must often invoke the behaviour of the base constructor. It does this using the keyword base.
+Usually some of the parameters passed to MySubClass will be initializer values for superclass instance variables, and these will simply be passed on to the superclass constructor as parameters. In other words super-parameters will be some (or all) of sub-parameters. 
+Shown below are two constructors, one for the Publication class and one for Book. The book constructor requires four parameters three of which are immediately passed on to the base constructor to initialize its instance variables.
+Thus in creating a book object we first create a publication object. The constructor for Book does this by calling the constructor for Publication.
+Rules exist that govern the invocation of a superconstructor.
+If the superclass has a parameterless (or default) constructor this will be called automatically if no explicit call to base is made in the subclass constructor though an explicit call is still better style for reasons of clarity.
+However if the superclass has no parameterless constructor but does have a parameterized one, this must be called explicitly using : base.
+To illustrate this….
+On the left above:- it is legal, though bad practice, to have a subclass with no constructor because superclass has a parameterless constructor.
+In the centre:- if subclass constructor doesn’t call the base constructor then the parameterless superclass constructor will be called.
+On the right:- because superclass has no paramterless constructor, subclass must have a constructor, it must call the super constructor using the keyword base and it must pass on the required paramter. This is simply because a (super) class with only a parameterized constructor can only be initialized by providing the required parameter(s).

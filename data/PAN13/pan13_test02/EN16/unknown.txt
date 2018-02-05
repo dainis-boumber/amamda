@@ -1,0 +1,74 @@
+﻿Readers will appreciate that the concept of property is crucial for business. A firm needs to know
+what it owns (and can therefore use freely, and/or charge others who want to use it), and what
+belongs to others (so that if it needs to use those things it must do deals with their respective
+owners). Business looks to law to define property rights and enable them to be enforced.
+Before the IT revolution, the things over which firms needed to assert ownership were usually
+tangible things – goods, land, and so forth. The law of “intellectual property”, under which for
+instance a company might own a patent on a newly-devised industrial process, was a fairly
+obscure legal backwater. Information technology has changed this, by hugely raising the profile
+of intangibles. Ever since the Industrial Revolution, the economies of nations like Britain and the
+USA had been dominated by manufacturing. But by the late 1980s, the share of GDP (gross
+domestic product) attributable to manufacturing fell below half in both nations, and it has
+continued to fall – outweighed partly by growth in services, but also by growth in trading of
+intangibles.
+By now, intangibles form a large proportion of the assets of a typical firm, as measured by the prices
+which the market sets on them. Gordon Brown, then Chancellor of the Exchequer, said in 2006:
+Twenty-five years ago the market value of our top companies was no more than the
+value of just their physical assets. Today the market value of Britain’s top companies is
+five times their physical assets, demonstrating the economic power of knowledge, ideas
+and innovation.20
+What Brown was saying was that most property of the “top companies” is now intellectual
+property. It is largely IT which has brought about this change; and it naturally means that
+intellectual property law has become a very significant area of business law, which is having to
+develop in response to developments in the technology.
+The topic which might perhaps come first to a student reader’s mind is the way that sharing
+music over peer-to-peer networks has been undermining the copyrights owned by music
+companies, which have been struggling either to invoke the law to defend their position, or to
+develop novel business models that allow them to make money within the new technological
+environment. But for present purposes, this area is not actually very significant. The law of
+copyright as it applies to music is clear; the only change introduced by IT lies in making the law
+easy to break and hard to enforce. More interesting, for this textbook, are areas where the
+property itself (not just the means used to reproduce it or move it around) consists of things like
+computer software or electronic databanks. In those areas, it is often far from clear how the
+existing laws of intellectual property apply. Courts are adapting laws that were written long ago
+for other purposes in order to develop an intellectual-property régime for the IT industry, and so
+far this is not working too well.
+The issues are not about enforcement – unlike with music filesharing, where many of the
+individuals involved do not care whether their activity is legal, provided they feel safe from
+detection! In civilized societies, most organizations by and large aim to keep within the law and
+respect one another’s property rights – but they need to know what those rights are. It would be
+hard for a business to be profitable, if it made a habit of not insisting on rights which it did
+legally possess.
+There are two longstanding legal devices for defining and protecting different sorts of intellectual
+property: copyright, and patent. Copyright was originally introduced to define ownership in
+“literary works”, such as novels, poems, or non-fiction books, but came to be extended by
+analogy to things like musical compositions, films, and so forth. Patents relate to newly-invented
+machines or industrial processes.
+Neither copyright nor patent law was part of the Common Law; both devices were introduced by
+statute. (Indeed, the USA has had a general law of copyright only since the 1890s – it was a
+standing grievance for Victorian novelists that no sooner did the fruits of their labour emerge
+from the press than American publishers’ agents would rush single copies across the Atlantic,
+where they would be reprinted and sold without reward to the author.) The original motivation of
+both copyright and patent law was the same: they were intended to stimulate advances (in literature,
+and in industry) which would benefit society, by creating concrete incentives for the innovators.
+The kinds of protection offered by the two areas of law are different. Copyright is something that
+the author of a “literary work” acquires automatically in producing the work, and it forbids
+anyone else to make a copy of the work (for a set number of years into the future, and with
+various provisos that do not matter here) without the right-holder’s permission. Thus an author’s
+copyright is a piece of property which he can sell or license for money; in the case of books,
+typically a publishing company contracts with an author for permission to publish his book in
+exchange for royalties paid to him on copies sold. With newer media such as films, the business
+models are different, but the underlying law (which is what concerns us) is essentially the same.
+A patent, on the other hand, is not acquired automatically by the inventor (or anyone else).
+Taking out a patent is a complicated and expensive undertaking, but if a patent is granted, it
+forbids anyone (again, for a set future period) from exploiting the process or mechanism without
+the patent-holder’s permission; so again the patent is an economically-valuable piece of property,
+which can be sold or licensed to companies wanting to use the innovation in their business.
+The legal contrast between copyright and patent was neatly summed up by Tim Press:
+A document setting out a novel chemical process would attract copyright protection, but
+that protection would protect the document against copying, not the process from being
+carried out. A patent for the process would prevent it from being carried out but not from
+being written about or broadcast.21
+Computer programs are “text” which defines and controls “processes”. So on the face of it there
+is a question about which kind of intellectual-property protection is more relevant to software.
+Over the years during which IT has been economically important, the answer has been shifting.

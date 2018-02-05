@@ -1,0 +1,78 @@
+﻿In Chapter Two, we see that class attributes are implemented in Java programmes as variables, whose
+values determine the state of an object. To some extent Chapter Two addresses the question of how we
+name variables; this question is explored further in this chapter.
+Chapter Three explores some of the basic elements of the Java language. Given the nature of this guide, it
+is not the intention to make this chapter exhaustive with respect to all of the basic elements of the Java
+language. Further details can be found in the on-line Java tutorial.
+We see in Chapter Two that the two broad categories of Java types are primitives and classes. There are
+eight of the former and a vast number of classes, including several thousand classes provided with the
+Java language development environment and an infinitude of classes written by the worldwide community
+of Java developers. This chapter examines aspects of both categories of types.
+An identifier is a meaningful name given to a component in a Java programme. Identifiers are used to
+name the class itself – where the name of the class starts with an upper case letter – and to name its
+instances, its methods and their parameters. While class identifiers always – by convention – start with an
+upper case letter, everything else is identified with a word (or compound word) that starts with a lower
+case letter. Identifiers should be made as meaningful as possible, in the context of the application
+concerned. Thus compound words or phrases are used in practice.
+Referring to elements of the themed application, we can use the following identifiers for variables in the
+Member class:
+because we wouldn’t name a class membershipCard and spaces are not permitted in identifiers.
+We could have declared other variables in the class definition as follows:
+We cannot use what are known as keywords for identifiers. These words are reserved and cannot be
+used solely as an identifier, but can be used as part of an identifier. Thus we cannot identify a variable
+as follows:
+// not permitted because int is a keyword
+but we could write
+The table below lists the keywords in the Java language.
+Java is case-sensitive: this means that we cannot expect the following statement to compile:
+if we have not previously declared the identifier newint. On the other hand, if we write
+as the last statement of the getNewInt method, it will compile because the identifier named newInt has
+been declared previously.
+Similarly we cannot expect the compiler to recognise identifiers such as the following
+if they have not been declared before we refer to them later in our code.
+In one of the declarations in Section 3.2, we declared a variable with the identifier newInt to be of the int
+type, in the following statement:
+Let us deconstruct this simple statement from right to left: we declare that we are going to use an
+identifier named newInt to refer to integer values and ensure that access to this variable is private.
+This kind of declaration gives rise to an obvious question: what primitive data types are there in the Java
+language? The list on the next page summarises the primitive data types supported in Java.
+Before we move on to discuss assignment of actual values to variables, it will be instructive to find out if
+Java can convert between types automatically or whether this is left to the developer and if compile-time
+and run-time rules for conversion between types are different.
+In some situations, the JRE implicitly changes the type without the need for the developer to do this. All
+conversion of primitive data types is checked at compile-time in order to establish whether or not the
+conversion is permissible.
+Consider, for example, the following code snippet:
+A value of 10.0 is displayed when d is output.
+Evidently the implicit conversion from an int to a double is permissible.
+Consider this code snippet:
+The first statement compiles; this means that the implicit conversion from an int to a double is permissible
+when we assign a literal integer value to a double. However the second statement does not compile: the
+compiler tells us that there is a possible loss of precision. This is because we are trying to squeeze, as it
+were, an eight byte value into a four byte value (see Table 3.2); the compiler won’t let us carry out such a
+narrowing conversion.
+On the other hand, if we write:
+// the cast ( int ) forces d to be an int; we will examine the concept of casting
+// or explicit conversion later in this section
+Both statements compile and a value of 10 is displayed when i is output.
+The general rules for implicit assignment conversion are as follows:
+ a boolean cannot be converted to any other type;
+ a non-boolean type can be converted to another non-boolean type provided that
+the conversion is a widening conversion;
+ a non-boolean type cannot be converted to another non-boolean type if the
+conversion is a narrowing conversion.
+Another kind of conversion occurs when a value is passed as an argument to a method when the method
+defines a parameter of some other type.
+For example, consider the following method declaration:
+The method is expecting a value of a double to be passed to it when it is invoked. If we pass a float to the
+method when it is invoked, the float will be automatically converted to a double.
+Fortunately the rules that govern this kind of conversion are the same as those for implicit assignment
+conversion listed above.
+The previous sub-section shows that Java is willing to carry out widening conversions implicitly. On the
+other hand, a narrowing conversion generates a compiler error. Should we actually intend to run the risk of
+the possible loss of precision when carrying out a narrowing conversion, we must make what is known as
+an explicit cast. Let us recall the following code snippet from the previous sub-section:
+Casting means explicitly telling Java to force a conversion that the compiler would otherwise not carry out
+implicitly. To make a cast, the desired type is placed between brackets, as in the second statement above,
+where the type of d – a double - is said to be cast (i.e. flagged by the compiler to be converted at run-time)
+into an int type.

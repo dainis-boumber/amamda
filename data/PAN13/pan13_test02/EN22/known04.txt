@@ -1,0 +1,73 @@
+﻿By now the learner will be familiar, to some extent, with method invocation from earlier chapters, when
+objects of the Member class in the themed application are used to give some examples of passing
+arguments to methods. Chapter Four goes into more detail about methods and gives a further explanation
+about how methods are defined and used. Examples from the themed application are used to illustrate the
+principal concepts associated with an object’s methods.
+Chapter Three examines an object’s variables, i.e. its state or what it knows what its values are. An
+object’s methods represent the behaviour of an object, or what is knows what it can do, and surround, or
+encapsulate, an object’s variables. This section answers the question about how we get computable values
+into methods.
+As we know from previous chapters, a method is invoked by selecting the object reference for the instance
+required. The general syntax of a method invocation can be summarised as follows.
+Referring, again, to the Member class of the themed application, we could instantiate a number of Member
+objects (in a main method) and call their methods as in the following code snippet.
+// Instantiate three members; call the no-arguments constructor for the Member class.
+// Call one of the set methods of these objects.
+// Call one of the get methods of these objects in a print statement.
+The screen output from executing this fragment of main is:
+In short, we must ensure that we know which method we are calling on which object and in which order.
+In the code snippet above, it is evident that setUserName expects a String argument to be passed to it; this
+is because its definition is written as:
+The single parameter is replaced by a computable value, i.e. an argument, when the method is invoked.
+ The general syntax of a method’s declaration is modifier return_type
+method_name( parameter_list ) exception_list
+ The method’s definition is its declaration, together with the body of the method’s
+implementation between braces, as follows:
+ The method’s signature is its name and parameter list.
+It is in the body of a method where application logic is executed, using statements such as:
+ invocations: calls to other methods;
+ assignments: changes to the values of fields or local variables;
+ selection: cause a branch;
+ repetition: cause a loop;
+ detect exceptions, i.e. error conditions.
+If the identifier of a parameter is the same as that of an instance variable, the former is said to hide the
+latter. The compiler is able to distinguish between the two identifiers by the use of the keyword ‘this’, as
+in the following method definition that we met in Chapter One:
+If, on the other hand, we wish to avoid hiding, we could write the method definition as follows:
+where the identifier of the parameter is deliberately chosen to be different from that of the instance
+variable. In this case, the keyword ‘this’ can be included but it is not necessary to do so.
+In both versions of the method setUserName, the value of the parameter’s argument has scope only within
+the body of the method. Thus, in general, arguments cease to exist when a method completes its execution.
+A final point to make concerning arguments is that a method cannot be passed as an argument to another
+method or a constructor. Instead, an object reference is passed to the method or constructor so that the
+object reference is made available to that method or constructor or to other members of the class that
+invoke that method. For example, consider the following code snippet from the graphical version of the
+themed application shown on the next page.
+The examples and discussion in this section are meant to raise a question in the mind of the learner: are
+arguments passed by value or by reference? This question is addressed in the next sub-section.
+All arguments to methods (and constructors) are, in Java, passed by value. This means that a copy of the
+argument is passed in to a method (or a constructor) call.
+The example that follows aims to illustrate what pass by value semantics means in practice: detailed code
+documentation is omitted for the sake of clarity.
+The method changeValue changes the value of the argument passed to it – a copy of x – but it does not
+change the original value of x, as shown by the output. Thus the integer values 1235 and 1234 are output
+according to the semantics of pass by value as they apply to arguments.
+When a parameter is an object reference, it is a copy of the object reference that is passed to the method.
+You can change which object the argument refers to inside the method, without affecting the original
+object reference that was passed. However if the body of the method calls methods of the original object –
+via the copy of its reference - that change the state of the object, the object’s state is changed for the
+duration of its scope in a programme.
+Thus, in the example above, the strings “Bonjour” and “Hello there!” are output according to the
+semantics of pass by value as they apply to object references.
+A common misconception about passing object references to methods or constructors is that Java uses
+pass by reference semantics. This is incorrect: pass by reference would mean that if used by Java, the
+original reference to the object would be passed to the method or constructor, rather than a copy of the
+reference, as is the case in Java. The Java language passes object references by value, in that a copy of the
+object reference is passed to the method or constructor.
+The statement in the box isn’t true when objects are passed amongst objects in a distributed application.
+However, such applications are beyond the scope of this guide. For the purposes of the present guide,
+the learner should use the examples above to understand the consequences of Java’s use of pass by
+value semantics.
+In previous chapters, we have encountered a number of references to a method’s return type. In the
+definition of a method, the return type is declared as part of the method’s declaration and its value is
+returned by the final statement of the method.

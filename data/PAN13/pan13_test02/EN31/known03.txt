@@ -1,0 +1,73 @@
+﻿In this chapter we are going to discuss graph search algorithms and applications thereof for finding a minimum
+cost path from a start node to the goal node.
+The network search problem in Sect. 2.2 (Fig. 2.1) was devoid of any cost information. Let us now assume that
+the costs to traverse the edges of the graph in Fig. 2.1 are as indicated in Fig. 3.1.
+There are two possible interpretations of the figures in Fig. 3.1: they can be thought of as costs of edge
+traversal or, alternatively, as edge lengths. (We prefer the latter interpretation in which case, of course, Fig. 3.1
+is not to scale.) The task is to determine a minimum length path connecting s and g, or, more generally,
+minimum length paths connecting any two nodes.
+The algorithms considered in this chapter assume the knowledge of an heuristic distance measure, H, between
+nodes. Values of H for the network in Fig. 3.1 are shown in Table 3.1. They are taken to be the estimated
+straight line distances between nodes and may be obtained by drawing the network in Fig. 3.1 to scale and
+taking measurements.
+Three algorithms will be introduced here: the A–Algorithm, Iterative Deepening A∗ and Iterative Deepening
+A∗–_.
+An estimated overall cost measure, calculated by the heuristic evaluation function F, will be attached to every
+path; it is represented as
+where G is the actual cost incurred thus far by travelling from the start node to the current node and H, the
+heuristic, is the estimated cost of getting from the current node to the goal node. Assume, for example, that
+in the network shown in Fig. 3.1 we start in d and want to end up in c. Equation (3.1) then reads for the path
+d → s → a (with obvious notation) as follows
+We know from Chap. 2 that for blind search algorithms the updating of the agenda is crucial: Breadth First
+comes about by appending the list of extended paths to the list of open paths; Depth First requires these lists
+to be concatenated the other way round.
+For the A–Algorithm, the updating of the agenda is equally important. The new agenda is obtained from
+the old one in the steps 1 _ and 2 _ below.
+1 _
+Extend the head of the old agenda to get a list of successor paths. An intermediate, ‘working’ list will be
+formed by appending the tail of the old agenda to this list.
+2 _
+The new agenda is obtained by sorting the paths in the working list from 1 _ in ascending order of their
+F–values.
+3 _
+The steps 1 _ and 2 _ are iterated until the path at the head of the agenda leads to the goal node.
+In the example shown in Fig. 3.2, the paths are prefixed by their respective F–values and postfixed by their
+respective G–values. Using this notation and the cost information, the example path in (3.2) is now denoted
+by 242 − [a, s, d] − 147. Notice that this path also features in Fig. 3.2.
+It can be shown (e.g. [23]) that if the heuristic H is admissible, i.e. it never overestimates the actual
+minimum distance travelled between two nodes, the A–Algorithm will deliver a minimum cost path if such a
+path exists.1In this case the A–Algorithm is referred to as an A∗–Algorithm and is termed admissible. (As the
+straight line distance is a minimum, the heuristic defined by Table 3.1 is admissible.)
+The predicate a search(+Start,+Goal,-PathFound) in asearches.pl implements the A–Algorithm. A few
+salient features of a search/3 will be discussed only; for details, the reader is referred to the source code which
+broadly follows the pattern of implementation of the blind search algorithms (Fig. 2.15, p. 65 and Fig. 2.20,
+p. 69).
+The implementation of the A–Algorithm in asearches.pl uses the built-in predicate keysort/2 to implement
+step 2 _ (see inset on p. 108).
+The module invoking a search/3 should have defined (or imported) the following predicates.
+• The connectivity predicate link/2 . For the network search problem, this is imported from links.pl
+(Fig. 2.2, p. 49).
+• The estimated cost defined by e cost/3 . For the network search problem, this is defined in graph a.pl
+by
+with dist/3 essentially implementing Table 3.1,
+The actual edge costs defined by edge cost/3 . For the network search problem, this is defined in
+graph a.pl by
+Application of the A–Algorithm to a more substantial example in Sect. 3.2 will reveal that the A–Algorithm
+may fail due to excessive memory requirements.2 Clearly, there is scope for improvement.
+In the mid 1980s, a new algorithm was conceived by Korf [20] combining the idea of Iterative Deepening
+(Sect. 2.6) with a heuristic evaluation function; the resulting algorithm is known as Iterative Deepening A∗
+(IDA∗).3 The underlying idea is as follows.
+• Use Depth First as the ‘core’ of the algorithm.
+• Convert the core into a kind of Bounded Depth First Search with the bound (the horizon) now not being
+imposed on the length of the paths but on their F-values.
+• Finally, imbed this ‘modified’ Bounded Depth First Search into a framework which repeatedly invokes it
+with a sequence of increasing bounds. The corresponding sequence of bounds in Iterative Deepening was
+defined as a sequence of multiples of some constant increment; a unit increment in the model implementation.
+The approach here is more sophisticated. Now, in any given phase of the iteration, the next value
+of the bound is obtained as the minimum of the F-values of all those paths which had to be ignored in
+the present phase. This approach ensures that in the new iteration cycle the least number of paths is
+extended.
+The pseudocode of IDA∗ won’t be given here; it should be possible to reconstruct it from the above informal
+description. It can be shown that IDA∗ is admissible under the same assumptions as A∗.
+The so-called _–admissible version of IDA∗ (IDA∗–_) is a generalization of IDA∗. It is obtained by extending
+the F-horizon to

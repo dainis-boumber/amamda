@@ -1,0 +1,59 @@
+﻿There are six table presets; each providing an insight into the variety of Cell Formats. Controls for Cells can be explored
+by right–clicking or Control–Clicking a Cell or Cells.
+The six table types are:
+• Headers – This includes one header column and one header row. Headers are used to label columns and rows.
+Headers are automatically formatted so that they stand out from other cells in a Table. They are always the
+topmost row or the first column on the left of a Table. Numbers supports up to five header rows and columns.
+Multiple headers are useful when assigning names to two or more header columns or rows.
+• Basic – is similar to the Headers preset except that it does not contain a row header.
+• Sums – like Basic, this has columns headers, no row headers, but includes a Footer Row. The Footer Row cells
+contain a SUM formula which totals any number values entered into the columns.
+• Plain – is a simple grid of Cells with no headers or formula added.
+• Checklist – is a useful example of Cell Formatting. Column A contains Checkboxes. So if making, for instance,
+a Do List once a task has been completed it can be simply ticked to indicate its completion. Other types of Cell
+Format are Stepper, Slider and Pop-up Menu. Cells can be formatted for Numbers, Currency, Percentage, Date
+& Time, Duration, Fraction, Numeral System, Scientific and Text.
+• Sums Checklist – is identical to Checklist save that the first column contains checkboxes.
+Cells are formatted as Automatic when they are created. This means that data can be entered without the user having to
+consider which format to use. Numbers allows users to change cell formatting depending on their project requirements.
+The types of Cell Format are Numbers, Currency, Percentage, Date & Time, Duration, Fraction, Numeral System, Scientific,
+and Text. There are also, Stepper, Slider and Pop-up Menu formats.
+To manually format a cell, column or row, select it, then in the Cells Inspector click on the drop down menu and change
+the formatting accordingly. In addition users can make custom formats. This option is also found in the drop down menu
+of the Cells Inspector.
+If a date is entered into a Cell, for example 04/04/2012, Numbers will automatically read this as a date and will display
+it as such; 4th April 2012.
+If this is not the desired date format, select that cell, column or row and in the Cells Inspector use the Date menu to
+change the formatting. The options found in the Cells Inspector can also be found on the Format Bar.
+When entering data into Cells, to move the insertion point to the next Cell in the row press TAB. To move the insertion
+point to the cell below press Return. Use the Arrow keys to move the insertion point freely.
+A series is a range of linked values. For example, months or weekdays where February follows January, Tuesday follows
+Monday. Numbers understands such series. To prove this point try typing January into a column. Select that cell and
+click-drag on the bottom right hand corner of the cell and, moving the cursor down the column, the column automatically
+sequences the rows with all the months of the year. The same process can be applied to weekdays.
+If a date is entered into the top body cell of a Column, for example 01/01/12, a date sequence can be created. By clickdragging
+on the bottom right hand corner of the cell and moving the cursor down the column, the column automatically
+sequences the rows as following days; 2nd, 3rd, 4th January and so on. Brilliant, but this can be frustrating if, for instance, a
+series based on weeks is required. The way to achieve this is to manually enter the date information for the first two months
+of your series, say 04/04/2012 and 04/05/12. Then select the row for April, hold down the Shift key and select May, both
+rows are now selected. Click–drag the bottom right hand corner of the May cell and the date series now runs in months.
+In the illustration Column A was created using consecutive days, 04/04/12 was typed into Cell A1 then dragged to fill
+Column A. In Column B 04/04/12 was typed into Cell B1, then 11/04/12 into Cell B2 before both these Cells were selected
+and dragged to fill Column B. Column C is a series based on the first day of the month. Column D illustrates the drag
+operation, and is a series based on years.
+Use the Cell Inspector to change how the dates are displayed.
+Other series might include a dinner menu. Typing Aperitif, Starters, Main, Deserts, Coffee into a successive Rows of a
+Column then performing the Shift–Clicking and Dragging operation described above will repeat those five elements
+down the column ad nauseam.
+And there’s more. Hovering the cursor over the reference tab for the date column reveals a triangle, clicking on this
+invokes a menu. That menu has an option ‘Categorize by This Column’. If this is selected the months are automatically
+divided into years. If the sequence was stepping-up in days then ‘Categorize by This Column’ would divide the column
+into months.
+Numbers is full of features like this. There is not space to explore all the permutations here. The key to understanding lies
+in understanding how Cells are automatically formatted and how this formatting can be ‘trained’ to behave in new ways.
+Using the menus that appear on the reference tabs, users can sort columns and rows. Typically data is sorted by Column,
+for example by date ascending. Sometimes more sophisticated sort options are required, these can be accessed via the
+reference tab menus and are labelled, ‘Show More Options’. In the example Column B, Fruit Type is being sorted to display
+in alphabetical order.
+The following example shows a fictitious Table for a green-grocer’s fruit order. This and the previous illustration contain
+the same data, but the second Table has been categorized by Column.

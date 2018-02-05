@@ -1,0 +1,67 @@
+﻿Constructing a user interface (UI) is one of the most rewarding features of application development using
+Java; it is highly creative and gives the developer the opportunity to work very closely with users to
+develop the UI that suits their needs. In this chapter, we will find out how user interfaces are constructed.
+The themed application is referred to from time to time in previous chapters. It is not the intention to
+appraise the reader about all of the details of the themed application; rather, it is used to illustrate
+programming concepts in the context of a realistic application. However, we haven’t yet explained how
+the classes of the themed application are used in an actual application, although the purpose of using main
+methods to test classes is mentioned and illustrated in previous chapters where relevant or appropriate.
+In general, when classes and their methods associated with an application have been thoroughly tested,
+often with main methods specifically written for testing purposes, the process of constructing the UI can
+proceed. The UI is the component of an application that users use to interact with it in order to carry out
+the work provided by the business logic of the application in the form of objects that, collectively, provide
+a service to users. The objects that implement the logic of the application are the business objects of the
+application in that they meet the business requirements of the application as determined by analysis of the
+business domain under consideration. The notion that the business objects of an application provide a
+service to users means that we can regard the business objects as the server-side or server component of
+an application.
+Consider, for example, the classes of the themed application shown in Figure 3.1 on the next page.
+The classes shown in Figure 3.1 encapsulate the business requirements of a realistic application that is
+referred to in this guide as the ‘themed application’. The ‘has a’ and ‘is a’ associations shown in the figure
+imply that the class that represents the Media Store has a number of Member objects and Item objects of
+either the Dvd or Game type. Each member is provided with two virtual membership cards, one for
+recording the details about DVDs on loan (from the Media Store) and another for recording the details
+about games. Only the DvdMembershipCard class is defined in the version of the themed application
+shown in the figure; hence, the ‘has a’ link between this class and the Item class. For the purposes of the
+present discussion, the DVD membership card object implements methods to borrow and return DVDs.
+The state of each Member object, along with the graph of objects associated with Member –
+DvdMembershipCard and Dvd – are serialized to a data file. The classes shown in the figure comprise the
+server-side of the application.
+The various methods of the classes of the application were tested (by the author of this guide) with, in the
+first instance, a number of main methods that test the correctness of card transactions when taking items
+out on loan and returning them. When testing was complete, the next stage in the development of the
+application was to construct the UI. The classes associated with the UI comprise the client-side of
+the application.
+The client-side of the themed application is used – as we will see later in this chapter – to interact with the
+server-side. For example, there are buttons on the UI that call methods of the DvdMembershipCard class to
+borrow and return DVDs. Clearly, and rather obviously, there is a close coupling between the UI and the
+business objects with which it interacts. In other words, the server-side of the application is of no value
+without the client-side of the application and vice versa. In general, whilst the development and testing of
+the client and server sides of an application may proceed independently of one another, both sides of an
+application will eventually be brought together to comprise the complete application. Final testing will test
+that the UI operates correctly in its interaction with server-side objects.
+The combination of the server and client ‘sides’ of the themed application into a single application results
+in what is known, in this case, as a standalone application in the sense that it runs on one computer: i.e. a
+standalone application runs in a single address space using a single Java Virtual Machine. Whilst it can
+readily be argued that the standalone version of the themed application is not realistic in that it is not
+designed to run on a (computer) network, its purpose in this guide is to provide a source of examples that
+illustrate how a number of fundamental Java programming concepts can be applied in the context of an
+application that is appropriate for learners. In short, the development of standalone applications is relevant
+from a learning point of view.
+The combination of the client and server sides of the themed application (discussed in the previous section)
+suggests that we can regard any standalone application as comprising client and server components that
+interact with one another. Perhaps not surprisingly, such applications are labelled with the term
+client/server.
+Figure 3.2, shown on the next page, illustrates the architecture of a typical client/server application.
+Tier 1, the client tier, comprises the UI; tier 2, the server tier, comprises the business objects of the
+application; tier 3, the persistent data tier, comprises data storage components such as data files and
+database tables. In the case of the themed application, the third tier comprises a data file that stores an
+array of members of the Media Store. In a typical client/server application, the UI interacts with the
+server-side objects which, in turn, interact with the data tier. In other words, the UI interacts with the
+server-tier; the UI does not access the data tier directly.
+The double-headed arrow (in the figure) that implies that the client and server tiers are connected is, in the
+case of a standalone application, an indication that the client and server tiers are deployed in the same
+address space. In the case of a networked application, the connection between the client and server tiers
+will either be an intranet or the Internet.
+Now that we have placed user interfaces in the context of a client/server architecture, the next section
+moves on to find out how a UI is constructed.

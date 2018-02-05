@@ -1,0 +1,64 @@
+﻿There are several examples in previous chapters that illustrate how constructors are used to instantiate
+objects of a class. Let us recall the overall technique before we bring together a number of features of
+constructors in this chapter.
+One of the constructors for Member objects in the themed application is as follows:
+An object’s constructors have the same name as the class they
+instantiate.
+To access an object of the class Member in an application, we first declare a variable of the Member type
+in a main method in a test class as follows:
+The statement above does not create a Member object; it merely declares a variable of the required type
+that can subsequently be initialised to refer to an instance of the Member type. The variable that refers to
+an object is known as its object reference. The object that an object reference refers to must be created
+explicitly, in a statement that instantiates a Member object as follows.
+The two statements above can be combined as follows.
+When the Member object is created by using ‘new’, the type of object required to be constructed is
+specified and the required arguments are passed to the constructor. The JRE allocates sufficient memory
+to store the fields of the object and initialises its state. When initialisation is complete, the JRE returns a
+reference to the new object. Thus, we can regard a constructor as returning an object reference to the
+object stored in memory.
+While objects are explicitly instantiated using ‘new’, as shown above for a Member object, there is no
+need to explicitly destroy them (as is required in some OO run-time systems). The Java Virtual Machine
+(JVM) manages memory on behalf of the developer so that memory for objects that is no longer used in an
+application is automatically reclaimed without the intervention of the developer.
+In general, an object’s fields can be initialised when they are declared or they can be declared without
+being initialised. For example, the code snippet on the next page shows part of the class declaration for a
+version of the Member class:
+The code snippet illustrates an example where some of the instance variables are initialised and some are
+only declared. In the case of the latter type of declaration, the instance variable is initialised to its default
+value when the constructor returns an object reference to the newly-created object. For example, the
+instance variable noOfCards is initialised to 0 when the object is created.
+Declaring and initialising none, some or all instance variables in this way if often sufficient to establish
+the initial state of an object. On the other hand, where more than simple initialisation to literals or default
+values is required and where other tasks are required to be performed, the body of a constructor can be
+used to do the work of establishing the initial state of an object. Consider the following part of the
+constructor for the Member class.
+This constructor is used when simple initialisation of Member objects is insufficient. Thus, in the code
+block of the constructor above, the arguments passed to the constructor are associated with four of the
+fields of the Member class. The effect of the four statements inside the constructor’s code block is to
+initialise the four fields before the constructor returns a reference to the object.
+Constructors can, like methods, generate or throw special objects that represent error conditions. These
+special objects are instances of Java’s in-built Exception class. We will explore how to throw and detect
+Exception objects in Chapter Four in An Introduction to Java Programming 2: Classes in Java
+Applications.
+It is worthwhile being reminded at this point in the discussion about constructors that the compiler inserts
+a default constructor if the developer has not defined any constructors for a class.
+The default constructor takes no arguments and contains no code. It
+is provided automatically only if the developer has not provided any
+constructors in a class definition.
+We saw in the previous chapter that methods can be overloaded. Constructors can be similarly overloaded
+to provide flexibility in initialising the state of objects of a class. For example, the following class
+definition includes more than one constructor.
+The example class – SetTheTime – is a simple illustration of a class which provides more than one
+constructor. The example also shows that a constructor can be called from the body of another constructor
+by using the ‘this’ invocation as the first executable statement in the constructor. Thus, in the example
+above, the two argument constructor is called in the first statement of the three argument constructor.
+Complex initialisation of fields can be achieved by using what is known as an initialisation block. An
+initialisation block is a block of statements, delimited by braces, that appears near the beginning of a class
+definition outside of any constructor definitions. The position of such a block can be generalised in the
+following simple template for a typical class definition:
+An initialisation block is executed as if it were placed at the beginning of every constructor of a class. In
+other words, it represents a common block of code that every constructor executes.
+Thus far, in this study guide, we have only been able to work with single values of primitive data types
+and object references. In the next chapter, we will find out how we can associate multiple values of types
+with a single variable so that we can work with multiple values of primitives or object references in
+an application.

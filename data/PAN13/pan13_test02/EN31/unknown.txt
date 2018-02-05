@@ -1,0 +1,77 @@
+﻿Six people are seated at a round table as shown in Fig. 3.1. The predicate right to/2 , defined in (P-3.1) by
+six facts, describes the seating arrangement in an obvious fashion.
+(a) Who is seated to the right of Adam?
+(b) To whom is Clara the right neighbour?
+(c) Who are the neighbours of George?
+Define Prolog rules for
+(d) ”... is seated to the left of ...”
+(e) ”... are the neighbours of ...”
+(f) ”... is seated opposite to ...”
+Hints. The envisaged solution for this exercise is elementary and concise and should make no use of lists. The
+following is suggested for solving part (f):
+• If we want to find the person seated opposite to Adam, say, it will help to imagine that the party are
+seated not at a round table but at a long rectangular one at the head of which is seated Adam (Fig. 3.2).
+• Define an auxiliary predicate facing/3 returning all pairs of people facing each other from one particular
+person’s point of view (here: Adam’s), and, eventually, facing that person himself. facing/3 should
+respond as follows.
+• Now implement opposite to/2 using facing/3 .
+• opposite to/2 should fail if the number of people around the table is odd.
+(a) Write a predicate guests/0 for displaying the names of all those at the table. (Use a failure driven loop;
+see inset on p. 77.) guests/0 should fail only if there aren’t any people at the table.
+(b) Use a failure driven loop to define a predicate opposites/0 for displaying all pairs seated opposite each
+other:
+(c) Use the accumulator technique to define a predicate look right(+Person) for displaying all the guests’
+names counterclockwise, starting with a particular person. Example:
+Initially, we will have read the facts in (P-3.1), p. 75, into memory by consult/1 (or by some equivalent thereof).
+It is important at this stage to remember that the database comprises all predicates loaded in memory; these
+will be those defined by the user as well as the built-in ones. Let us now assume that we want to model the
+departure from, and the arrival to, the table of people by updating the database.
+Departures. Departures will obviously involve removal of clauses from the database. To model, for example,
+George’s departure, we shall have to remove all facts referencing George. In addition, former neighbours
+of George will now be seated next to each other, necessitating additions to the database. Thus, to record
+departures, we shall need both deletion from, and addition to, the database.
+Arrivals. Arrivals will clearly involve an augmentation of the definition of right to/2 by new facts. To
+model for example the arrival of Tracy and Joe, to be seated between Adam and Susan, we will have to add
+the three facts in (P-3.2) to the database.
+And, we will have to remove the fact indicating that Susan is Adam’s right-hand neighbour:
+Therefore, to account for arrivals, both deletion from, and addition to the database will need to be done.
+We now review a few basic built-in predicates for modifying the database.
+• We use retract/1 (or retractall/1) to remove a clause (or all clauses of a predicate) from the database.
+The predicate whose clause is retracted has to be declared dynamic , implemented either as a directive in
+one of the source files or by calling dynamic/1 as a goal just before retracting. This is achieved in our
+example either by including in one of the files consulted the directive
+or interactively by
+• We use assert/1 to add a new clause to the database.
+A predicate newly introduced by assert/1 is deemed dynamic. An existing static (i.e. non-dynamic)
+predicate may be augmented by a new clause via assert/1 only after declaring it dynamic.
+• retractall/1 is used to remove from the database all clauses whose head unifies with the pattern in its
+argument. As with retract/1, retractall/1 may revoke dynamic predicates only.
+The following queries may be used to achieve the intended changes to the database.
+• George leaves the table (Fig. 3.3).
+As is easily confirmed by the query ?- listing(right to/2). , the predicate right to/2 is now defined
+in the database by the facts in (P-3.3).
+(Notice, however, that the definition of right to/2 in its Prolog source file is not yet affected.)
+• Tracy and Joe join the table and are seated between Adam and Susan (Fig. 3.4).
+Notice that due to the previous query the predicate right to/2 is now dynamic. It is now defined in the
+database by the facts in (P-3.4).3
+It is seen that assert/1 places the new clause behind the existing ones for the same predicate.4
+Exercise 3.3. Thus far, we have carried out (for reasons of transparency) database changes interactively
+only. In this exercise, you are asked to define some predicates for manipulating the database.
+(a) Define a predicate swap neighbours(+Left,+Right) for recording in the database of two neighbours
+swapping places. (For this predicate to succeed, prior to the swap, the person named in Left should be
+seated to the left of the person named in Right .) If we assume, for example, that the seating arrangement
+is initially as shown in Fig. 3.1, then the swap of Clara and Adam will be accomplished by
+After this, the database will look as follows.
+(b) Define a predicate swap(+Person1,+Person2) for recording in the database of two people swapping places
+who need not be neighbours. To exemplify, assume again that the database is initially as shown in Fig. 3.1.
+Then, Adam and George’s swap is carried out by
+upon which the database is as shown below.
+Note. You may use the predicate swap neighbours/2 from part (a) in your definition of swap/2
+Exercise 3.4. (Modelling a queue)5 A queue with at least two customers at a checkout is modelled by
+the Prolog predicate behind/2 which is defined in the file queue.pl as shown below. (behind/2 is declared a
+dynamic predicate in queue.pl.)
+(These facts have an obvious interpretation: the person named in the second argument stands behind the person
+named in the first argument.)
+(a) Define a predicate swap neighbours(+Person1,+Person2) for recording in the database of two neighbours
+swapping places. (For this predicate to succeed, prior to the swap, the person named in Person2 should
+be standing behind the person named in Person1 .) Example:

@@ -1,0 +1,67 @@
+﻿This guide explains the processes used to make Keynote documents. Keynote is Apple Inc.’s equivalent to Microsoft’s
+Powerpoint. Keynote’s strength is its ease of use and its ability to handle a variety of media types, including HD Video.
+This guide to Keynote is one of three books I have written for Bookboon on iWork. My books on Pages and Numbers
+complement this one, with some areas of repetition, each guide is designed to stand alone.
+A great way to learn is to experiment and play. Use this guide to focus your learning on specific areas of Keynote before
+taking a broad view of the myriad of possibilities for this software.
+This guide describes ways to assemble and edit content. It does not seek to give advice on presentation methodology, too
+often business presentations suffer from densely packed slides, with too much text and statistical information squeezed
+into them; information that is best left for a report. Rather than cram the contents of a report onto a handful of slides,
+judicious planning will make for compelling presentations. Keynote is not a place to copy and paste all the text of a report.
+It is far better to highlight and illustrate important points using Keynote’s excellent graphic and animation capabilities. That
+said, animation and graphic elements should be used sparingly to aid the communication, and not as a distraction to it.
+Keynote can be used to create dynamic and engaging presentations. Text, images and charts can be arranged with ease.
+Keynote makes it easy to add audio and video, add transitions between slides, animate data, and then share presentations
+in a variety of ways.
+The guide describes software functions and outlines generic examples of the software in use. Further information can be
+found on Apple’s web pages, or via Apple’s Certified Training Scheme.
+Regarding keyboard shortcuts. The keyboard shortcuts mentioned in this book will work on International English
+QWERTY keyboards. For US keyboards the only difference is that Alt key (􀀂 ) is called Option (􀀂 ). For AZERTY and
+other language keywords please try the shortcuts, they will probably work.
+For seasoned Mac users please note that the Apple key is now referred to as the Command key. It is labelled cmd , not .
+There are three ways to launch Keynote.
+• Go to your Applications folder. In Finder choose Go > Applications. Open the iWork ’09 folder and double–
+click the Keynote icon. (Unless you have done a customized iWork installation the iWork folder will be in the
+Application folder found in the root of your primary hard drive.)
+• In the Dock, click the Keynote icon. (In Apple’s latest operating system named Lion, a Keynote icon will appear
+in Launchpad.)
+• Double–click any Keynote document.
+Every time you launch Keynote or try to create a new document, Keynote’s Template Chooser appears. The Template
+Chooser contains Apple designed templates and any Templates created by you. Apple’s Templates can be customized to
+suit your tastes or to comply with a business’s graphic identity. There will be more on Themes later. The White and Black
+Themes are good options to experiment with.
+Keynote has features that are shared with, or are similar to, features found in other Apple applications such as Numbers and
+Pages. This section lists these features. Understanding features including Inspectors and the Media Browser are essential
+when learning about any Apple software.
+To explore the features described in Section 1. launch Keynote and open any Template. When launching Keynote the
+following message may appear.
+By default Keynote’s window contains a customizable Tool Bar, a Format Bar, a Slides Pane, and the Slide Canvas. Other
+panes may be opened, including Master Slides Pane, and Presenter Notes Pane.
+The Tool Bar contains several icons. These control common functions and will be described later. Note that some Tool
+Bar Icons are greyed-out meaning they cannot be used. They become active once an Object is selected. Also note that the
+Tool Bar can be customized to display buttons for commands based on user preference. From left to right:
+• New – This adds a new slide. The keyboard shortcut is Command – Shift – N.
+• Play – This starts the presentation in Slideshow, at the selected slide, the keyboard shortcut is Command–Alt–P.
+To start a Slideshow from the first slide hold down the Alt key and click the Play button in the Tool Bar.
+• View – changes the View Mode. Options include Navigator, Outline, Slide Only and Light Table. Of these
+Navigator and Light Table are the most useful when constructing documents. Outline Mode will be discussed
+further in Section 5.4. View also controls the display of Rulers, Format Bat, Presenter Notes and Master Slides.
+When developing a presentation to support a speech or lecture using Presenter Notes can prove a great aid to memory.
+Keynote can be configured to display on two displays simultaneously, one showing slides to an audience and a comprehensive
+display of Presenter Notes, Next Slide and Time Elapsed or Remaining on the other.
+Comments can be temporarily hidden from the View Menu. Comments are like virtual sticky notes and can be found in
+all the iWork applications.
+• Guides – By default Keynote displays alignment guides to help layout. These appear as yellow lines that indicate
+whether an object is aligned to the top, bottom, centre or side of another object, or where it is in relation to
+the canvas. Choosing all four options from Show Guides at Object Center to Show Relative Sizes will give
+maximum layout feedback help.
+• Themes – On launching Keynote a Theme Chooser appears. Users can create their own Themes. Having a
+Theme button in the Tool Bar allows Themes to be swapped in an open document. This function is useful for
+companies wishing to update presentations to meet their latest visual identity guidelines. A presentation using
+their properly applied 2008 theme can be updated to their 2012 theme in a single click.
+• Masters – Themes contain several Master Slides; Title & Subtitle, Title & Bullets, Title & Bullets – 2 Column…
+et cetera. Use this menu to change slides to different Masters.
+• Text Box – This adds a simple text box to the slide canvas. It is better to use a slide Master with a Text Box and
+modify it. This makes the Theme change function work speedily. It isn’t wrong, nor does it expose weaknesses
+in the Keynote software, to add Text Boxes. Additional Text Boxes cannot be automatically changed when
+changing Themes.

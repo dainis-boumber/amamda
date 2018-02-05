@@ -1,0 +1,78 @@
+﻿In this chapter we look at the four fundamental concepts on which most computer languages are based.
+We acquire some useful terminology to help us talk about these concepts in a precise way, and we begin
+to see how the concepts apply to relational database languages in particular. It is quite possible that you
+are already very familiar with these conceptsindeed, if you have done any computer programming they
+cannot be totally new to youbut I urge you to study the chapter carefully anyway, as not everybody
+uses exactly the same terminology (and not everybody is as careful about their use of terminology as we
+need to be in the present context). And in any case I also define some special terms, introduced by C.J.
+Date and myself in the 1990s, which have perhaps not yet achieved wide usagefor example, selector
+and possrep.
+I wrote “most computer languages” because some languages dispense with variables. Database languages
+typically do not dispense with variables because it seems to be the very nature of what we call a database
+that it varies over time in keeping with changes in the enterprise. Money changes hands, employees come
+and go, get salary rises, change jobs, and so on. A language that supports variables is said to be an
+imperative language (and one that does not is a functional language). The term “imperative” appeals to the
+notion of commands that such a language needs for purposes such as updating variables. A command is an
+instruction, written in some computer language, to tell the system to do something. The terms statement
+(very commonly) and imperative (rarely) are used instead of command. In this book I use statement quite
+frequently, bowing to common usage, but I really prefer command because it is more appropriate; also, in
+normal discourse statement refers to a sentence of the very important kind described in Chapter 3 and does
+not instruct anybody to do anything.
+
+Figure 2.1 shows a simple commandthe assignment, Y := X + 1dissected into its component parts.
+The annotations show the terms we use for those components.
+
+It is important to distinguish carefully between the concepts and the language constructs that
+represent (denote) those concepts. It is the distinction between what is written and what it meanssyntax
+and semantics.
+
+Each annotated component in Figure 1 is an example of a certain language construct. The annotation
+shows the term used for the language construct and also the term for the concept it denotes. Honouring
+this distinction at all times can lead to laborious prose. Furthermore, we don’t always have distinct terms
+for the language construct and the corresponding concept. For example, there is no single-word term for
+an expression denoting an argument. We can write “argument expression” when we need to be absolutely
+clear and there is any danger of ambiguity, but normally we would just say, for example, that X+1 is an
+argument to that invocation of the operator “:=” shown in Figure 2.1. (The real argument is the result of
+evaluating X+1.)
+The update operator “:=” is known as assignment. The command Y := X+1 is an invocation of
+assignment, often referred to as just an assignment. The effect of that assignment is to evaluate the
+expression X+1, yielding some numerical result r and then to assign r to the variable Y. Subsequent
+references to Y therefore yield r (until some command is given to assign something else to Y).
+Note the two operands of the assignment: Y is the target, X+1 the source. The terms target and source
+here are names for the parameters of the operator. In the example, the argument expression Y is
+substituted for the parameter target and the argument expression X+1 is substituted for the parameter
+source. We say that target is subject to update, meaning that any argument expression substituted for it
+must denote a variable. The other parameter, source, is not subject to update, so any argument expression
+substituted must denote a value, not a variable. Y denotes a variable and X+1 denotes a value. When the
+assignment is evaluated (or, as we sometimes say of commands, executed), the variable denoted by Y
+becomes the argument substituted for target, and the current value of X+1 becomes the argument
+substituted for source.
+Whereas the Y in Y := X + 1 denotes a variable, as I have explained, the X in Y := X + 1 does not,
+as I am about to explain. So now let’s analyse the expression X+1. It is an invocation of the read-only
+operator +, which has two parameters, perhaps named a and b. Neither a nor b is subject to update. A
+read-only operator is one that has no parameter that is subject to update. Evaluation of an invocation of a
+read-only operator yields a value and updates nothing. The arguments to the invocation, in this example
+denoted by the expressions X and 1, are the values denoted by those two expressions. 1 is a literal,
+denoting the numerical value that it always denotes; X is a variable reference, denoting the value currently
+assigned to X.
+A literal is an expression that denotes a value and does not contain any variable references. But we do not
+use that term for all such expressions: for example, the expression 1+2, denoting the number 3, is not a
+literal. I defer a precise definition of literal to later in the present chapter.
+
+The following very important distinctions emerge from the previous section and should be firmly
+taken on board:
+•Syntax versus semantics
+•Value versus variable
+•Variable versus variable reference
+•Update operator versus read-only operator
+•Operator versus invocation
+•Parameter versus argument
+•Parameter subject to update versus parameter not subject to update
+Each of these distinctions is illustrated in Figure 2.1, as follows:
+•Value versus variable: Y denotes a variable, X denotes the value currently assigned to the
+variable X. 1 denotes a value. Although X and Y are both symbols referencing variables, what they
+denote depends in the context in which those references appear. Y appears as an update target and
+thus denotes the variable of that name, whereas X appears where an expression denoting a value is
+expected and that position denotes the current value of the referenced variable. Note that variables,
+by definition, are subject to change (in value) from time to time. A value, by contrast, exists
+independently of time and space and is not subject to change.

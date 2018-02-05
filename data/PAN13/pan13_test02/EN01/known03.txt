@@ -1,0 +1,68 @@
+﻿In Chapter 1 I defined a database to be “… an organised, machine-readable collection of symbols, to be
+interpreted as a true account of some enterprise.” I also gave this example (extracted from Figure 1.1):
+I suggested that those green symbols, organised as they are with respect to the blue ones, might be
+understood to mean:
+“Student S1, named Anne, is enrolled on course C1.”
+In this chapter I explain exactly how such an interpretation can be justified. In fact, I describe the general
+method under which data organized in the form of relations is to be interpretedto yield information, as
+some people say. This method of interpretation is firmly based in the science of logic. Relational database
+theory is based very directly on logic. Predicates and propositions are the fundamental concepts that logic
+deals with.
+Fortunately, we need to understand only the few basic principles on which logic is founded. You may well
+already have a good grasp of the principles in question, but even if you do, please do not skip this chapter.
+For one thing, the textbooks on logic do not all use exactly the same terminology and I have chosen the
+terms and definitions that seem most suitable for the purpose at hand. For another, I do of course
+concentrate on the points that are particularly relevant to relational theory; you need to know which points
+those are and to understand exactly why they are so relevant.
+Predicates, one might say, are what logic is all about. And yet the textbooks do not speak with one voice
+when it comes to pinning down exactly what the term refers to! I choose the definition that appears to me
+to fit best, so to speak, with relational database theory. We start by looking again at that possible
+interpretation of the symbols S1, Anne, and C1, placed the way they are in Figure 1.1:
+“Student S1, named Anne, is enrolled on course C1.”
+This is a sentence. Sentences are what human beings typically use to communicate with each other, using
+language. We express our interpretations of the data using sentences in human language and we use
+relations to organize the data to be interpreted. Logic bridges the gap between relations and sentences.
+Our example sentence can be recast into two simpler sentences, “Student S1 is named Anne” and “Student
+S1 is enrolled on course C1”. Let’s focus on the second:
+The symbols S1 and C1 appear both in this sentence and in the data whose meaning it expresses. Because
+they each designate, or refer to, a particular thingS1 a particular student, C1 a particular coursethey
+are called designators. The word Anne is another designator, referring to a particular forename. “An
+Introduction to Relational Database Theory” is also a designator, referring to a particular book, and so is,
+for example, -7, referring to a particular number.
+Now, suppose we replace S1 and C1 in Example 3.1 by another pair of symbols, taken from the same
+columns of Figure 1.1 but a different row. Then we might obtain
+A pattern is clearly emerging. For every row in Figure 1.1, considering just the columns headed StudentId
+and CourseId, we can obtain a sentence in the form of Examples 3.1 and 3.2. The words “Student … is
+enrolled on course …” appear in that order in each case and in each case the gaps indicated
+by …sometimes called placeholdersare replaced by appropriate designators. If we now replace each
+placeholder by the name given in the heading of the column from which the appropriate designator is to be
+drawn, we obtain this:
+Example 3.3 succinctly expresses the way in which the named columns in each row of Figure 1.1 are
+probably to be interpreted. And we now know that those names, StudentId and CourseId, in the column
+headings are the names of two of the attributes of the relation that Figure 1.1 depicts in tabular form.
+Now, the sentences in Examples 3.1 and 3.2 are in fact statements. They state something of which it can
+be said, “That is true”, or “That is not true”, or “I believe that”, or “I don’t believe that”.
+Not all sentences are statements. A good informal test, in English, to determine whether a sentence is a
+statement is to place “Is it true that” in front of it. If the result is a grammatical English question, then the
+original sentence is indeed a statement; otherwise it is not. Here are some sentences that are not statements:
+•“Let’s all get drunk.”
+•“Will you marry me?”
+•“Please pass me the salt.”
+•“If music be the food of love, play on.”
+They each fail the test. In fact one of them is a question itself and the other three are imperatives, but we
+have no need of such sentences in our interpretation of relations because we seek only information, in the
+form of statementsstatements that we are prepared to believe are statements of fact; in other words,
+statements we believe to be true. We do not expect a database to be interpreted as asking questions or
+giving orders. We expect it to be stating facts (or at least what are believed to be facts). As an aside, I must own up to the fact that some sentences that would be accepted as statements in English
+don’t really pass the test as they stand. Here are two cases in point, from Shakespeare:
+•“O for a muse of fire that would ascend the highest heaven of invention.”
+•“To be or not to bethat is the question.”
+The first appears to lack a verb, but we know that “O for a …” is a poetical way of expressing a wish for
+something on the part of the speaker, so we can paraphrase it fairly accurately by replacing “O” by “I
+wish”, and the sentence thus revised passes the test. In the second case we have only to delete the word
+“that”, whose presence serves only for emphasis (and scansion, of course!), and alter the punctuation
+slightly: “It is true that ‘to be or not to be?’ is the question.”
+Now, a statement is a sentence that is declarative in form: it declares something that is supposed to be true.
+Example 3.3, “Student StudentId is enrolled on course CourseId”, is not a statementit does not pass the
+test. It does, however, have the grammatical form of a statement. We can say that, like a statement, it is
+declarative in form.
