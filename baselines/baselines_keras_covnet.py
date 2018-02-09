@@ -1,6 +1,7 @@
 import logging
+from pathlib import Path
+
 import numpy as np
-import tensorflow as tf
 import keras
 
 from keras.layers import Input
@@ -9,28 +10,21 @@ from keras.layers import Conv1D
 from keras.layers import MaxPooling1D
 from keras.layers import Flatten
 from keras.layers import Dense
-
 from keras.models import Model
 
 from data_helper.DataBuilderML400 import DataBuilderML400
 
-def try_one():
-    vocab_size = 20000
-    doc_len = 8192
-    ml_data_builder = DataBuilderML400(embed_dim=100, vocab_size=vocab_size,
-                                       target_doc_len=doc_len, target_sent_len=1024)
-    train_data = ml_data_builder.get_train_data()
-    val_data = ml_data_builder.get_val_data()
 
-    embedding_layer = Embedding(input_length=doc_len,
-                                input_dim=ml_data_builder.vocabulary_size + 1,
+def cnn1(data_builder: DataBuilderML400):
+    embedding_layer = Embedding(input_length=data_builder.target_doc_len,
+                                input_dim=data_builder.vocabulary_size + 1,
                                 output_dim=100,
-                                weights=[ml_data_builder.embed_matrix],
+                                weights=[data_builder.embed_matrix],
                                 trainable=False)
 
-    k_input = Input(shape=(doc_len,), dtype='int32', name="k_doc_input")
+    k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_doc_input")
     k_embedded_seq = embedding_layer(k_input)
-    u_input = Input(shape=(doc_len,), dtype='int32', name="u_doc_input")
+    u_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="u_doc_input")
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
@@ -43,7 +37,7 @@ def try_one():
     u_cov = conv_first(u_embedded_seq)
     u_poll = poll_first(u_cov)
 
-    x = keras.layers.concatenate([k_poll, u_poll])
+    x = keras.layers.subtract([k_poll, u_poll])
 
     x = Flatten()(x)
     x = Dense(128, activation='relu')(x)
@@ -54,7 +48,21 @@ def try_one():
                   optimizer='rmsprop',
                   metrics=['acc'])
 
-    # happy learning!
+    return model
+
+
+def try_one():
+    ml_data_builder = DataBuilderML400(embed_dim=100, vocab_size=20000,
+                                       target_doc_len=8192, target_sent_len=1024)
+    train_data = ml_data_builder.get_train_data()
+    val_data = ml_data_builder.get_val_data()
+
+    save_path = Path("temp_model.h5")
+    if save_path.exists():
+        model = keras.models.load_model(save_path)
+    else:
+        model = cnn1(ml_data_builder)
+
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
               validation_data=(
@@ -62,6 +70,14 @@ def try_one():
                    np.stack(val_data.value["u_doc"].as_matrix())],
                   val_data.label_doc),
               epochs=4, batch_size=32)
+
+    test_data = ml_data_builder.get_test_data()
+
+    loss, acc = model.evaluate(x=[np.stack(test_data.value["k_doc"].as_matrix()),
+                                  np.stack(test_data.value["u_doc"].as_matrix())],
+                               y=test_data.label_doc, batch_size=32)
+    logging.info("LOSS: " + str(loss))
+    logging.info("ACCU: " + str(acc))
 
 
 if __name__ == '__main__':
