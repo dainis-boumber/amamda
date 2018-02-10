@@ -2,9 +2,7 @@ import logging
 from timeit import default_timer as timer
 
 from data_helper.ds_models import PANData
-from nn.TrainTask import TrainTask
 from utils.ArchiveManager import ArchiveManager
-from nn.CNNNetworkBuilder import CNNNetworkBuilder
 
 
 def get_exp_logger(am):
@@ -56,21 +54,6 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError
 
-    input_comp = CNNNetworkBuilder.get_input_component(input_name=input_comp_name, data=dater)
-    middle_comp = CNNNetworkBuilder.get_middle_component(middle_name=middle_comp_name, input_comp=input_comp,
-                                                         data=dater,
-                                                         filter_size_lists=[], num_filters=100,
-                                                         dropout=0.0, batch_norm=None, elu=None, fc=[],
-                                                         l2_reg=0.0)
-    output_comp = CNNNetworkBuilder.get_output_component(output_name=output_comp_name, middle_comp=middle_comp,
-                                                         data=dater, l2_reg=0.0)
-
-    tt = TrainTask(data_helper=dater, am=am,
-                   input_component=input_comp,
-                   middle_component=middle_comp,
-                   output_component=output_comp,
-                   batch_size=32, evaluate_every=500, checkpoint_every=5000, max_to_keep=6,
-                   restore_path=None)
 
     start = timer()
     # n_fc variable controls how many fc layers you got at the end, n_conv does that for conv layers
