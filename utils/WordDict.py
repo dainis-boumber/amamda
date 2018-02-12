@@ -11,20 +11,22 @@ def dictFromFile(aFileName):
     return Counter(listsOfWords)
 
 
-def getListListPANAndFoldersPAN(aPath):
+def get_dir_list(dataset_dir):
     split_name = []
-    split_instance_list = []
+    split_dir_list = []
 
-    for d in os.listdir(aPath):
-        aListPAN = []
-        if os.path.isfile(aPath + "/" + d):
+    for d in os.listdir(dataset_dir):
+        problem_dir_list = []
+        split_dir = os.path.join(dataset_dir, d)
+        if os.path.isfile(split_dir):
             continue
         split_name.append(d)
-        for f in os.listdir(aPath + "/" + d + "/"):
-            if os.path.isfile(aPath + "/" + d + "/" + f):
+        for problem in os.listdir(split_dir):
+            problem_dir = os.path.join(split_dir, problem)
+            if os.path.isfile(problem_dir):
                 continue
-            aListPAN.append(aPath + "/" + d + "/" + f)
-        split_instance_list.append(sorted(aListPAN))
-    split_name, split_instance_list = zip(*sorted(zip(split_name, split_instance_list)))
+            problem_dir_list.append(problem_dir)
+        split_dir_list.append(sorted(problem_dir_list))
+    result = dict(zip(split_name, split_dir_list))
 
-    return split_instance_list, split_name
+    return result
