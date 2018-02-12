@@ -1,5 +1,5 @@
 import os
-from utils.WordDict import getListListPANAndFoldersPAN
+from utils.WordDict import get_dir_list
 
 
 class Pair:
@@ -28,9 +28,9 @@ class Split:
 
 
 class PANData:
-    def __init__(self, year):
+    def __init__(self, year, train_split, test_split):
         p = os.path.abspath(__file__ + "/../../data/PAN" + str(year) + '/')
-        pair_dirs, split_names = getListListPANAndFoldersPAN(p)
+        dir_list = get_dir_list(p)
         labels = []
         self.splits = []
         self.name = 'PAN' + str(year)
@@ -42,5 +42,10 @@ class PANData:
                     self.splits.append(Split(split_name, pair_dirs[i], labels))
             else:
                 self.splits.append(Split(split_name, pair_dirs[i], None))
+
+
+if __name__ == "__main__":
+    dater = PANData('15')
+    print("t")
 
 
