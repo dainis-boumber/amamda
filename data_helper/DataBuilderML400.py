@@ -66,7 +66,7 @@ class DataBuilderML400(DataHelper):
         content = textacy.preprocess_text(content, lowercase=True, no_contractions=True)
         return content
 
-    def proc_data(self, data_raw, label, raw_to_vec, sent_split=True, word_split=False):
+    def proc_data(self, data_raw, label, raw_to_vec):
         vector_sequences = data_raw.applymap(lambda x: raw_to_vec[x])
         doc_label = np.array([1 if la == "YES" else 0 for la in label])
 
@@ -130,9 +130,9 @@ class DataBuilderML400(DataHelper):
         # print( sorted(doc_lens, reverse=True)[:20] )
 
         # notice we limit vocab size here
-        self.tokenizer = Tokenizer(num_words=self.vocabulary_size)
-        self.tokenizer.fit_on_texts(uniq_doc_clean)
-        uniq_seq = self.tokenizer.texts_to_sequences(uniq_doc_clean)
+        tokenizer = Tokenizer(num_words=self.vocabulary_size)
+        tokenizer.fit_on_texts(uniq_doc_clean)
+        uniq_seq = tokenizer.texts_to_sequences(uniq_doc_clean)
         uniq_seq = pad_sequences(uniq_seq, maxlen=self.target_doc_len,
                                  padding="post", truncating="post")
 

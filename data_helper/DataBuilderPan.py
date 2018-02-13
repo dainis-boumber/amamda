@@ -1,6 +1,14 @@
-import numpy as np
 import logging
-import os
+import pickle
+from pathlib import Path
+from multiprocessing import Pool
+
+import numpy as np
+import pandas as pd
+import textacy
+
+from tensorflow.python.keras.preprocessing.text import Tokenizer
+from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 
 from data_helper.ds_models import PANData
 from data_helper.DataHelpers import DataHelper
@@ -34,118 +42,94 @@ class DataBuilderPan(DataHelper):
         self.dataset_dir = self.data_path + 'MLP400AV/'
         self.num_classes = 2  # true or false
 
-        self.load_all_data()
+        self.load_and_proc_data()
 
-    def get_dir_list(self, dataset_dir):
-        split_name = []
-        split_dir_list = []
+    @staticmethod
+    def clean_text(content):
+        content = content.replace("\n", " ")
+        content = textacy.preprocess_text(content, lowercase=True, no_contractions=True)
+        return content
 
-        for d in os.listdir(dataset_dir):
-            problem_dir_list = []
-            split_dir = os.path.join(dataset_dir, d)
-            if os.path.isfile(split_dir):
-                continue
-            split_name.append(d)
-            for problem in os.listdir(split_dir):
-                problem_dir = os.path.join(split_dir, problem)
-                if os.path.isfile(problem_dir):
-                    continue
-                problem_dir_list.append(problem_dir)
-            split_dir_list.append(sorted(problem_dir_list))
-        result = dict(zip(split_name, split_dir_list))
+    def load_and_proc_data(self):
+        (train_data, train_y), (test_data, test_y) = self.load_dataframe()
 
-        return result
+        all_data = pd.concat([train_data, test_data])
+        uniq_doc = pd.unique(all_data.values.ravel('K'))
 
-    def dir_loader(self, year, train_split, test_split):
-        p = os.path.abspath(__file__ + "/../../data/PAN" + str(year) + '/')
-        dir_list = self.get_dir_list(p)
-        labels = []
-        self.splits = []
-        self.name = 'PAN' + str(year)
-        for i, split_name in enumerate(split_names):
-            if 'train' in split_name:
-                with open(os.path.join(p, split_name, 'truth.txt')) as truth:
-                    for line in truth:
-                        labels.append(line.strip().split()[1])
-                    self.splits.append(Split(split_name, pair_dirs[i], labels))
-            else:
-                self.splits.append(Split(split_name, pair_dirs[i], None))
+        pool = Pool(processes=4)
+        uniq_doc_clean = pool.map(DataBuilderPan.clean_text, uniq_doc)
 
-    def load_files(self):
+        # doc_lens = [len(d) for d in uniq_doc]
+        # print( sorted(doc_lens, reverse=True)[:20] )
 
-        data = PANData(self.year)
+        # notice we limit vocab size here
+        tokenizer = Tokenizer(num_words=self.vocabulary_size)
+        tokenizer.fit_on_texts(uniq_doc_clean)
+        uniq_seq = tokenizer.texts_to_sequences(uniq_doc_clean)
+        uniq_seq = pad_sequences(uniq_seq, maxlen=self.target_doc_len,
+                                 padding="post", truncating="post")
 
-        raise NotImplementedError
+        # a map from raw doc to vec sequence
+        raw_to_vec = dict(zip(uniq_doc, uniq_seq))
 
-        if self.doc_as_sent:
-            x_text = DataBuilderPan.concat_to_doc(sent_list=x_text, sent_count=sent_count)
+        self.train_data = self.proc_data(train_data, train_y, raw_to_vec)
+        self.test_data = self.proc_data(test_data, test_y, raw_to_vec)
 
-        x = []
-        for train_line_index in range(len(x_text)):
-            tokens = x_text[train_line_index].split()
-            x.append(tokens)
-
-        data = DataObject(self.problem_name, len(y))
-        data.raw = x
-        data.label_doc = y_onehot
-        data.doc_size = sent_count
-
-        return data
-
-    def to_list_of_sent(self, sentence_data, sentence_count):
-        x = []
-        index = 0
-        for sc in sentence_count:
-            one_review = sentence_data[index:index+sc]
-            x.append(one_review)
-            index += sc
-        return np.array(x)
-
-    def load_all_data(self):
-        train_data = self.load_files()
-        self.vocab, self.vocab_inv = self.build_vocab([train_data], self.vocabulary_size)
-        self.embed_matrix = self.build_glove_embedding(self.vocab_inv)
-        train_data = self.build_content_vector(train_data)
-        train_data = self.pad_sentences(train_data)
-
-        if self.doc_level:
-            value = self.to_list_of_sent(train_data.value, train_data.doc_size)
-            train_data.value = value
-            DataHelper.pad_document(train_data, self.target_doc_len)
-
-        self.train_data = train_data
-        self.train_data.embed_matrix = self.embed_matrix
-        self.train_data.vocab = self.vocab
-        self.train_data.vocab_inv = self.vocab_inv
-        self.train_data.label_instance = self.train_data.label_doc
-
-        test_data = self.load_files(1)
-        test_data = self.build_content_vector(test_data)
-        test_data = self.pad_sentences(test_data)
-
-        if self.doc_level:
-            value = self.to_list_of_sent(test_data.value, test_data.doc_size)
-            test_data.value = value
-            DataHelper.pad_document(test_data, self.target_doc_len)
-
-        self.test_data = test_data
-        self.test_data.embed_matrix = self.embed_matrix
-        self.test_data.vocab = self.vocab
-        self.test_data.vocab_inv = self.vocab_inv
-        self.test_data.label_instance = self.test_data.label_doc
+        self.vocab = tokenizer.word_index
+        self.embed_matrix =  self.build_embedding_matrix()
 
     def load_dataframe(self):
-        data_pickle = Path("av400tuple.pickle")
+        data_pickle = Path("PAN15tuple.pickle")
         if not data_pickle.exists():
+            logging.info("loading data structure from RAW")
+            loader = PANData("15", train_split="pan15_train", test_split="pan15_test")
+            train_data, test_data = loader.get_data()
 
+            train_y = train_data['label'].tolist()
+            test_y = test_data['label'].tolist()
+
+            train_data.drop(['label'], axis=1, inplace=True)
+            test_data.drop(['label'], axis=1, inplace=True)
+
+            logging.info("load data structure completed")
+
+            pickle.dump([train_data, test_data, train_y, test_y], open(data_pickle, mode="wb"))
+            logging.info("dumped all data structure in " + str(data_pickle))
         else:
             logging.info("loading data structure from PICKLE")
-            [train_data, val_data, test_data, train_y, val_y, test_y] = pickle.load(open(data_pickle, mode="rb"))
+            [train_data, test_data, train_y, test_y] = pickle.load(open(data_pickle, mode="rb"))
             logging.info("load data structure completed")
+
+        return (train_data, train_y), (test_data, test_y)
+
+    def proc_data(self, data_raw, label, raw_to_vec):
+        vector_sequences = data_raw.applymap(lambda x: raw_to_vec[x])
+        doc_label = np.array([1 if lbl == "Y" else 0 for lbl in label])
+
+        logging.info("data shape: " + str(vector_sequences.shape))
+        logging.info("label shape: " + str(doc_label.shape))
+
+        if self.sent_split:
+            raise NotImplementedError
+
+        data_obj = DataObject(self.problem_name, len(doc_label))
+        data_obj.raw = data_raw
+        data_obj.label_doc = doc_label
+        data_obj.value = vector_sequences
+        return data_obj
+
+    def build_embedding_matrix(self):
+        embedding_matrix = np.zeros((self.vocabulary_size + 1, self.embedding_dim))
+        for word, i in list(self.vocab.items())[:self.vocabulary_size]:
+            embedding_vector = self.glove_dict.get(word)
+            if embedding_vector is not None:
+                # words not found in embedding index will be all-zeros.
+                embedding_matrix[i] = embedding_vector
+        return embedding_matrix
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
-    a = DataBuilderPan(embed_dim=300, target_doc_len=64, target_sent_len=1024, aspect_id=None,
-                       doc_as_sent=False, doc_level=True)
+    a = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
+                       embed_dim=100, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)
