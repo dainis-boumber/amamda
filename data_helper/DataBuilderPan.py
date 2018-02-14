@@ -39,7 +39,7 @@ class DataBuilderPan(DataHelper):
         logging.info("setting: %s is %s", "word_split", word_split)
         self.word_split = word_split
 
-        self.dataset_dir = self.data_path + 'MLP400AV/'
+        self.dataset_dir = self.data_path + 'PAN' + str(year) + '/'
         self.num_classes = 2  # true or false
 
         self.load_and_proc_data()

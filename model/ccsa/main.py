@@ -1,8 +1,10 @@
 import Initialization
+import logging
 from keras.layers import Activation, Dropout, Dense
 from keras.layers import Input, Lambda
 from keras.models import Model
 
+logging.basicConfig(level=logging.INFO)
 # let's assume MNIST->USPS task.
 domain_adaptation_task = 'MNIST_to_USPS'   # USPS_to_MNIST is also another option.
 
