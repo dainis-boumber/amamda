@@ -4,7 +4,7 @@ import logging
 import sys
 from pathlib import Path
 from data_helper.DataBuilderML400 import DataBuilderML400
-from data_helper.DataBuilderPan import DataBuilderPan
+from data_helper.ds_models import PANData
 from data_helper.DataHelpers import DataHelper
 from keras.layers import Embedding
 from keras.layers import Conv1D
@@ -67,6 +67,76 @@ def dg_cnn(data_builder: DataBuilderML400):
 
     return model
 
+def load_data():
+    pan_data = PANData(15, 'pan15_train', 'pan15_test')
+    train_domains = pan_data.get_train_domains()
+    test_gomains = pan_data.get_test_domains()
+
+    return None
+
+def make_pairs(X_source, y_source, X_target, y_target):
+    Training_P = []
+    Training_N = []
+
+    for trs in range(len(y_source)):
+        for trt in range(len(y_target)):
+            if y_source[trs] == y_target[trt]:
+                Training_P.append([trs, trt])
+            else:
+                Training_N.append([trs, trt])
+
+    #random.shuffle(Training_N)
+    Training = Training_P + Training_N[:3 * len(Training_P)]
+    #random.shuffle(Training)
+
+    X1 = np.zeros([len(Training), 16, 16], dtype='float32')
+    X2 = np.zeros([len(Training), 16, 16], dtype='float32')
+
+    y1 = np.zeros([len(Training)])
+    y2 = np.zeros([len(Training)])
+    yc = np.zeros([len(Training)])
+
+    for i in range(len(Training)):
+        in1, in2 = Training[i]
+        X1[i, :, :] = X_source[in1, :, :]
+        X2[i, :, :] = X_target[in2, :, :]
+
+        y1[i] = y_source[in1]
+        y2[i] = y_target[in2]
+        if y_source[in1] == y_target[in2]:
+            yc[i] = 1
+
+    return X1, y1, X2, y2, yc
+
+def training_the_model(model, X1, y1, X2, y2, yc, X_test, y_test, epochs=80, batch_size=256):
+
+    print('Training the model - Epochs '+str(epochs))
+    best_acc = 0
+    for e in range(epochs):
+        if e % 10 == 0:
+            printn(str(e) + '->')
+        for i in range(len(y2) // batch_size):
+            loss = model.train_on_batch([X1[i * batch_size:(i + 1) * batch_size, :, :, :],
+                                         X2[i * batch_size:(i + 1) * batch_size, :, :, :]],
+                                        [y1[i * batch_size:(i + 1) * batch_size, :],
+                                         yc[i * batch_size:(i + 1) * batch_size, ]])
+            logging.info("LOSS: " + str(loss))
+            loss = model.train_on_batch([X2[i * batch_size:(i + 1) * batch_size, :, :, :],
+                                         X1[i * batch_size:(i + 1) * batch_size, :, :, :]],
+                                        [y2[i * batch_size:(i + 1) * batch_size, :],
+                                         yc[i * batch_size:(i + 1) * batch_size, ]])
+            logging.info("LOSS: " + str(loss))
+
+        Out = model.predict([X_test, X_test])
+        Acc_v = np.argmax(Out[0], axis=1) - np.argmax(y_test, axis=1)
+        acc = (len(Acc_v) - np.count_nonzero(Acc_v) + .0000001) / len(Acc_v)
+        logging.info("ACCU: " + str(acc))
+        if best_acc < acc:
+            best_acc = acc
+            logging.info("BEST ACCU: " + str(acc))
+
+    return best_acc
+
 '''
 def try_one():
     
@@ -91,46 +161,6 @@ def try_one():
                                   np.stack(test_data.value["u_doc"].as_matrix())],
                                y=test_data.label_doc, batch_size=32)
     
-    logging.info("ACCU: " + str(acc))
+    
 '''
 
-# if __name__ == '__main__':
-#
-#    try_one()
-
-def training_the_model(model, domain_adaptation_task):
-    ml_data_builder = DataBuilderPan(embed_dim=100, vocab_size=20000,
-                                       target_doc_len=8192, target_sent_len=1024)
-    train_data = ml_data_builder.get_train_data()
-    val_data = ml_data_builder.get_val_data()
-
-    epoch = 80  # Epoch number
-    batch_size = 256
-
-
-    print('Training the model - Epoch '+str(epoch))
-    nn=batch_size
-    best_Acc = 0
-    for e in range(epoch):
-        if e % 10 == 0:
-            printn(str(e) + '->')
-        for i in range(len(y2) // batch_size):
-            loss = model.train_on_batch([X1[i * batch_size:(i + 1) * batch_size, :, :, :],
-                                         X2[i * batch_size:(i + 1) * batch_size, :, :, :]],
-                                        [y1[i * batch_size:(i + 1) * batch_size, :],
-                                         yc[i * batch_size:(i + 1) * batch_size, ]])
-            logging.info("LOSS: " + str(loss))
-            loss = model.train_on_batch([X2[i * batch_size:(i + 1) * batch_size, :, :, :],
-                                         X1[i * batch_size:(i + 1) * batch_size, :, :, :]],
-                                        [y2[i * batch_size:(i + 1) * batch_size, :],
-                                         yc[i * batch_size:(i + 1) * batch_size, ]])
-            logging.info("LOSS: " + str(loss))
-
-        Out = model.predict([X_test, X_test])
-        Acc_v = np.argmax(Out[0], axis=1) - np.argmax(y_test, axis=1)
-        Acc = (len(Acc_v) - np.count_nonzero(Acc_v) + .0000001) / len(Acc_v)
-
-        if best_Acc < Acc:
-            best_Acc = Acc
-
-    return best_Acc
