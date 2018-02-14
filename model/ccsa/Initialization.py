@@ -116,16 +116,18 @@ def training_the_model(model, X1, y1, X2, y2, yc, X_test, y_test, epochs=80, bat
         if e % 10 == 0:
             printn(str(e) + '->')
         for i in range(len(y2) // batch_size):
+            # this is Lsa
             loss = model.train_on_batch([X1[i * batch_size:(i + 1) * batch_size, :, :, :],
                                          X2[i * batch_size:(i + 1) * batch_size, :, :, :]],
                                         [y1[i * batch_size:(i + 1) * batch_size, :],
                                          yc[i * batch_size:(i + 1) * batch_size, ]])
-            logging.info("LOSS: " + str(loss))
+            logging.info("Lsa LOSS: " + str(loss))
+            # this is Ls
             loss = model.train_on_batch([X2[i * batch_size:(i + 1) * batch_size, :, :, :],
                                          X1[i * batch_size:(i + 1) * batch_size, :, :, :]],
                                         [y2[i * batch_size:(i + 1) * batch_size, :],
                                          yc[i * batch_size:(i + 1) * batch_size, ]])
-            logging.info("LOSS: " + str(loss))
+            logging.info("Ls LOSS: " + str(loss))
 
         Out = model.predict([X_test, X_test])
         Acc_v = np.argmax(Out[0], axis=1) - np.argmax(y_test, axis=1)
