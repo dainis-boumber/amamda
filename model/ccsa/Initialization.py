@@ -67,48 +67,46 @@ def dg_cnn(data_builder: DataBuilderML400):
 
     return model
 
-def load_data():
+def load_data(input_dim=100):
     pan_data = PANData(15, 'pan15_train', 'pan15_test')
     train_domains = pan_data.get_train_domains()
     test_gomains = pan_data.get_test_domains()
+    pairs = []
+    for i in range(train_domains):
+        for j in range(train_domains):
+            pairs.append(make_pairs(train_domains[i], train_domains[j], input_dim=input_dim))
+    return pairs
 
-    return None
+def make_pairs(source_domain, target_domain, input_dim):
+    Training = []
 
-def make_pairs(X_source, y_source, X_target, y_target):
-    Training_P = []
-    Training_N = []
+    for trs in range(len(source_domain)):
+        for trt in range(len(target_domain)):
+            Training.append([trs, trt])
 
-    for trs in range(len(y_source)):
-        for trt in range(len(y_target)):
-            if y_source[trs] == y_target[trt]:
-                Training_P.append([trs, trt])
-            else:
-                Training_N.append([trs, trt])
-
-    #random.shuffle(Training_N)
-    Training = Training_P + Training_N[:3 * len(Training_P)]
-    #random.shuffle(Training)
-
-    X1 = np.zeros([len(Training), 16, 16], dtype='float32')
-    X2 = np.zeros([len(Training), 16, 16], dtype='float32')
-
+    X1k = np.zeros([len(Training), input_dim], dtype='float32')
+    X1u = np.zeros([len(Training), input_dim], dtype='float32')
     y1 = np.zeros([len(Training)])
+    X2k = np.zeros([len(Training), input_dim], dtype='float32')
+    X2u = np.zeros([len(Training), input_dim], dtype='float32')
     y2 = np.zeros([len(Training)])
     yc = np.zeros([len(Training)])
 
     for i in range(len(Training)):
         in1, in2 = Training[i]
-        X1[i, :, :] = X_source[in1, :, :]
-        X2[i, :, :] = X_target[in2, :, :]
+        X1k[i, :] = source_domain[in1].k_doc
+        X1u[i, :] = source_domain[in1].u_doc
+        X2k[i, :] = target_domain[in2].k_doc
+        X2u[i, :] = target_domain[in2].u_doc
+        y1[i] = source_domain[in1].label
+        y2[i] = target_domain[in2].label
 
-        y1[i] = y_source[in1]
-        y2[i] = y_target[in2]
-        if y_source[in1] == y_target[in2]:
+        if source_domain[in1].label == target_domain[in2].label:
             yc[i] = 1
 
-    return X1, y1, X2, y2, yc
+    return (X1k, X1u, y1, X2k, X2u, y2, yc)
 
-def training_the_model(model, X1, y1, X2, y2, yc, X_test, y_test, epochs=80, batch_size=256):
+def training_the_model(model, X1k, X1u, y1, X2k, X2u, y2, yc, X_test, y_test, epochs=80, batch_size=256):
 
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
