@@ -1,7 +1,7 @@
 import logging
 from timeit import default_timer as timer
 
-from data_helper.ds_models import PANData
+from data_helper.PANData import PANData
 from utils.ArchiveManager import ArchiveManager
 
 

@@ -10,18 +10,12 @@ import textacy
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 
-from data_helper.ds_models import PANData
+from data_helper.PANData import PANData
 from data_helper.DataHelpers import DataHelper
 from data_helper.Data import DataObject
 
 
 class DataBuilderPan(DataHelper):
-
-    problem_name = "PAN"
-
-    sent_num_file = ["aspect_0.count", "test_aspect_0.count"]
-    rating_file = ["aspect_0.rating", "test_aspect_0.rating"]
-    content_file = ["aspect_0.txt", "test_aspect_0.txt"]
 
     def __init__(self, year, train_split, test_split, embed_dim, vocab_size, target_doc_len, target_sent_len,
                  sent_split=False, word_split=False):
@@ -39,7 +33,8 @@ class DataBuilderPan(DataHelper):
         logging.info("setting: %s is %s", "word_split", word_split)
         self.word_split = word_split
 
-        self.dataset_dir = self.data_path + 'MLP400AV/'
+        self.problem_name = "PAN" + self.year
+        self.dataset_dir = self.data_path + self.problem_name
         self.num_classes = 2  # true or false
 
         self.load_and_proc_data()
@@ -82,7 +77,7 @@ class DataBuilderPan(DataHelper):
         data_pickle = Path("PAN15tuple.pickle")
         if not data_pickle.exists():
             logging.info("loading data structure from RAW")
-            loader = PANData("15", train_split="pan15_train", test_split="pan15_test")
+            loader = PANData(self.year, train_split=self.train_split, test_split=self.test_split)
             train_data, test_data = loader.get_data()
 
             train_y = train_data['label'].tolist()
@@ -93,8 +88,8 @@ class DataBuilderPan(DataHelper):
 
             logging.info("load data structure completed")
 
-            pickle.dump([train_data, test_data, train_y, test_y], open(data_pickle, mode="wb"))
-            logging.info("dumped all data structure in " + str(data_pickle))
+            # pickle.dump([train_data, test_data, train_y, test_y], open(data_pickle, mode="wb"))
+            # logging.info("dumped all data structure in " + str(data_pickle))
         else:
             logging.info("loading data structure from PICKLE")
             [train_data, test_data, train_y, test_y] = pickle.load(open(data_pickle, mode="rb"))
