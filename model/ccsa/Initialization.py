@@ -71,11 +71,15 @@ def load_data(input_dim=100):
     pan_data = PANData(15, 'pan15_train', 'pan15_test')
     train_domains = pan_data.get_train_domains()
     test_gomains = pan_data.get_test_domains()
-    pairs = []
+    tr_pairs = []
     for i in range(train_domains):
         for j in range(train_domains):
-            pairs.append(make_pairs(train_domains[i], train_domains[j], input_dim=input_dim))
-    return pairs
+            tr_pairs.append(make_pairs(train_domains[i], train_domains[j], input_dim=input_dim))
+    test_pairs = []
+    for i in range(test_gomains):
+        for j in range(test_gomains):
+            test_pairs.append(make_pairs(test_gomains[i], test_gomains[j], input_dim=input_dim))
+    return tr_pairs, test_pairs
 
 def make_pairs(source_domain, target_domain, input_dim):
     Training = []
@@ -106,7 +110,7 @@ def make_pairs(source_domain, target_domain, input_dim):
 
     return (X1k, X1u, y1, X2k, X2u, y2, yc)
 
-def training_the_model(model, X1k, X1u, y1, X2k, X2u, y2, yc, X_test, y_test, epochs=80, batch_size=256):
+def training_the_model(model, X1k, X1u, y1, X2k, X2u, y2, yc, X_test_k, X_test_u, y_test, epochs=80, batch_size=256):
 
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
@@ -115,19 +119,27 @@ def training_the_model(model, X1k, X1u, y1, X2k, X2u, y2, yc, X_test, y_test, ep
             printn(str(e) + '->')
         for i in range(len(y2) // batch_size):
             # this is Lsa
-            loss = model.train_on_batch([X1[i * batch_size:(i + 1) * batch_size, :, :, :],
-                                         X2[i * batch_size:(i + 1) * batch_size, :, :, :]],
-                                        [y1[i * batch_size:(i + 1) * batch_size, :],
+            loss = model.train_on_batch([X1k[i * batch_size:(i + 1) * batch_size, :, :],
+                                         X1u[i * batch_size:(i + 1) * batch_size, :, :],
+                                         X2k[i * batch_size:(i + 1) * batch_size, :, :],
+                                         X2u[i * batch_size:(i + 1) * batch_size, :, :]],
+                                        [y1[i * batch_size:(i + 1) * batch_size, ],
+                                         y1[i * batch_size:(i + 1) * batch_size, ],
+                                         yc[i * batch_size:(i + 1) * batch_size, ],
                                          yc[i * batch_size:(i + 1) * batch_size, ]])
             logging.info("Lsa LOSS: " + str(loss))
             # this is Ls
-            loss = model.train_on_batch([X2[i * batch_size:(i + 1) * batch_size, :, :, :],
-                                         X1[i * batch_size:(i + 1) * batch_size, :, :, :]],
-                                        [y2[i * batch_size:(i + 1) * batch_size, :],
+            loss = model.train_on_batch([X2k[i * batch_size:(i + 1) * batch_size, :, :, ],
+                                         X2u[i * batch_size:(i + 1) * batch_size, :, :, ],
+                                         X1k[i * batch_size:(i + 1) * batch_size, :, :, ],
+                                         X1u[i * batch_size:(i + 1) * batch_size, :, :, ]],
+                                        [y2[i * batch_size:(i + 1) * batch_size, ],
+                                         y2[i * batch_size:(i + 1) * batch_size, ],
+                                         yc[i * batch_size:(i + 1) * batch_size, ],
                                          yc[i * batch_size:(i + 1) * batch_size, ]])
             logging.info("Ls LOSS: " + str(loss))
 
-        Out = model.predict([X_test, X_test])
+        Out = model.predict([X_test_k, X_test_u, X_test_k, X_test_u])
         Acc_v = np.argmax(Out[0], axis=1) - np.argmax(y_test, axis=1)
         acc = (len(Acc_v) - np.count_nonzero(Acc_v) + .0000001) / len(Acc_v)
         logging.info("ACCU: " + str(acc))
@@ -136,31 +148,3 @@ def training_the_model(model, X1k, X1u, y1, X2k, X2u, y2, yc, X_test, y_test, ep
             logging.info("BEST ACCU: " + str(acc))
 
     return best_acc
-
-'''
-def try_one():
-    
-
-    
-    if model_save_path.exists():
-        model = keras.models.load_model(model_save_path)
-    else:
-        model = dg_cnn(ml_data_builder)
-
-    model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
-              train_data.label_doc,
-              validation_data=(
-                  [np.stack(val_data.value["k_doc"].as_matrix()),
-                   np.stack(val_data.value["u_doc"].as_matrix())],
-                  val_data.label_doc),
-              epochs=4, batch_size=32)
-
-    test_data = ml_data_builder.get_test_data()
-
-    loss, acc = model.evaluate(x=[np.stack(test_data.value["k_doc"].as_matrix()),
-                                  np.stack(test_data.value["u_doc"].as_matrix())],
-                               y=test_data.label_doc, batch_size=32)
-    
-    
-'''
-
