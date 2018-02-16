@@ -5,29 +5,26 @@ from keras.layers import Input, Lambda
 from keras.models import Model
 
 logging.basicConfig(level=logging.INFO)
-# let's assume MNIST->USPS task.
-domain_adaptation_task = 'MNIST_to_USPS'   # USPS_to_MNIST is also another option.
-
 # Creating embedding function. This corresponds to the function g in the paper.
 # You may need to change the network parameters.
-model1=Initialization.dg_cnn()
+model_g=Initialization.dg_cnn()
 
 input_shape = (1, 100, 1)
 input_ak = Input(shape=input_shape)
-input_ak = Input(shape=input_shape)
-input_bu = Input(shape=input_shape)
+input_au = Input(shape=input_shape)
+input_bk = Input(shape=input_shape)
 input_bu = Input(shape=input_shape)
 
 
 # number of classes for digits classification
-nb_classes = 10
+nb_classes = 2
 
 # Loss = (1-alpha)Classification_Loss + (alpha)CSA
 alpha = .25
 
 # Having two streams. One for source and one for target.
-processed_a = model1(input_a)
-processed_b = model1(input_b)
+processed_a = model_g(input_ak, input_au)
+processed_b = model_g(input_bk, input_bu)
 
 
 # Creating the prediction function. This corresponds to h in the paper.
