@@ -1,8 +1,10 @@
 import Initialization
+import logging
 from keras.layers import Activation, Dropout, Dense
 from keras.layers import Input, Lambda
 from keras.models import Model
 
+logging.basicConfig(level=logging.INFO)
 # let's assume MNIST->USPS task.
 domain_adaptation_task = 'MNIST_to_USPS'   # USPS_to_MNIST is also another option.
 
@@ -17,7 +19,7 @@ repetition = 2
 
 # Creating embedding function. This corresponds to the function g in the paper.
 # You may need to change the network parameters.
-model1=Initialization.Create_Model()
+model1=Initialization.dg_cnn()
 
 # size of digits 16*16
 img_rows, img_cols = 16, 16
@@ -50,18 +52,13 @@ model.compile(loss={'classification': 'categorical_crossentropy', 'CSA': Initial
               optimizer='adadelta',
               loss_weights={'classification': 1 - alpha, 'CSA': alpha})
 
-
-
-
 print('Domain Adaptation Task: ' + domain_adaptation_task)
 # let's create the positive and negative pairs using row data.
 # pairs will be saved in ./pairs directory
-sample_per_class=1
-for repetition in range(10):
-    Initialization.Create_Pairs(domain_adaptation_task,repetition,sample_per_class)
-    Acc=Initialization.training_the_model(model,domain_adaptation_task,repetition,sample_per_class)
 
-    print(('Best accuracy for {} target sample per class and repetition {} is {}.'.format(sample_per_class,repetition,Acc )))
+Initialization.Create_Pairs(domain_adaptation_task,repetition,sample_per_class)
+Acc=Initialization.training_the_model(model,domain_adaptation_task,repetition,sample_per_class)
+print(('Best accuracy for {} target sample per class and repetition {} is {}.'.format(sample_per_class,repetition,Acc )))
 
 
 
