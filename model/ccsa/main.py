@@ -8,24 +8,15 @@ logging.basicConfig(level=logging.INFO)
 # let's assume MNIST->USPS task.
 domain_adaptation_task = 'MNIST_to_USPS'   # USPS_to_MNIST is also another option.
 
-# let's run the experiments when 1 target sample per calss is available in training.
-# you can run the experiments for sample_per_class=1, ... , 7.
-sample_per_class = 1
-
-# Running the experiments for repetition 5. In the paper we reported the average acuracy.
-# We run the experiments for repetition=0,...,9 and take the average
-repetition = 2
-
-
 # Creating embedding function. This corresponds to the function g in the paper.
 # You may need to change the network parameters.
 model1=Initialization.dg_cnn()
 
-# size of digits 16*16
-img_rows, img_cols = 16, 16
-input_shape = (img_rows, img_cols, 1)
-input_a = Input(shape=input_shape)
-input_b = Input(shape=input_shape)
+input_shape = (1, 100, 1)
+input_ak = Input(shape=input_shape)
+input_ak = Input(shape=input_shape)
+input_bu = Input(shape=input_shape)
+input_bu = Input(shape=input_shape)
 
 
 # number of classes for digits classification

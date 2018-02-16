@@ -114,30 +114,70 @@ def training_the_model(model, X1k, X1u, y1, X2k, X2u, y2, yc, X_test_k, X_test_u
 
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
+    if batch_size > len(y2):
+        print('Lowering batch size, to %d, number of inputs is too small for it.' % len(y2))
+        batch_size = len(y2)
     for e in range(epochs):
         if e % 10 == 0:
             printn(str(e) + '->')
         for i in range(len(y2) // batch_size):
-            # this is Lsa
-            loss = model.train_on_batch([X1k[i * batch_size:(i + 1) * batch_size, :, :],
-                                         X1u[i * batch_size:(i + 1) * batch_size, :, :],
-                                         X2k[i * batch_size:(i + 1) * batch_size, :, :],
-                                         X2u[i * batch_size:(i + 1) * batch_size, :, :]],
-                                        [y1[i * batch_size:(i + 1) * batch_size, ],
-                                         y1[i * batch_size:(i + 1) * batch_size, ],
-                                         yc[i * batch_size:(i + 1) * batch_size, ],
-                                         yc[i * batch_size:(i + 1) * batch_size, ]])
-            logging.info("Lsa LOSS: " + str(loss))
-            # this is Ls
-            loss = model.train_on_batch([X2k[i * batch_size:(i + 1) * batch_size, :, :, ],
-                                         X2u[i * batch_size:(i + 1) * batch_size, :, :, ],
-                                         X1k[i * batch_size:(i + 1) * batch_size, :, :, ],
-                                         X1u[i * batch_size:(i + 1) * batch_size, :, :, ]],
-                                        [y2[i * batch_size:(i + 1) * batch_size, ],
-                                         y2[i * batch_size:(i + 1) * batch_size, ],
-                                         yc[i * batch_size:(i + 1) * batch_size, ],
-                                         yc[i * batch_size:(i + 1) * batch_size, ]])
-            logging.info("Ls LOSS: " + str(loss))
+            #flipping stuff here
+            from_sample = i * batch_size
+            to_sample = (i + 1) * batch_size
+            loss = model.train_on_batch([[X1k[from_sample:to_sample, :, :],
+                                         X1u[from_sample:to_sample, :, :]],
+                                         [X2k[from_sample:to_sample, :, :],
+                                         X2u[from_sample:to_sample, :, :]]],
+                                        [y1[from_sample:to_sample, ],
+                                         yc[from_sample:to_sample, ]])
+
+            loss = model.train_on_batch([[X1u[from_sample:to_sample, :, :],
+                                          X1k[from_sample:to_sample, :, :]],
+                                         [X2u[from_sample:to_sample, :, :],
+                                          X2k[from_sample:to_sample, :, :]]],
+                                        [y1[from_sample:to_sample, ],
+                                         yc[from_sample:to_sample, ]])
+
+            loss = model.train_on_batch([[X1k[from_sample:to_sample, :, :],
+                                          X1u[from_sample:to_sample, :, :]],
+                                         [X2u[from_sample:to_sample, :, :],
+                                          X2k[from_sample:to_sample, :, :]]],
+                                        [y1[from_sample:to_sample, ],
+                                         yc[from_sample:to_sample, ]])
+
+            loss = model.train_on_batch([[X1u[from_sample:to_sample, :, :],
+                                          X1k[from_sample:to_sample, :, :]],
+                                         [X2k[from_sample:to_sample, :, :],
+                                          X2u[from_sample:to_sample, :, :]]],
+                                        [y1[from_sample:to_sample, ],
+                                         yc[from_sample:to_sample, ]])
+
+            loss = model.train_on_batch([[X2k[from_sample:to_sample, :, :, ],
+                                         X2u[from_sample:to_sample, :, :, ]],
+                                         [X1k[from_sample:to_sample, :, :, ],
+                                         X1u[from_sample:to_sample, :, :, ]]],
+                                        [y2[from_sample:to_sample, ],
+                                         yc[from_sample:to_sample, ]])
+
+            loss = model.train_on_batch([[X2u[from_sample:to_sample, :, :, ],
+                                          X2k[from_sample:to_sample, :, :, ]],
+                                         [X1u[from_sample:to_sample, :, :, ],
+                                          X1k[from_sample:to_sample, :, :, ]]],
+                                        [y2[from_sample:to_sample, ],
+                                         yc[from_sample:to_sample, ]])
+            loss = model.train_on_batch([[X2k[from_sample:to_sample, :, :, ],
+                                          X2u[from_sample:to_sample, :, :, ]],
+                                         [X1u[from_sample:to_sample, :, :, ],
+                                          X1k[from_sample:to_sample, :, :, ]]],
+                                        [y2[from_sample:to_sample, ],
+                                         yc[from_sample:to_sample, ]])
+
+            loss = model.train_on_batch([[X2u[from_sample:to_sample, :, :, ],
+                                          X2k[from_sample:to_sample, :, :, ]],
+                                         [X1k[from_sample:to_sample, :, :, ],
+                                          X1u[from_sample:to_sample, :, :, ]]],
+                                        [y2[from_sample:to_sample, ],
+                                         yc[from_sample:to_sample, ]])
 
         Out = model.predict([X_test_k, X_test_u, X_test_k, X_test_u])
         Acc_v = np.argmax(Out[0], axis=1) - np.argmax(y_test, axis=1)
