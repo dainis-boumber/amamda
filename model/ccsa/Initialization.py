@@ -70,16 +70,12 @@ def dg_cnn(data_builder: DataBuilderML400):
 def load_data(input_dim=100):
     pan_data = PANData(15, 'pan15_train', 'pan15_test')
     train_domains = pan_data.get_train_domains()
-    test_gomains = pan_data.get_test_domains()
     tr_pairs = []
     for i in range(train_domains):
         for j in range(train_domains):
             tr_pairs.append(make_pairs(train_domains[i], train_domains[j], input_dim=input_dim))
-    test_pairs = []
-    for i in range(test_gomains):
-        for j in range(test_gomains):
-            test_pairs.append(make_pairs(test_gomains[i], test_gomains[j], input_dim=input_dim))
-    return tr_pairs, test_pairs
+
+    return tr_pairs
 
 def make_pairs(source_domain, target_domain, input_dim):
     Training = []
@@ -110,7 +106,8 @@ def make_pairs(source_domain, target_domain, input_dim):
 
     return (X1k, X1u, y1, X2k, X2u, y2, yc)
 
-def training_the_model(model, X1k, X1u, y1, X2k, X2u, y2, yc, X_test_k, X_test_u, y_test, epochs=80, batch_size=256):
+def training_the_model(model, train_pairs, epochs=80, batch_size=256):
+    X1k, X1u, y1, X2k, X2u, y2, yc = train_pairs
 
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
