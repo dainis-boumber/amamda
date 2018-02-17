@@ -39,6 +39,6 @@ model.compile(loss={'classification': 'binary_crossentropy', 'CSA': Initializati
               optimizer='adadelta',
               loss_weights={'classification': 1 - alpha, 'CSA': alpha})
 
-tr_pairs = Initialization.load_data()
-Acc = Initialization.training_the_model(model, tr_pairs, epochs=5, batch_size=2)
+tr_pairs, test = Initialization.load_data()
+Acc = Initialization.training_the_model(model,tr_pairs, test, epochs=5, batch_size=2)
 print(('Best accuracy is {}.'.format(Acc)))
