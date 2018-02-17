@@ -4,7 +4,7 @@ import logging
 import sys
 from pathlib import Path
 from data_helper.DataBuilderML400 import DataBuilderML400
-from data_helper.ds_models import PANData
+from data_helper.PANData import PANData
 from data_helper.DataHelpers import DataHelper
 from keras.layers import Embedding
 from keras.layers import Conv1D
@@ -19,23 +19,27 @@ def printn(string):
     sys.stdout.write(string)
     sys.stdout.flush()
 
+
 def euclidean_distance(vects):
     eps = 1e-08
     x, y = vects
     return K.sqrt(K.maximum(K.sum(K.square(x - y), axis=1, keepdims=True), eps))
 
+
 def eucl_dist_output_shape(shapes):
     shape1, shape2 = shapes
     return (shape1[0], 1)
+
 
 def contrastive_loss(y_true, y_pred):
     margin = 1
     return K.mean(y_true * K.square(y_pred) + (1 - y_true) * K.square(K.maximum(margin - y_pred, 0)))
 
-def dg_cnn(data_builder: DataBuilderML400):
+
+def dg_cnn(data_builder):
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                                 input_dim=data_builder.vocabulary_size + 1,
-                                output_dim=100,
+                                output_dim=data_builder.embed_dim,
                                 weights=[data_builder.embed_matrix],
                                 trainable=False)
 
@@ -61,14 +65,12 @@ def dg_cnn(data_builder: DataBuilderML400):
     preds = Dense(1, activation='sigmoid')(x)
 
     model = Model([k_input, u_input], preds)
-    model.compile(loss='binary_crossentropy',
-                  optimizer='rmsprop',
-                  metrics=['acc'])
 
     return model
 
+
 def load_data(input_dim=100):
-    pan_data = PANData(15, 'pan15_train', 'pan15_test')
+    pan_data = PANData("15", 'pan15_train', 'pan15_test')
     train_domains = pan_data.get_train_domains()
     tr_pairs = []
     for i in range(train_domains):
@@ -76,6 +78,7 @@ def load_data(input_dim=100):
             tr_pairs.append(make_pairs(train_domains[i], train_domains[j], input_dim=input_dim))
 
     return tr_pairs
+
 
 def make_pairs(source_domain, target_domain, input_dim):
     Training = []
@@ -106,25 +109,25 @@ def make_pairs(source_domain, target_domain, input_dim):
 
     return (X1k, X1u, y1, X2k, X2u, y2, yc)
 
+
 def training_the_model(model, train_pairs, epochs=80, batch_size=256):
     X1k, X1u, y1, X2k, X2u, y2, yc = train_pairs
 
-    print('Training the model - Epochs '+str(epochs))
+    print('Training the model - Epochs ' + str(epochs))
     best_acc = 0
     if batch_size > len(y2):
         print('Lowering batch size, to %d, number of inputs is too small for it.' % len(y2))
         batch_size = len(y2)
     for e in range(epochs):
-        if e % 10 == 0:
-            printn(str(e) + '->')
+        printn(str(e) + '->')
         for i in range(len(y2) // batch_size):
-            #flipping stuff here
+            # flipping stuff here
             from_sample = i * batch_size
             to_sample = (i + 1) * batch_size
             loss = model.train_on_batch([[X1k[from_sample:to_sample, :, :],
-                                         X1u[from_sample:to_sample, :, :]],
+                                          X1u[from_sample:to_sample, :, :]],
                                          [X2k[from_sample:to_sample, :, :],
-                                         X2u[from_sample:to_sample, :, :]]],
+                                          X2u[from_sample:to_sample, :, :]]],
                                         [y1[from_sample:to_sample, ],
                                          yc[from_sample:to_sample, ]])
 
@@ -150,9 +153,9 @@ def training_the_model(model, train_pairs, epochs=80, batch_size=256):
                                          yc[from_sample:to_sample, ]])
 
             loss = model.train_on_batch([[X2k[from_sample:to_sample, :, :, ],
-                                         X2u[from_sample:to_sample, :, :, ]],
+                                          X2u[from_sample:to_sample, :, :, ]],
                                          [X1k[from_sample:to_sample, :, :, ],
-                                         X1u[from_sample:to_sample, :, :, ]]],
+                                          X1u[from_sample:to_sample, :, :, ]]],
                                         [y2[from_sample:to_sample, ],
                                          yc[from_sample:to_sample, ]])
 

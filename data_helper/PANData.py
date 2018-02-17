@@ -106,14 +106,13 @@ class PANData(object):
     @staticmethod
     def check_domains(domains):
         for domain in domains:
-            assert(len(domain) == 2, 'Must have 2 of each class per domain')
+            assert len(domain) == 2, 'Must have 2 of each class per domain'
 
     @staticmethod
     def load_one_problem(problem_dir):
         doc_file_list = os.listdir(problem_dir)
         u = None
         k = None
-        pairs = []
         if len(doc_file_list) > 2:
             print(problem_dir + " have more " + str(len(doc_file_list)) + " files!")
         for doc_file in doc_file_list:
@@ -124,7 +123,6 @@ class PANData(object):
                     u = f.read()
                 else:
                     print(doc_file + " is not right!")
-                pairs.append({'k_doc': k, 'u_doc': u})
         return k, u
 
 

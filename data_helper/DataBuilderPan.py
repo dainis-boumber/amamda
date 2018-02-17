@@ -70,8 +70,18 @@ class DataBuilderPan(DataHelper):
         self.train_data = self.proc_data(train_data, train_y, raw_to_vec)
         self.test_data = self.proc_data(test_data, test_y, raw_to_vec)
 
+        self.match_domain_combo(train_data)
+
         self.vocab = tokenizer.word_index
         self.embed_matrix =  self.build_embedding_matrix()
+
+    def match_domain_combo(self, train_data):
+        uniq_doc = pd.unique(train_data["k_doc"].values.ravel('K'))
+        domain_problem_list = []
+        for doc in uniq_doc:
+            domain_rows = train_data.loc[train_data['k_doc'] == doc]
+            domain_problem_list.append(domain_rows)
+
 
     def load_dataframe(self):
         data_pickle = Path("PAN15tuple.pickle")
