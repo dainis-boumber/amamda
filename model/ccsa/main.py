@@ -1,15 +1,23 @@
 import model.ccsa.Initialization as Initialization
 import logging
 from keras.layers import Activation, Dropout, Dense
-from keras.layers import Input, Lambda
+from keras.layers import Lambda
 from keras.models import Model
-
-from data_helper.DataBuilderPan import DataBuilderPan
+from keras.layers import Input
+from keras.layers import Embedding
 
 logging.basicConfig(level=logging.INFO)
-# Creating embedding function. This corresponds to the function g in the paper.
-# You may need to change the network parameters.
-model_g = Initialization.dg_cnn()
+
+doc_len = 1
+k_input = Input(shape=(doc_len,), dtype='int32', name="k_doc_input")
+u_input = Input(shape=(doc_len,), dtype='int32', name="u_doc_input")
+embedding_layer = Embedding(input_length=data_builder.target_doc_len,
+                            input_dim=data_builder.vocabulary_size + 1,
+                            output_dim=data_builder.embed_dim,
+                            weights=[data_builder.embed_matrix],
+                            trainable=False)
+
+model_g = Initialization.dg_cnn(k_input=k_input, u_input=u_input, embedding_layer=embedding_layer)
 
 input_shape = (1, 100, 1)
 input_ak = Input(shape=input_shape)

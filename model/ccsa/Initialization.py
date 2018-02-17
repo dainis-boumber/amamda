@@ -2,15 +2,10 @@ import numpy as np
 import keras
 import logging
 import sys
-from pathlib import Path
-from data_helper.DataBuilderML400 import DataBuilderML400
 from data_helper.PANData import PANData
-from data_helper.DataHelpers import DataHelper
-from keras.layers import Embedding
 from keras.layers import Conv1D
 from keras.layers import MaxPooling1D
 from keras.models import Model
-from keras.layers import Input
 from keras.layers import Flatten, Dense
 from keras import backend as K
 
@@ -36,16 +31,8 @@ def contrastive_loss(y_true, y_pred):
     return K.mean(y_true * K.square(y_pred) + (1 - y_true) * K.square(K.maximum(margin - y_pred, 0)))
 
 
-def dg_cnn(data_builder):
-    embedding_layer = Embedding(input_length=data_builder.target_doc_len,
-                                input_dim=data_builder.vocabulary_size + 1,
-                                output_dim=data_builder.embed_dim,
-                                weights=[data_builder.embed_matrix],
-                                trainable=False)
-
-    k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_doc_input")
+def dg_cnn(k_input, u_input, embedding_layer):
     k_embedded_seq = embedding_layer(k_input)
-    u_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="u_doc_input")
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
