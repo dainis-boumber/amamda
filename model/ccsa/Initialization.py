@@ -67,15 +67,18 @@ def dg_cnn(data_builder: DataBuilderML400):
 
     return model
 
+
 def load_data(input_dim=100):
     pan_data = PANData(15, 'pan15_train', 'pan15_test')
     train_domains = pan_data.get_train_domains()
+    test = pan_data.get_test()
     tr_pairs = []
     for i in range(train_domains):
         for j in range(train_domains):
             tr_pairs.append(make_pairs(train_domains[i], train_domains[j], input_dim=input_dim))
 
-    return tr_pairs
+    return tr_pairs, (test['k_doc'], test['u_doc'], test['labels'])
+
 
 def make_pairs(source_domain, target_domain, input_dim):
     Training = []
@@ -106,9 +109,10 @@ def make_pairs(source_domain, target_domain, input_dim):
 
     return (X1k, X1u, y1, X2k, X2u, y2, yc)
 
-def training_the_model(model, train_pairs, epochs=80, batch_size=256):
-    X1k, X1u, y1, X2k, X2u, y2, yc = train_pairs
 
+def training_the_model(model, train_pairs, XkuY_test, epochs=80, batch_size=256):
+    X1k, X1u, y1, X2k, X2u, y2, yc = train_pairs
+    Xk_test, Xu_test, y_test = XkuY_test
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
     if batch_size > len(y2):
@@ -176,7 +180,7 @@ def training_the_model(model, train_pairs, epochs=80, batch_size=256):
                                         [y2[from_sample:to_sample, ],
                                          yc[from_sample:to_sample, ]])
 
-        Out = model.predict([X_test_k, X_test_u, X_test_k, X_test_u])
+        Out = model.predict([Xk_test, Xu_test, Xk_test, Xu_test])
         Acc_v = np.argmax(Out[0], axis=1) - np.argmax(y_test, axis=1)
         acc = (len(Acc_v) - np.count_nonzero(Acc_v) + .0000001) / len(Acc_v)
         logging.info("ACCU: " + str(acc))

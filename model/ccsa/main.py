@@ -40,8 +40,8 @@ model.compile(loss={'classification': 'binary_crossentropy', 'CSA': Initializati
               optimizer='adadelta',
               loss_weights={'classification': 1 - alpha, 'CSA': alpha})
 
-tr_pairs = Initialization.load_data()
-Acc=Initialization.training_the_model(model,tr_pairs)
+tr_pairs, test = Initialization.load_data()
+Acc=Initialization.training_the_model(model,tr_pairs, test)
 print(('Best accuracy is {}.'.format(Acc )))
 
 
