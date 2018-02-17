@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
-
+import datetime
 import os
-
-from collections import Counter
-
-
-def dictFromFile(aFileName):
-    with open(aFileName) as inFile:
-        listsOfWords = inFile.read().split()
-    return Counter(listsOfWords)
 
 
 def get_dir_list(dataset_dir):
@@ -30,3 +22,13 @@ def get_dir_list(dataset_dir):
     result = dict(zip(split_name, split_dir_list))
 
     return result
+
+
+def get_date():
+    date_today = datetime.datetime.now().strftime("%y%m%d")
+    return date_today
+
+
+def get_time():
+    date_today = datetime.datetime.now().strftime("%Y-%b-%d %H:%M:%S")
+    return date_today

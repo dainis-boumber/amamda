@@ -12,7 +12,7 @@ from keras.layers import Flatten
 from keras.layers import Dense
 from keras.models import Model
 
-from data_helper.DataBuilderML400 import DataBuilderML400
+from DataBuilderML400 import DataBuilderML400
 
 
 def cnn1(data_builder: DataBuilderML400):

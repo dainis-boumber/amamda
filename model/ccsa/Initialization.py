@@ -2,7 +2,7 @@ import numpy as np
 import keras
 import logging
 import sys
-from data_helper.PANData import PANData
+from data.base import PANData
 from keras.layers import Conv1D
 from keras.layers import MaxPooling1D
 from keras.models import Model

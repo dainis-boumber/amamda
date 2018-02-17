@@ -1,21 +1,15 @@
-from pathlib import Path
 import pickle
 import logging
-from multiprocessing import Pool
-
 import numpy as np
 import pandas as pd
-import textacy
 import nltk
-
+from multiprocessing import Pool
 from nltk.tokenize.moses import MosesTokenizer
-
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
-
 from data.MLP400AV.mlpapi import MLPVLoader
-from data_helper.DataHelpers import DataHelper
-from data_helper.Data import DataObject
+from base import DataObject, DataHelper, clean_text
+from pathlib import Path
 
 
 class DataBuilderML400(DataHelper):
@@ -60,12 +54,6 @@ class DataBuilderML400(DataHelper):
         else:
             return data
 
-    @staticmethod
-    def clean_text(content):
-        content = content.replace("\n", " ")
-        content = textacy.preprocess_text(content, lowercase=True, no_contractions=True)
-        return content
-
     def proc_data(self, data_raw, label, raw_to_vec):
         vector_sequences = data_raw.applymap(lambda x: raw_to_vec[x])
         doc_label = np.array([1 if la == "YES" else 0 for la in label])
@@ -108,15 +96,6 @@ class DataBuilderML400(DataHelper):
 
         return (train_data, train_y), (val_data, val_y), (test_data, test_y)
 
-    def build_embedding_matrix(self):
-        embedding_matrix = np.zeros((self.vocabulary_size + 1, self.embedding_dim))
-        for word, i in list(self.vocab.items())[:self.vocabulary_size]:
-            embedding_vector = self.glove_dict.get(word)
-            if embedding_vector is not None:
-                # words not found in embedding index will be all-zeros.
-                embedding_matrix[i] = embedding_vector
-        return embedding_matrix
-
     def load_all_data(self):
         (train_data, train_y), (val_data, val_y), (test_data, test_y) = self.load_dataframe()
 
@@ -124,7 +103,7 @@ class DataBuilderML400(DataHelper):
         uniq_doc = pd.unique(all_data.values.ravel('K'))
 
         pool = Pool(processes=4)
-        uniq_doc_clean = pool.map(DataBuilderML400.clean_text, uniq_doc)
+        uniq_doc_clean = pool.map(clean_text, uniq_doc)
 
         # doc_lens = [len(d) for d in uniq_doc]
         # print( sorted(doc_lens, reverse=True)[:20] )

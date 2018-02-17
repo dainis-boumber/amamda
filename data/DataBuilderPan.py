@@ -1,18 +1,12 @@
 import logging
 import pickle
-from pathlib import Path
-from multiprocessing import Pool
-
 import numpy as np
 import pandas as pd
-import textacy
-
+from pathlib import Path
+from multiprocessing import Pool
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
-
-from data_helper.PANData import PANData
-from data_helper.DataHelpers import DataHelper
-from data_helper.Data import DataObject
+from base import DataObject, PANData, DataHelper, clean_text
 
 
 class DataBuilderPan(DataHelper):
@@ -41,12 +35,6 @@ class DataBuilderPan(DataHelper):
 
         self.load_and_proc_data()
 
-    @staticmethod
-    def clean_text(content):
-        content = content.replace("\n", " ")
-        content = textacy.preprocess_text(content, lowercase=True, no_contractions=True)
-        return content
-
     def load_and_proc_data(self):
         (train_data, train_y), (test_data, test_y) = self.load_dataframe()
 
@@ -54,7 +42,7 @@ class DataBuilderPan(DataHelper):
         uniq_doc = pd.unique(all_data.values.ravel('K'))
 
         pool = Pool(processes=4)
-        uniq_doc_clean = pool.map(DataBuilderPan.clean_text, uniq_doc)
+        uniq_doc_clean = pool.map(clean_text, uniq_doc)
 
         # doc_lens = [len(d) for d in uniq_doc]
         # print( sorted(doc_lens, reverse=True)[:20] )
@@ -75,7 +63,7 @@ class DataBuilderPan(DataHelper):
         self.domain_list = self.match_domain_combo(train_data)
 
         self.vocab = tokenizer.word_index
-        self.embed_matrix =  self.build_embedding_matrix()
+        self.embed_matrix =  self.build_embedding_matrix
 
     def match_domain_combo(self, train_data):
         uniq_doc = pd.unique(train_data["k_doc"].values.ravel('K'))
@@ -84,7 +72,6 @@ class DataBuilderPan(DataHelper):
             domain_rows = train_data.loc[train_data['k_doc'] == doc]
             domain_problem_list.append(domain_rows)
         return domain_problem_list
-
 
     def load_dataframe(self):
         data_pickle = Path("PAN15tuple.pickle")
@@ -125,15 +112,6 @@ class DataBuilderPan(DataHelper):
         data_obj.label_doc = doc_label
         data_obj.value = vector_sequences
         return data_obj
-
-    def build_embedding_matrix(self):
-        embedding_matrix = np.zeros((self.vocabulary_size + 1, self.embedding_dim))
-        for word, i in list(self.vocab.items())[:self.vocabulary_size]:
-            embedding_vector = self.glove_dict.get(word)
-            if embedding_vector is not None:
-                # words not found in embedding index will be all-zeros.
-                embedding_matrix[i] = embedding_vector
-        return embedding_matrix
 
 
 if __name__ == "__main__":

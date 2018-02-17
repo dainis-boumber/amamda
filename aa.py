@@ -1,8 +1,7 @@
 import logging
 from timeit import default_timer as timer
-
-from data_helper.PANData import PANData
-from utils.ArchiveManager import ArchiveManager
+from data.base import PANData
+from utils.archive_manager import ArchiveManager
 
 
 def get_exp_logger(am):

@@ -1,4 +1,4 @@
-import spacy
+from clean import *
 from textacy import preprocess as pp
 
 def preprocess(text, fix_unicode=True, normalize_white_space = False, lowercase=False, transliterate=False,
@@ -12,3 +12,10 @@ def preprocess(text, fix_unicode=True, normalize_white_space = False, lowercase=
                     no_numbers, no_currency_symbols, no_punct,
                     no_contractions, no_accents)
     return text
+
+def split_sentence(paragraph):
+    paragraph = re.split(pattern="([a-zA-Z\(\)]{2,}[.?!])\s+", string=paragraph)
+    paragraph = [a + b for a, b in itertools.zip_longest(paragraph[::2], paragraph[1::2], fillvalue='')]
+    if paragraph:
+        paragraph = [clean_str(e) for e in paragraph]
+    return paragraph

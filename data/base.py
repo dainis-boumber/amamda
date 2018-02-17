@@ -1,14 +1,137 @@
-import numpy as np
-import re
 import logging
-import pickle
-import itertools
-from sklearn.preprocessing import OneHotEncoder
-from pathlib import Path
 import os
+import pickle
+import numpy as np
+import pandas as pd
+from utils.preprocessing.clean import *
+from utils.preprocessing.preprocess import *
+from misc import get_dir_list
 from collections import Counter
+from enum import Enum
+from pathlib import Path
 
-from data_helper.Data import DataObject
+
+class DataObject:
+    def __init__(self, name, size):
+        self.name = name
+        self.size = size
+        self.num_classes = None
+        self.file_id = None
+        self.raw = None
+        self.value = None
+        self.label_doc = None
+        self.label_instance = None  # this is for sentences or comb or paragraph
+        self.doc_size = None
+        self.doc_size_trim = None
+        self.vocab = None
+        self.vocab_inv = None
+        self.embed_matrix = None
+        self.embed_matrix_w2v = None
+
+    def init_empty_list(self):
+        self.file_id = []
+        self.raw = []
+        self.value = []
+        self.label_doc = []
+        self.label_instance = []
+        self.doc_size = []
+        self.doc_size_trim = []
+
+
+class LoadMethod(Enum):
+    DOC = 1
+    COMB = 2
+    SENT = 3
+
+
+class Pair(object):
+    def __init__(self, full_pair_dir_path, label):
+        self.unknown = None
+        self.known = []
+        _, tail = os.path.split(full_pair_dir_path)
+        self.name = tail
+        self.label = label
+        for path in os.listdir(full_pair_dir_path):
+            if 'unknown' in path:
+                self.unknown = path
+            else:
+                self.known.append(path)
+
+
+class Split(object):
+    def __init__(self, name, full_pair_dir_paths, labels=None):
+        self.name = name
+        self.pairs = []
+        for i, path in enumerate(full_pair_dir_paths):
+            if labels is not None:
+                self.pairs.append(Pair(path, labels[i]))
+            else:
+                self.pairs.append(Pair(path, None))
+
+
+class PANData(object):
+    def __init__(self, year, train_split, test_split):
+        p = os.path.abspath(__file__ + "/../../data/PAN" + str(year) + '/')
+        self.year = year
+        self.name = 'PAN' + str(year)
+
+        assert os.path.exists(os.path.join(p, train_split))
+        assert os.path.exists(os.path.join(p, test_split))
+
+        dir_list = get_dir_list(p)
+
+        train_labels = []
+        with open(os.path.join(p, train_split, 'truth.txt')) as truth_file:
+            for line in truth_file:
+                train_labels.append(line.strip().split())
+        train_labels = dict(train_labels)
+
+        test_labels = []
+        with open(os.path.join(p, test_split, 'truth.txt')) as truth_file:
+            for line in truth_file:
+                test_labels.append(line.strip().split())
+        test_labels = dict(test_labels)
+
+        self.train_splits = []
+        for problem_dir in dir_list[train_split]:
+            k, u = self.load_one_problem(problem_dir)
+            l = train_labels[os.path.basename(problem_dir)]
+            self.train_splits.append({'k_doc': k, 'u_doc': u, "label": l})
+
+        self.test_splits = []
+        for problem_dir in dir_list[test_split]:
+            k, u = self.load_one_problem(problem_dir)
+            l = test_labels[os.path.basename(problem_dir)]
+            self.test_splits.append({'k_doc': k, 'u_doc': u, "label": l})
+
+        self.train_splits = pd.DataFrame(self.train_splits)
+        self.test_splits = pd.DataFrame(self.test_splits)
+
+    def get_data(self):
+        return self.train_splits, self.test_splits
+
+    def get_train(self):
+        return self.train_splits
+
+    def get_test(self):
+        return self.test_splits
+
+    @staticmethod
+    def load_one_problem(problem_dir):
+        doc_file_list = os.listdir(problem_dir)
+        u = None
+        k = None
+        if len(doc_file_list) > 2:
+            print(problem_dir + " have more " + str(len(doc_file_list)) + " files!")
+        for doc_file in doc_file_list:
+            with open(os.path.join(problem_dir, doc_file)) as f:
+                if doc_file.startswith("known"):
+                    k = f.read()
+                elif doc_file.startswith("unknown"):
+                    u = f.read()
+                else:
+                    print(doc_file + " is not right!")
+        return k, u
 
 
 class DataHelper(object):
@@ -39,7 +162,7 @@ class DataHelper(object):
 
         self.data_path = os.path.join(os.path.dirname(__file__), '..', 'data/')
 
-        glove_pickle = Path(os.path.join(self.glove_dir, "glove" + str(self.embedding_dim) + ".pickle") )
+        glove_pickle = Path(os.path.join(self.glove_dir, "glove" + str(self.embedding_dim) + ".pickle"))
         if not glove_pickle.exists():
             logging.info("loading GLOVE embedding.")
             self.glove_dict = self.load_glove_vector()
@@ -61,28 +184,6 @@ class DataHelper(object):
 
     def get_vocab(self):
         return self.vocab
-
-    @staticmethod
-    def clean_str(string):
-        # string = re.sub("\'", " \' ", string)
-        # string = re.sub("\"", " \" ", string)
-        # string = re.sub("-", " - ", string)
-
-        # string = re.sub(",", " , ", string)
-
-        # string = re.sub(r"[(\[{]", " ( ", string)
-        # string = re.sub(r"[)\]}]", " ) ", string)
-        # string = re.sub("\s{2,}", " ", string)
-
-        return string.strip()
-
-    @staticmethod
-    def split_sentence(paragraph):
-        paragraph = re.split(pattern="([a-zA-Z\(\)]{2,}[.?!])\s+", string=paragraph)
-        paragraph = [a + b for a, b in itertools.zip_longest(paragraph[::2], paragraph[1::2], fillvalue='')]
-        if paragraph:
-            paragraph = [DataHelper.clean_str(e) for e in paragraph]
-        return paragraph
 
     def load_glove_vector(self):
         glove_lines = list(open(self.glove_path, "r", encoding="utf-8").readlines())
@@ -126,6 +227,15 @@ class DataHelper(object):
             padded_sents.append(new_sentence)
         data.value = np.array(padded_sents)
         return data
+
+    def build_embedding_matrix(self):
+        embedding_matrix = np.zeros((self.vocabulary_size + 1, self.embedding_dim))
+        for word, i in list(self.vocab.items())[:self.vocabulary_size]:
+            embedding_vector = self.glove_dict.get(word)
+            if embedding_vector is not None:
+                # words not found in embedding index will be all-zeros.
+                embedding_matrix[i] = embedding_vector
+        return embedding_matrix
 
     @staticmethod
     def pad_document(data, target_length=-1):
