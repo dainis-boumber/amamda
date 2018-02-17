@@ -51,30 +51,18 @@ class PANData(object):
                 test_labels.append(line.strip().split())
         test_labels = dict(test_labels)
 
-        self.train_domains = []
-        self.test_domains = []
         self.train_splits = []
         for problem_dir in dir_list[train_split]:
             k, u = self.load_one_problem(problem_dir)
             l = train_labels[os.path.basename(problem_dir)]
             self.train_splits.append({'k_doc': k, 'u_doc': u, "label": l})
-            domainIx = self.searchDomains(self.train_domains, k)
-            if domainIx >= 0:
-                self.train_domains[domainIx].append({'k_doc': k, 'u_doc': u, "label": l})
-            else:
-                self.train_domains.append({'k_doc': k, 'u_doc': u, "label": l})
-        self.check_domains(self.train_domains)
+
         self.test_splits = []
         for problem_dir in dir_list[test_split]:
             k, u = self.load_one_problem(problem_dir)
             l = test_labels[os.path.basename(problem_dir)]
             self.test_splits.append({'k_doc': k, 'u_doc': u, "label": l})
-            domainIx = self.searchDomains(self.test_domains, k)
-            if domainIx >= 0:
-                self.test_domains[domainIx].append({'k_doc': k, 'u_doc': u, "label": l})
-            else:
-                self.test_domains.append({'k_doc': k, 'u_doc': u, "label": l})
-        self.check_domains(self.test_domains)
+
         self.train_splits = pd.DataFrame(self.train_splits)
         self.test_splits = pd.DataFrame(self.test_splits)
 
@@ -97,18 +85,6 @@ class PANData(object):
         return self.train_domains, self.test_domains
 
     @staticmethod
-    def searchDomains(domains, k):
-        for i in range(domains):
-            if domains[i]['k_doc'] == k:
-                return i
-        return -1
-
-    @staticmethod
-    def check_domains(domains):
-        for domain in domains:
-            assert len(domain) == 2, 'Must have 2 of each class per domain'
-
-    @staticmethod
     def load_one_problem(problem_dir):
         doc_file_list = os.listdir(problem_dir)
         u = None
@@ -124,7 +100,6 @@ class PANData(object):
                 else:
                     print(doc_file + " is not right!")
         return k, u
-
 
 
 if __name__ == "__main__":

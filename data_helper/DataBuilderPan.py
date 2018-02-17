@@ -37,6 +37,8 @@ class DataBuilderPan(DataHelper):
         self.dataset_dir = self.data_path + self.problem_name
         self.num_classes = 2  # true or false
 
+        self.domain_list = None
+
         self.load_and_proc_data()
 
     @staticmethod
@@ -70,7 +72,7 @@ class DataBuilderPan(DataHelper):
         self.train_data = self.proc_data(train_data, train_y, raw_to_vec)
         self.test_data = self.proc_data(test_data, test_y, raw_to_vec)
 
-        self.match_domain_combo(train_data)
+        self.domain_list = self.match_domain_combo(train_data)
 
         self.vocab = tokenizer.word_index
         self.embed_matrix =  self.build_embedding_matrix()
@@ -81,6 +83,7 @@ class DataBuilderPan(DataHelper):
         for doc in uniq_doc:
             domain_rows = train_data.loc[train_data['k_doc'] == doc]
             domain_problem_list.append(domain_rows)
+        return domain_problem_list
 
 
     def load_dataframe(self):
