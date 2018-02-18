@@ -114,6 +114,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
     a = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
-                       embed_dim=100, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)
+                       embed_dim=50, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)
 
     pass

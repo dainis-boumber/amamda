@@ -11,11 +11,11 @@ from keras.layers import MaxPooling1D
 from keras.layers import Flatten
 from keras.layers import Dense
 from keras.models import Model
+from data.DataBuilderML400 import DataBuilderML400
+from data.base import DataBuilder
 
-from DataBuilderML400 import DataBuilderML400
 
-
-def cnn1(data_builder: DataBuilderML400):
+def cnn1(data_builder: DataBuilder):
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                                 input_dim=data_builder.vocabulary_size + 1,
                                 output_dim=100,
