@@ -13,18 +13,15 @@ class ArchiveManager(object):
         self.truth_file = truth_file
         self.time_stamp = str(int(time.time()))
 
-
     def get_tag(self):
         tag = self.data_name + "_" + self.input_name + "_" + self.middle_name + "_" + self.output_name
         return tag
-
 
     def get_tag_dir(self):
         path = os.path.join(".", "runs", self.get_tag(), "")
         if not os.path.exists(path):
             os.makedirs(path)
         return path
-
 
     def get_exp_dir(self):
         date_today = get_date()
@@ -35,7 +32,6 @@ class ArchiveManager(object):
         if not os.path.exists(path):
             os.makedirs(path)
         return path
-
 
     def get_exp_log_path(self):
         return os.path.join(self.get_exp_dir(), "log.txt")

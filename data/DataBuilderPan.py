@@ -6,10 +6,10 @@ from pathlib import Path
 from multiprocessing import Pool
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
-from base import DataObject, PANData, DataHelper, clean_text
+from base import DataObject, PANData, DataBuilder, clean_text
 
 
-class DataBuilderPan(DataHelper):
+class DataBuilderPan(DataBuilder):
 
     def __init__(self, year, train_split, test_split, embed_dim, vocab_size, target_doc_len, target_sent_len,
                  sent_split=False, word_split=False):
@@ -21,18 +21,14 @@ class DataBuilderPan(DataHelper):
         self.train_split = train_split
         logging.info("TEST SPLIT: %s", test_split)
         self.test_split = test_split
-
         logging.info("setting: %s is %s", "sent_split", sent_split)
         self.sent_split = sent_split
         logging.info("setting: %s is %s", "word_split", word_split)
         self.word_split = word_split
-
         self.problem_name = "PAN" + self.year
         self.dataset_dir = self.data_path + self.problem_name
         self.num_classes = 2  # true or false
-
         self.domain_list = None
-
         self.load_and_proc_data()
 
     def load_and_proc_data(self):
@@ -78,7 +74,7 @@ class DataBuilderPan(DataHelper):
         if not data_pickle.exists():
             logging.info("loading data structure from RAW")
             loader = PANData(self.year, train_split=self.train_split, test_split=self.test_split)
-            train_data, test_data = loader.get_data()
+            train_data, test_data = loader.get_data
 
             train_y = train_data['label'].tolist()
             test_y = test_data['label'].tolist()

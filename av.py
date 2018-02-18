@@ -1,21 +1,3 @@
-import logging
-from timeit import default_timer as timer
-from data.base import PANData
-from utils.archive_manager import ArchiveManager
-
-
-def get_exp_logger(am):
-    log_path = am.get_exp_log_path()
-    # logging facility, log both into file and console
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                        datefmt='%m-%d %H:%M',
-                        filename=log_path,
-                        filemode='w+')
-    console_logger = logging.StreamHandler()
-    logging.getLogger('').addHandler(console_logger)
-    logging.info("log created: " + log_path)
-
 
 if __name__ == "__main__":
     raise NotImplementedError

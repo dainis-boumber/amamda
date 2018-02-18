@@ -8,11 +8,11 @@ from nltk.tokenize.moses import MosesTokenizer
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 from data.MLP400AV.mlpapi import MLPVLoader
-from base import DataObject, DataHelper, clean_text
+from base import DataObject, DataBuilder, clean_text
 from pathlib import Path
 
 
-class DataBuilderML400(DataHelper):
+class DataBuilderML400(DataBuilder):
     problem_name = "ML400"
 
     def __init__(self, embed_dim, vocab_size, target_doc_len, target_sent_len, sent_split=False, word_split=False):
@@ -26,14 +26,11 @@ class DataBuilderML400(DataHelper):
 
         self.dataset_dir = self.data_path + 'MLP400AV/'
         self.num_classes = 2  # true or false
-
         self.tokenizer = None
-
         print("loading nltk model")
         self.sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
         self.tokenizer = MosesTokenizer()
         print("nltk model loaded")
-
         self.load_all_data()
 
     def str_2_sent_2_token(self, data, sent_split=True, word_split=False):

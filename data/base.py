@@ -134,7 +134,7 @@ class PANData(object):
         return k, u
 
 
-class DataHelper(object):
+class DataBuilder(object):
     def __init__(self, embed_dim, vocab_size, target_doc_len, target_sent_len):
         logging.info("setting: %s is %s", "embed_dim", embed_dim)
         logging.info("setting: %s is %s", "vocab_size", vocab_size)
@@ -287,7 +287,7 @@ class DataHelper(object):
     @staticmethod
     def build_vocab(data, vocabulary_size):
         # Build vocabulary
-        word_counts = Counter(DataHelper.chain(data))
+        word_counts = Counter(DataBuilder.chain(data))
         word_counts = sorted(list(word_counts.items()), key=lambda t: t[::-1], reverse=True)
         vocabulary_inv = [item[0] for item in word_counts]
         vocabulary_inv.insert(0, "<PAD>")

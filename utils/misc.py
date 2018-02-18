@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import logging
 import os
 
 
@@ -32,3 +33,16 @@ def get_date():
 def get_time():
     date_today = datetime.datetime.now().strftime("%Y-%b-%d %H:%M:%S")
     return date_today
+
+
+def get_exp_logger(am):
+    log_path = am.get_exp_log_path()
+    # logging facility, log both into file and console
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                        datefmt='%m-%d %H:%M',
+                        filename=log_path,
+                        filemode='w+')
+    console_logger = logging.StreamHandler()
+    logging.getLogger('').addHandler(console_logger)
+    logging.info("log created: " + log_path)
