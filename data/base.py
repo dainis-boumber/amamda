@@ -164,14 +164,15 @@ class DataBuilder(object):
 
         glove_pickle = Path(os.path.join(self.glove_dir, "glove" + str(self.embedding_dim) + ".pickle"))
         if not glove_pickle.exists():
-            logging.info("loading GLOVE embedding.")
+            print("loading GLOVE embedding.")
             self.glove_dict = self.load_glove_vector()
-            logging.info("loading embedding completed.")
-            pickle.dump(self.glove_dict, open(glove_pickle, "wb"))
-            logging.info("glove embedding pickled.")
+            print("loading embedding completed.")
+            with open(glove_pickle, "wb") as f:
+                pickle.dump(self.glove_dict, f)
+            print("glove embedding pickled.")
         else:
             self.glove_dict = pickle.load(open(glove_pickle, "rb"))
-            logging.info("loaded GLOVE from pickle.")
+            print("loaded GLOVE from pickle.")
 
     def get_train_data(self) -> DataObject:
         return self.train_data

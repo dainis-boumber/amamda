@@ -74,7 +74,7 @@ class DataBuilderPan(DataBuilder):
         if not data_pickle.exists():
             logging.info("loading data structure from RAW")
             loader = PANData(self.year, train_split=self.train_split, test_split=self.test_split)
-            train_data, test_data = loader.get_data
+            train_data, test_data = loader.get_data()
 
             train_y = train_data['label'].tolist()
             test_y = test_data['label'].tolist()
