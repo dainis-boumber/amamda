@@ -1,11 +1,9 @@
 from pathlib import Path
 import pickle
 import logging
-
 import numpy as np
 from scipy import sparse
 import pandas as pd
-
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 

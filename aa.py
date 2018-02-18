@@ -18,20 +18,7 @@ def get_exp_logger(am):
 
 
 if __name__ == "__main__":
-
-    ###############################################
-    # exp_names you can choose from at this point:
-    #
-    # Input Components:
-    #
-    # * TripAdvisor
-    #
-    # Middle Components:
-    #
-    # * Origin
-    #
-    #
-    ################################################
+    raise NotImplementedError
 
     data_name = "PAN14"
     input_comp_name = "Document"

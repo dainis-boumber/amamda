@@ -9,8 +9,13 @@ from keras.layers import Embedding
 logging.basicConfig(level=logging.INFO)
 
 doc_len = 1
-k_input = Input(shape=(doc_len,), dtype='int32', name="k_doc_input")
-u_input = Input(shape=(doc_len,), dtype='int32', name="u_doc_input")
+
+input_shape = (1, 100, 1)
+input_ak = Input(shape=input_shape)
+input_au = Input(shape=input_shape)
+input_bk = Input(shape=input_shape)
+input_bu = Input(shape=input_shape)
+
 embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                             input_dim=data_builder.vocabulary_size + 1,
                             output_dim=data_builder.embed_dim,
@@ -18,12 +23,6 @@ embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                             trainable=False)
 
 model_g = Initialization.dg_cnn(k_input=k_input, u_input=u_input, embedding_layer=embedding_layer)
-
-input_shape = (1, 100, 1)
-input_ak = Input(shape=input_shape)
-input_au = Input(shape=input_shape)
-input_bk = Input(shape=input_shape)
-input_bu = Input(shape=input_shape)
 
 # number of classes for digits classification
 nb_classes = 2
