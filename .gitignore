@@ -3,6 +3,7 @@ glove.6B.200d.txt
 glove.6B.300d.txt
 glove.6B.50d.txt
 glove.6B.zip
+glove.840B.300d.txt
 GoogleNews-vectors-negative300.bin
 GoogleNews-vectors-negative300.bin.gz
 *.pickle
