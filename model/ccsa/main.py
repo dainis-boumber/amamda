@@ -1,38 +1,34 @@
 import model.ccsa.Initialization as Initialization
 import logging
-from keras.layers import Activation, Dropout, Dense
 from keras.layers import Lambda
 from keras.models import Model
 from keras.layers import Input
-from keras.layers import Embedding
+from keras.layers import Activation, Dropout, Dense
+
+from data.DataBuilderPan import DataBuilderPan
 
 logging.basicConfig(level=logging.INFO)
 
-doc_len = 1
+data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
+                       embed_dim=50, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)
 
-input_shape = (1, 100, 1)
-input_ak = Input(shape=input_shape)
-input_au = Input(shape=input_shape)
-input_bk = Input(shape=input_shape)
-input_bu = Input(shape=input_shape)
+model_g = Initialization.dg_cnn(data_builder)
 
-embedding_layer = Embedding(input_length=data_builder.target_doc_len,
-                            input_dim=data_builder.vocabulary_size + 1,
-                            output_dim=data_builder.embed_dim,
-                            weights=[data_builder.embed_matrix],
-                            trainable=False)
+input_ak = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="ak_doc_input")
+input_au = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="au_doc_input")
+input_bk = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="bk_doc_input")
+input_bu = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="bu_doc_input")
 
-model_g = Initialization.dg_cnn(k_input=k_input, u_input=u_input, embedding_layer=embedding_layer)
-
-# number of classes for digits classification
-nb_classes = 2
 
 # Loss = (1-alpha)Classification_Loss + (alpha)CSA
 alpha = .25
 
 # Having two streams. One for source and one for target.
-processed_a = model_g(input_ak, input_au)
-processed_b = model_g(input_bk, input_bu)
+emb_a = model_g([input_ak, input_bk])
+emb_b = model_g([input_bk, input_bu])
+
+av_pred = Dense(1, activation='sigmoid')(emb_a)
+
 
 # Creating the prediction function. This corresponds to h in the paper.
 out1 = Dropout(0.5)(processed_a)

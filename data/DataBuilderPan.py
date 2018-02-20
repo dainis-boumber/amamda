@@ -6,7 +6,7 @@ from pathlib import Path
 from multiprocessing import Pool
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
-from base import DataObject, PANData, DataBuilder, clean_text
+from data.base import DataObject, PANData, DataBuilder, clean_text
 
 
 class DataBuilderPan(DataBuilder):

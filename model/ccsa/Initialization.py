@@ -3,11 +3,14 @@ import keras
 import logging
 import sys
 from data.base import PANData
+
+from keras.layers import Input
 from keras.layers import Conv1D
 from keras.layers import MaxPooling1D
 from keras.models import Model
 from keras.layers import Flatten, Dense
 from keras import backend as K
+from keras.layers import Embedding
 
 
 def printn(string):
@@ -31,11 +34,19 @@ def contrastive_loss(y_true, y_pred):
     return K.mean(y_true * K.square(y_pred) + (1 - y_true) * K.square(K.maximum(margin - y_pred, 0)))
 
 
-def dg_cnn(k_input, u_input, embedding_layer):
+def dg_cnn(data_builder):
+    k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_input")
+    u_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="u_input")
+
+    embedding_layer = Embedding(input_length=data_builder.target_doc_len,
+                                input_dim=data_builder.vocabulary_size + 1,
+                                output_dim=data_builder.embedding_dim,
+                                weights=[data_builder.embed_matrix],
+                                trainable=False)
+
     k_embedded_seq = embedding_layer(k_input)
     u_embedded_seq = embedding_layer(u_input)
 
-    # shared first conv
     conv_first = Conv1D(filters=128, kernel_size=5, activation='relu')
     poll_first = MaxPooling1D(pool_size=1024)
 
@@ -48,10 +59,10 @@ def dg_cnn(k_input, u_input, embedding_layer):
     x = keras.layers.subtract([k_poll, u_poll])
 
     x = Flatten()(x)
-    x = Dense(128, activation='relu')(x)
-    preds = Dense(1, activation='sigmoid')(x)
 
-    model = Model([k_input, u_input], preds)
+    diff_embedding = Dense(128, activation='relu')(x)
+
+    model = Model([k_input, u_input], diff_embedding)
 
     return model
 
