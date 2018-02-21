@@ -24,8 +24,8 @@ def clean_str(str):
 
     return str.strip()
 
+
 def clean_text(content):
     content = content.replace("\n", " ")
     content = textacy.preprocess_text(content, lowercase=True, no_contractions=True)
     return content
-

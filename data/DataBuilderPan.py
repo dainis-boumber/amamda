@@ -1,12 +1,16 @@
 import logging
+from pathlib import Path
+from multiprocessing import Pool
+
 import pickle
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from multiprocessing import Pool
+import textacy
+
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
-from data.base import DataObject, PANData, DataBuilder, clean_text
+from data.base import DataObject, PANData, DataBuilder
+from utils.preprocessing.clean import clean_text
 
 
 class DataBuilderPan(DataBuilder):
@@ -59,7 +63,7 @@ class DataBuilderPan(DataBuilder):
         self.domain_list = self.match_domain_combo(train_data)
 
         self.vocab = tokenizer.word_index
-        self.embed_matrix =  self.build_embedding_matrix
+        self.embed_matrix =  self.build_embedding_matrix()
 
     def match_domain_combo(self, train_data):
         uniq_doc = pd.unique(train_data["k_doc"].values.ravel('K'))
@@ -114,6 +118,4 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
     a = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
-                       embed_dim=50, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)
-
-    pass
+                       embed_dim=100, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)

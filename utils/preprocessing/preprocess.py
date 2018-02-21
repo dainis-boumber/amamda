@@ -1,4 +1,4 @@
-from clean import *
+from utils.preprocessing.clean import *
 from textacy import preprocess as pp
 
 def preprocess(text, fix_unicode=True, normalize_white_space = False, lowercase=False, transliterate=False,

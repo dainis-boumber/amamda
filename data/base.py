@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from utils.preprocessing.clean import *
 from utils.preprocessing.preprocess import *
-from misc import get_dir_list
+from utils.misc import get_dir_list
 from collections import Counter
 from enum import Enum
 from pathlib import Path
@@ -99,7 +99,7 @@ class PANData(object):
         if len(doc_file_list) > 2:
             print(problem_dir + " have more " + str(len(doc_file_list)) + " files!")
         for doc_file in doc_file_list:
-            with open(os.path.join(problem_dir, doc_file)) as f:
+            with open(os.path.join(problem_dir, doc_file), encoding='utf-8') as f:
                 if doc_file.startswith("known"):
                     k = f.read()
                 elif doc_file.startswith("unknown"):

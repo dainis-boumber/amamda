@@ -2,7 +2,9 @@ import numpy as np
 import keras
 import logging
 import sys
-from data.base import PANData
+import pandas as pd
+
+from data.base import DataObject
 
 from keras.layers import Input
 from keras.layers import Conv1D
@@ -40,7 +42,7 @@ def dg_cnn(data_builder):
 
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                                 input_dim=data_builder.vocabulary_size + 1,
-                                output_dim=data_builder.embedding_dim,
+                                output_dim=100,
                                 weights=[data_builder.embed_matrix],
                                 trainable=False)
 
@@ -59,7 +61,6 @@ def dg_cnn(data_builder):
     x = keras.layers.subtract([k_poll, u_poll])
 
     x = Flatten()(x)
-
     diff_embedding = Dense(128, activation='relu')(x)
 
     model = Model([k_input, u_input], diff_embedding)
@@ -67,52 +68,47 @@ def dg_cnn(data_builder):
     return model
 
 
-def load_data(input_dim=100):
-    pan_data = PANData("15", 'pan15_train', 'pan15_test')
-    train_domains = pan_data.get_train_domains()
-    test = pan_data.get_test()
-    tr_pairs = []
-    for i in range(train_domains):
-        for j in range(train_domains):
-            tr_pairs.append(make_pairs(train_domains[i], train_domains[j], input_dim=input_dim))
-
-    return tr_pairs, (test['k_doc'], test['u_doc'], test['labels'])
+def load_data(data_builder):
+    train = data_builder.train_data
+    test = data_builder.test_data
+    pair_combo, y1, y2, y_combo = make_pairs(train)
+    return (pair_combo, y1, y2, y_combo), (test.value, test.label_doc)
 
 
+def make_pairs(data_object: DataObject):
+    source_pair = []
+    target_pair = []
+    source_l = []
+    target_l = []
+    value_frame = data_object.value
+    label_frame = data_object.label_doc
+    for trs in range(len(value_frame)):
+        for trt in range(trs + 1, len(value_frame)):
+            source_pair.append(value_frame.iloc[[trs]])
+            target_pair.append(value_frame.iloc[[trt]])
+            source_l.append(label_frame[trs])
+            target_l.append(label_frame[trt])
 
-def make_pairs(source_domain, target_domain, input_dim):
-    Training = []
+    source_pair = pd.concat(source_pair, axis=0)
+    target_pair = pd.concat(target_pair, axis=0)
+    source_l = np.array(source_l)
+    target_l = np.array(target_l)
 
-    for trs in range(len(source_domain)):
-        for trt in range(len(target_domain)):
-            Training.append([trs, trt])
+    source_pair.columns = ["s_k_doc", "s_u_doc"]
+    target_pair.columns = ["t_k_doc", "t_u_doc"]
+    source_pair = source_pair.reset_index(drop=True)
+    target_pair = target_pair.reset_index(drop=True)
+    pair_combo = source_pair.join(target_pair, how='outer')
 
-    X1k = np.zeros([len(Training), input_dim], dtype='float32')
-    X1u = np.zeros([len(Training), input_dim], dtype='float32')
-    y1 = np.zeros([len(Training)])
-    X2k = np.zeros([len(Training), input_dim], dtype='float32')
-    X2u = np.zeros([len(Training), input_dim], dtype='float32')
-    y2 = np.zeros([len(Training)])
-    yc = np.zeros([len(Training)])
+    y_combo = source_l == target_l
+    y_combo = y_combo.astype(int)
 
-    for i in range(len(Training)):
-        in1, in2 = Training[i]
-        X1k[i, :] = source_domain[in1].k_doc
-        X1u[i, :] = source_domain[in1].u_doc
-        X2k[i, :] = target_domain[in2].k_doc
-        X2u[i, :] = target_domain[in2].u_doc
-        y1[i] = source_domain[in1].label
-        y2[i] = target_domain[in2].label
+    return pair_combo, source_l, target_l, y_combo
 
-        if source_domain[in1].label == target_domain[in2].label:
-            yc[i] = 1
+def training_the_model(model, train, test, epochs=80, batch_size=256):
+    pair_combo, y1, y2, y_combo = train
+    test_value, test_label = test
 
-    return (X1k, X1u, y1, X2k, X2u, y2, yc)
-
-
-def training_the_model(model, train_pairs, XkuY_test, epochs=80, batch_size=256):
-    X1k, X1u, y1, X2k, X2u, y2, yc = train_pairs
-    Xk_test, Xu_test, y_test = XkuY_test
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
     if batch_size > len(y2):
@@ -124,67 +120,29 @@ def training_the_model(model, train_pairs, XkuY_test, epochs=80, batch_size=256)
             # flipping stuff here
             from_sample = i * batch_size
             to_sample = (i + 1) * batch_size
-            loss = model.train_on_batch([[X1k[from_sample:to_sample, :, :],
-                                          X1u[from_sample:to_sample, :, :]],
-                                         [X2k[from_sample:to_sample, :, :],
-                                          X2u[from_sample:to_sample, :, :]]],
-                                        [y1[from_sample:to_sample, ],
-                                         yc[from_sample:to_sample, ]])
+            loss = model.train_on_batch([
+                np.array(pair_combo["s_k_doc"].iloc[from_sample:to_sample].tolist()),
+                np.array(pair_combo["s_u_doc"].iloc[from_sample:to_sample].tolist()),
+                np.array(pair_combo["t_k_doc"].iloc[from_sample:to_sample].tolist()),
+                np.array(pair_combo["t_u_doc"].iloc[from_sample:to_sample].tolist())
+            ],
+                [ y1[from_sample:to_sample], y_combo[from_sample:to_sample] ])
 
-            loss = model.train_on_batch([[X1u[from_sample:to_sample, :, :],
-                                          X1k[from_sample:to_sample, :, :]],
-                                         [X2u[from_sample:to_sample, :, :],
-                                          X2k[from_sample:to_sample, :, :]]],
-                                        [y1[from_sample:to_sample, ],
-                                         yc[from_sample:to_sample, ]])
+            loss = model.train_on_batch([
+                np.array(pair_combo["t_k_doc"].iloc[from_sample:to_sample].tolist()),
+                np.array(pair_combo["t_u_doc"].iloc[from_sample:to_sample].tolist()),
+                np.array(pair_combo["s_k_doc"].iloc[from_sample:to_sample].tolist()),
+                np.array(pair_combo["s_u_doc"].iloc[from_sample:to_sample].tolist()),
+            ],
+                [ y2[from_sample:to_sample], y_combo[from_sample:to_sample] ])
 
-            loss = model.train_on_batch([[X1k[from_sample:to_sample, :, :],
-                                          X1u[from_sample:to_sample, :, :]],
-                                         [X2u[from_sample:to_sample, :, :],
-                                          X2k[from_sample:to_sample, :, :]]],
-                                        [y1[from_sample:to_sample, ],
-                                         yc[from_sample:to_sample, ]])
 
-            loss = model.train_on_batch([[X1u[from_sample:to_sample, :, :],
-                                          X1k[from_sample:to_sample, :, :]],
-                                         [X2k[from_sample:to_sample, :, :],
-                                          X2u[from_sample:to_sample, :, :]]],
-                                        [y1[from_sample:to_sample, ],
-                                         yc[from_sample:to_sample, ]])
-
-            loss = model.train_on_batch([[X2k[from_sample:to_sample, :, :, ],
-                                          X2u[from_sample:to_sample, :, :, ]],
-                                         [X1k[from_sample:to_sample, :, :, ],
-                                          X1u[from_sample:to_sample, :, :, ]]],
-                                        [y2[from_sample:to_sample, ],
-                                         yc[from_sample:to_sample, ]])
-
-            loss = model.train_on_batch([[X2u[from_sample:to_sample, :, :, ],
-                                          X2k[from_sample:to_sample, :, :, ]],
-                                         [X1u[from_sample:to_sample, :, :, ],
-                                          X1k[from_sample:to_sample, :, :, ]]],
-                                        [y2[from_sample:to_sample, ],
-                                         yc[from_sample:to_sample, ]])
-            loss = model.train_on_batch([[X2k[from_sample:to_sample, :, :, ],
-                                          X2u[from_sample:to_sample, :, :, ]],
-                                         [X1u[from_sample:to_sample, :, :, ],
-                                          X1k[from_sample:to_sample, :, :, ]]],
-                                        [y2[from_sample:to_sample, ],
-                                         yc[from_sample:to_sample, ]])
-
-            loss = model.train_on_batch([[X2u[from_sample:to_sample, :, :, ],
-                                          X2k[from_sample:to_sample, :, :, ]],
-                                         [X1k[from_sample:to_sample, :, :, ],
-                                          X1u[from_sample:to_sample, :, :, ]]],
-                                        [y2[from_sample:to_sample, ],
-                                         yc[from_sample:to_sample, ]])
-
-        Out = model.predict([Xk_test, Xu_test, Xk_test, Xu_test])
-        Acc_v = np.argmax(Out[0], axis=1) - np.argmax(y_test, axis=1)
-        acc = (len(Acc_v) - np.count_nonzero(Acc_v) + .0000001) / len(Acc_v)
-        logging.info("ACCU: " + str(acc))
-        if best_acc < acc:
-            best_acc = acc
-            logging.info("BEST ACCU: " + str(acc))
+    Out = model.predict([[test_value["k_doc"], test_value["k_doc"]], [test_value["k_doc"], test_value["k_doc"]] ])
+    Acc_v = np.array(Out == test_label)
+    acc = (len(Acc_v) - np.count_nonzero(Acc_v) + .0000001) / len(Acc_v)
+    logging.info("ACCU: " + str(acc))
+    if best_acc < acc:
+        best_acc = acc
+        logging.info("BEST ACCU: " + str(acc))
 
     return best_acc
