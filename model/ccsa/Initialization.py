@@ -137,13 +137,13 @@ def training_the_model(model, train, test, epochs=80, batch_size=256):
                 [ y2[from_sample:to_sample], y_combo[from_sample:to_sample] ])
 
 
-    Out = model.predict([np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()),
-                         np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()) ])
-    Acc_v = np.array((Out[0] > 0) == test_label)
-    acc = (len(Acc_v) - np.count_nonzero(Acc_v) + .0000001) / len(Acc_v)
-    logging.info("ACCU: " + str(acc))
-    if best_acc < acc:
-        best_acc = acc
-        logging.info("BEST ACCU: " + str(acc))
+        Out = model.predict([np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()),
+                             np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()) ])
+        Acc_v = np.array(Out[0] > 0.5).astype(int).squeeze() == test_label
+        acc = np.count_nonzero(Acc_v) / len(Out[0])
+        logging.info("ACCU: " + str(acc))
+        if best_acc < acc:
+            best_acc = acc
+            logging.info("BEST ACCU: " + str(acc))
 
     return best_acc

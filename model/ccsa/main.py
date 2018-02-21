@@ -22,10 +22,10 @@ if __name__ == "__main__":
     input_bu = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="bu_doc_input")
 
     # Loss = (1-alpha)Classification_Loss + (alpha)CSA
-    alpha = .25
+    alpha = 0
 
     # Having two streams. One for source and one for target.
-    emb_a = model_g([input_ak, input_bk])
+    emb_a = model_g([input_ak, input_au])
     emb_b = model_g([input_bk, input_bu])
 
     # Creating the prediction function. This corresponds to h in the paper.
@@ -40,5 +40,5 @@ if __name__ == "__main__":
                   loss_weights={'av_out': 1 - alpha, 'CSA': alpha})
 
 
-    Acc = Initialization.training_the_model(model, train, test, epochs=5, batch_size=2)
+    Acc = Initialization.training_the_model(model, train, test, epochs=10, batch_size=5)
     print(('Best accuracy is {}.'.format(Acc)))
