@@ -9,6 +9,7 @@ from utils.misc import get_dir_list
 from collections import Counter
 from enum import Enum
 from pathlib import Path
+import re
 
 
 class DataObject:
@@ -69,17 +70,27 @@ class PANData(object):
 
         self.train_splits = []
         for problem_dir in dir_list[train_split]:
-            k, u = self.load_one_problem(problem_dir)
+            doc_loader = self.load_one_problem(problem_dir)
+            problem = []
+            for doc in doc_loader:
+                problem.append(doc)
+            u = problem.pop(-1)
             l = train_labels[os.path.basename(problem_dir)]
-            self.train_splits.append({'k_doc': k, 'u_doc': u, "label": l})
-            self.train_splits.append({'k_doc': u, 'u_doc': k, "label": l})
+            for k in problem:
+                self.train_splits.append({'k_doc': k, 'u_doc': u, "label": l})
+
 
         self.test_splits = []
         for problem_dir in dir_list[test_split]:
-            k, u = self.load_one_problem(problem_dir)
+            doc_loader = self.load_one_problem(problem_dir)
+            problem = []
+            for doc in doc_loader:
+                problem.append(doc)
+            u = problem.pop(-1)
             l = test_labels[os.path.basename(problem_dir)]
-            self.test_splits.append({'k_doc': k, 'u_doc': u, "label": l})
-
+            for k in problem:
+                self.test_splits.append({'k_doc': k, 'u_doc': u, "label": l})
+                
         self.train_splits = pd.DataFrame(self.train_splits)
         self.test_splits = pd.DataFrame(self.test_splits)
 
@@ -94,20 +105,14 @@ class PANData(object):
 
     @staticmethod
     def load_one_problem(problem_dir):
-        doc_file_list = os.listdir(problem_dir)
-        u = None
-        k = None
-        if len(doc_file_list) > 2:
-            raise Exception(problem_dir + " have more " + str(len(doc_file_list)) + " files!")
+        doc_file_list = sorted(os.listdir(problem_dir))
+        assert(doc_file_list[-1].startswith('unknown'))
         for doc_file in doc_file_list:
             with open(os.path.join(problem_dir, doc_file), encoding='utf-8') as f:
-                if doc_file.startswith("known"):
-                    k = f.read()
-                elif doc_file.startswith("unknown"):
-                    u = f.read()
-                else:
+                if not doc_file.startswith("known") and not doc_file.startswith("unknown"):
                     raise Exception(doc_file + " is not right!")
-        return k, u
+                doc = f.read()
+                yield doc
 
 
 class DataBuilder(object):

@@ -46,31 +46,31 @@ class DataBuilderPan(DataBuilder):
     def load_and_proc_data(self, path_to_pickle):
         (train_data, train_y), (test_data, test_y) = self.load_dataframe(path_to_pickle)
 
-        all_data = pd.concat([train_data, test_data])
-        uniq_doc = pd.unique(all_data.values.ravel('K'))
+        def process_data(train_data, test_data):
+            all_data = pd.concat([train_data, test_data])
+            uniq_doc = pd.unique(all_data.values.ravel('K'))
 
-        pool = Pool(processes=4)
-        uniq_doc_clean = pool.map(clean_text, uniq_doc)
+            pool = Pool(processes=4)
+            uniq_doc_clean = pool.map(clean_text, uniq_doc)
 
-        # doc_lens = [len(d) for d in uniq_doc]
-        # print( sorted(doc_lens, reverse=True)[:20] )
+            # doc_lens = [len(d) for d in uniq_doc]
+            # print( sorted(doc_lens, reverse=True)[:20] )
 
-        # notice we limit vocab size here
-        tokenizer = Tokenizer(num_words=self.vocabulary_size)
-        tokenizer.fit_on_texts(uniq_doc_clean)
-        uniq_seq = tokenizer.texts_to_sequences(uniq_doc_clean)
-        uniq_seq = pad_sequences(uniq_seq, maxlen=self.target_doc_len,
-                                 padding="post", truncating="post")
+            # notice we limit vocab size here
+            tokenizer = Tokenizer(num_words=self.vocabulary_size)
+            tokenizer.fit_on_texts(uniq_doc_clean)
+            uniq_seq = tokenizer.texts_to_sequences(uniq_doc_clean)
+            uniq_seq = pad_sequences(uniq_seq, maxlen=self.target_doc_len,
+                                     padding="post", truncating="post")
 
-        # a map from raw doc to vec sequence
-        raw_to_vec = dict(zip(uniq_doc, uniq_seq))
+            # a map from raw doc to vec sequence
+            return dict(zip(uniq_doc, uniq_seq)), tokenizer
 
+        raw_to_vec, tokenizer = process_data(train_data, test_data)
         self.train_data = self.proc_data(train_data, train_y, raw_to_vec)
         self.test_data = self.proc_data(test_data, test_y, raw_to_vec)
-
-        self.domain_list = self.match_domain_combo(train_data)
-
         self.vocab = tokenizer.word_index
+        self.domain_list = self.match_domain_combo(train_data)
         self.embed_matrix =  self.build_embedding_matrix()
 
     def match_domain_combo(self, train_data):

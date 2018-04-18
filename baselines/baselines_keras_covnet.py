@@ -84,7 +84,6 @@ def try_pan():
     data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
                                   embed_dim=100, vocab_size=30000, target_doc_len=8192, target_sent_len=1024)
     train_data = data_builder.get_train_data()
-
     model = cnn1(data_builder)
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
