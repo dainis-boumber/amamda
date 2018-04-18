@@ -152,9 +152,6 @@ class DataBuilder(object):
     def get_train_data(self) -> DataObject:
         return self.train_data
 
-    def get_val_data(self) -> DataObject:
-        return self.val_data
-
     def get_test_data(self) -> DataObject:
         return self.test_data
 

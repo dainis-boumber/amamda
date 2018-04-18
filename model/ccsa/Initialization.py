@@ -35,14 +35,21 @@ def contrastive_loss(y_true, y_pred):
     margin = 1
     return K.mean(y_true * K.square(y_pred) + (1 - y_true) * K.square(K.maximum(margin - y_pred, 0)))
 
+def _dg_embed_layers(k_poll, u_poll):
+    #combining layers here for flexibility
+    k_output = Flatten()(k_poll)
+    k_output = Dense(64, activation='elu')(k_output)
+    u_output = Flatten()(u_poll)
+    u_output = Dense(64, activation='elu')(u_output)
+    return k_output, u_output
 
-def dg_cnn(data_builder):
+def _dg_cnn_base(data_builder, embed_dim, activation='relu'):
     k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_input")
     u_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="u_input")
 
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                                 input_dim=data_builder.vocabulary_size + 1,
-                                output_dim=100,
+                                output_dim=embed_dim,
                                 weights=[data_builder.embed_matrix],
                                 trainable=False)
 
@@ -58,12 +65,22 @@ def dg_cnn(data_builder):
     u_cov = conv_first(u_embedded_seq)
     u_poll = poll_first(u_cov)
 
+    return k_input, u_input, k_poll, u_poll
+
+def dg_cnn_yifan(data_builder, embed_dim=100):
+    k_input, u_input, k_poll, u_poll = _dg_cnn_base(data_builder, embed_dim)
     x = keras.layers.subtract([k_poll, u_poll])
+    output = Flatten()(k_poll)
+    output = Dense(128, activation='relu')(output)
+    model = Model([k_input, u_input], output)
 
-    x = Flatten()(x)
-    diff_embedding = Dense(128, activation='relu')(x)
+    return model
 
-    model = Model([k_input, u_input], diff_embedding)
+
+def dg_cnn_dainis(data_builder, embed_dim=100):
+    k_input, u_input, k_poll, u_poll = _dg_cnn_base(data_builder, embed_dim)
+    k_output, u_output = _dg_embed_layers(k_poll, u_poll)
+    model = Model([k_input, u_input], [k_output, u_output])
 
     return model
 
@@ -106,41 +123,44 @@ def make_pairs(data_object: DataObject):
     return pair_combo, source_l, target_l, y_combo
 
 def training_the_model(model, train, test, epochs=80, batch_size=256):
-    pair_combo, y1, y2, y_combo = train
+    pair_combo, y_src, y_tgt, y_combo = train
     test_value, test_label = test
 
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
-    if batch_size > len(y2):
+    if batch_size > len(y_tgt):
         print('Lowering batch size, to %d, number of inputs is too small for it.' % len(y2))
-        batch_size = len(y2)
+        batch_size = len(y_tgt)
     for e in range(epochs):
         printn(str(e) + '->')
-        for i in range(len(y2) // batch_size):
+        for i in range(len(y_tgt) // batch_size):
             # flipping stuff here
             from_sample = i * batch_size
             to_sample = (i + 1) * batch_size
-            loss = model.train_on_batch([
+            loss1 = model.train_on_batch([
                 np.array(pair_combo["s_k_doc"].iloc[from_sample:to_sample].tolist()),
                 np.array(pair_combo["s_u_doc"].iloc[from_sample:to_sample].tolist()),
                 np.array(pair_combo["t_k_doc"].iloc[from_sample:to_sample].tolist()),
                 np.array(pair_combo["t_u_doc"].iloc[from_sample:to_sample].tolist())
             ],
-                [ y1[from_sample:to_sample], y_combo[from_sample:to_sample] ])
+                [ y_src[from_sample:to_sample], y_combo[from_sample:to_sample] ])
 
-            loss = model.train_on_batch([
+            loss2 = model.train_on_batch([
                 np.array(pair_combo["t_k_doc"].iloc[from_sample:to_sample].tolist()),
                 np.array(pair_combo["t_u_doc"].iloc[from_sample:to_sample].tolist()),
                 np.array(pair_combo["s_k_doc"].iloc[from_sample:to_sample].tolist()),
                 np.array(pair_combo["s_u_doc"].iloc[from_sample:to_sample].tolist()),
             ],
-                [ y2[from_sample:to_sample], y_combo[from_sample:to_sample] ])
+                [ y_tgt[from_sample:to_sample], y_combo[from_sample:to_sample] ])
 
-
-        Out = model.predict([np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()),
+        print('loss1: ' + str(loss1))
+        print('loss2: ' + str(loss2))
+        output = model.predict([np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()),
                              np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()) ])
-        Acc_v = np.array(Out[0] > 0.5).astype(int).squeeze() == test_label
-        acc = np.count_nonzero(Acc_v) / len(Out[0])
+        #print(output)
+        #print(test_label)
+        acc_v = np.array(output[0] > 0.5).astype(int).squeeze() == test_label
+        acc = np.count_nonzero(acc_v) / len(output[0])
         logging.info("ACCU: " + str(acc))
         if best_acc < acc:
             best_acc = acc

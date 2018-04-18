@@ -12,6 +12,7 @@ from keras.layers import Flatten
 from keras.layers import Dense
 from keras.models import Model
 from data.DataBuilderML400 import DataBuilderML400
+from data.DataBuilderPan import DataBuilderPan
 from data.base import DataBuilder
 
 
@@ -51,7 +52,7 @@ def cnn1(data_builder: DataBuilder):
     return model
 
 
-def try_one():
+def try_ml():
     ml_data_builder = DataBuilderML400(embed_dim=100, vocab_size=20000,
                                        target_doc_len=8192, target_sent_len=1024)
     train_data = ml_data_builder.get_train_data()
@@ -79,7 +80,31 @@ def try_one():
     logging.info("LOSS: " + str(loss))
     logging.info("ACCU: " + str(acc))
 
+def try_pan():
+    data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
+                                  embed_dim=100, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)
+    train_data = data_builder.get_train_data()
+    val_data = data_builder.get_test_data()
+
+    save_path = Path("temp_model.h5")
+    if save_path.exists():
+        model = keras.models.load_model(save_path)
+    else:
+        model = cnn1(data_builder)
+
+    model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
+              train_data.label_doc,
+              epochs=400, batch_size=32)
+
+    test_data = data_builder.get_test_data()
+
+    loss, acc = model.evaluate(x=[np.stack(test_data.value["k_doc"].as_matrix()),
+                                  np.stack(test_data.value["u_doc"].as_matrix())],
+                               y=test_data.label_doc, batch_size=32)
+    logging.info("LOSS: " + str(loss))
+    logging.info("ACCU: " + str(acc))
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    try_one()
+    try_pan()

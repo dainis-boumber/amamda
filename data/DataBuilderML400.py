@@ -33,6 +33,9 @@ class DataBuilderML400(DataBuilder):
         print("nltk model loaded")
         self.load_all_data()
 
+    def get_val_data(self) -> DataObject:
+        return self.val_data
+
     def str_2_sent_2_token(self, data, sent_split=True, word_split=False):
         if sent_split:
             content_sents = self.sent_detector.tokenize(data)
