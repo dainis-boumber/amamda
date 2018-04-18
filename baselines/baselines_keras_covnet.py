@@ -41,12 +41,11 @@ def cnn1(data_builder: DataBuilder):
     x = keras.layers.subtract([k_poll, u_poll])
 
     x = Flatten()(x)
-    x = Dense(128, activation='relu')(x)
     preds = Dense(1, activation='sigmoid')(x)
 
     model = Model([k_input, u_input], preds)
     model.compile(loss='binary_crossentropy',
-                  optimizer='rmsprop',
+                  optimizer='adadelta',
                   metrics=['acc'])
 
     return model
@@ -82,19 +81,15 @@ def try_ml():
 
 def try_pan():
     data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
-                                  embed_dim=100, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)
+                                  embed_dim=100, vocab_size=30000, target_doc_len=8192, target_sent_len=1024)
     train_data = data_builder.get_train_data()
-    val_data = data_builder.get_test_data()
+    #val_data = data_builder.get_test_data()
 
-    save_path = Path("temp_model.h5")
-    if save_path.exists():
-        model = keras.models.load_model(save_path)
-    else:
-        model = cnn1(data_builder)
+    model = cnn1(data_builder)
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
-              epochs=400, batch_size=32)
+              epochs=12, batch_size=256)
 
     test_data = data_builder.get_test_data()
 
