@@ -67,8 +67,8 @@ class PANData(object):
             for line in truth_file:
                 test_labels.append(line.strip().split())
         test_labels = dict(test_labels)
-
         self.train_splits = []
+
         for problem_dir in dir_list[train_split]:
             doc_loader = self.load_one_problem(problem_dir)
             problem = []
@@ -78,7 +78,7 @@ class PANData(object):
             l = train_labels[os.path.basename(problem_dir)]
             for k in problem:
                 self.train_splits.append({'k_doc': k, 'u_doc': u, "label": l})
-
+                self.train_splits.append({'k_doc': u, 'u_doc': k, "label": l})#MAKE PERMANENT FIX LATER!!!
 
         self.test_splits = []
         for problem_dir in dir_list[test_split]:
@@ -90,7 +90,7 @@ class PANData(object):
             l = test_labels[os.path.basename(problem_dir)]
             for k in problem:
                 self.test_splits.append({'k_doc': k, 'u_doc': u, "label": l})
-                
+
         self.train_splits = pd.DataFrame(self.train_splits)
         self.test_splits = pd.DataFrame(self.test_splits)
 
