@@ -72,6 +72,7 @@ class PANData(object):
             k, u = self.load_one_problem(problem_dir)
             l = train_labels[os.path.basename(problem_dir)]
             self.train_splits.append({'k_doc': k, 'u_doc': u, "label": l})
+            self.train_splits.append({'k_doc': u, 'u_doc': k, "label": l})
 
         self.test_splits = []
         for problem_dir in dir_list[test_split]:
@@ -97,7 +98,7 @@ class PANData(object):
         u = None
         k = None
         if len(doc_file_list) > 2:
-            print(problem_dir + " have more " + str(len(doc_file_list)) + " files!")
+            raise Exception(problem_dir + " have more " + str(len(doc_file_list)) + " files!")
         for doc_file in doc_file_list:
             with open(os.path.join(problem_dir, doc_file), encoding='utf-8') as f:
                 if doc_file.startswith("known"):
@@ -105,7 +106,7 @@ class PANData(object):
                 elif doc_file.startswith("unknown"):
                     u = f.read()
                 else:
-                    print(doc_file + " is not right!")
+                    raise Exception(doc_file + " is not right!")
         return k, u
 
 

@@ -11,7 +11,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     embed_dim = 50
     data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
-                                  embed_dim=embed_dim, vocab_size=30000, target_doc_len=10000, target_sent_len=1024)
+                                  embed_dim=embed_dim, vocab_size=30000, target_doc_len=8192, target_sent_len=1024)
     train, test = Initialization.load_data(data_builder)
 
     model_g = Initialization.dg_cnn_yifan(data_builder, embed_dim)
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     input_tgt_u = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="bu_doc_input")
 
     # Loss = (1-alpha)Classification_Loss + (alpha)CSA
-    alpha = 0.25
+    alpha = 0
 
     # Having two streams. One for source and one for target.
     #emb_src_k, emb_src_u = model_g([input_src_k, input_src_u])
@@ -43,5 +43,5 @@ if __name__ == "__main__":
                   loss_weights={'av_out': 1 - alpha, 'CSA': alpha})
 
 
-    acc = Initialization.training_the_model(model, train, test, epochs=32, batch_size=16)
+    acc = Initialization.training_the_model(model, train, test, epochs=10, batch_size=64)
     print(('Best accuracy is {}.'.format(acc)))

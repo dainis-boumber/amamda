@@ -33,10 +33,18 @@ class DataBuilderPan(DataBuilder):
         self.dataset_dir = self.data_path + self.problem_name
         self.num_classes = 2  # true or false
         self.domain_list = None
-        self.load_and_proc_data()
+        if self.problem_name == 'PAN15':
+            path_to_pickle = "PAN15tuple.pickle"
+        elif self.problem_name == 'PAN14':
+            path_to_pickle = 'PAN14tuple.pickle'
+        elif self.problem_name == 'PAN13':
+            path_to_pickle = 'PAN13tuple.pickle'
+        else:
+            raise NotImplementedError
+        self.load_and_proc_data(path_to_pickle)
 
-    def load_and_proc_data(self):
-        (train_data, train_y), (test_data, test_y) = self.load_dataframe()
+    def load_and_proc_data(self, path_to_pickle):
+        (train_data, train_y), (test_data, test_y) = self.load_dataframe(path_to_pickle)
 
         all_data = pd.concat([train_data, test_data])
         uniq_doc = pd.unique(all_data.values.ravel('K'))
@@ -73,8 +81,8 @@ class DataBuilderPan(DataBuilder):
             domain_problem_list.append(domain_rows)
         return domain_problem_list
 
-    def load_dataframe(self):
-        data_pickle = Path("PAN15tuple.pickle")
+    def load_dataframe(self, path_to_pickle):
+        data_pickle = Path(path_to_pickle)
         if not data_pickle.exists():
             logging.info("loading data structure from RAW")
             loader = PANData(self.year, train_split=self.train_split, test_split=self.test_split)

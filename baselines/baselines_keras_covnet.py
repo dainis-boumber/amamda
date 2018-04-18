@@ -11,6 +11,7 @@ from keras.layers import MaxPooling1D
 from keras.layers import Flatten
 from keras.layers import Dense
 from keras.models import Model
+from keras.layers import Dropout
 from data.DataBuilderML400 import DataBuilderML400
 from data.DataBuilderPan import DataBuilderPan
 from data.base import DataBuilder
@@ -83,13 +84,12 @@ def try_pan():
     data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
                                   embed_dim=100, vocab_size=30000, target_doc_len=8192, target_sent_len=1024)
     train_data = data_builder.get_train_data()
-    #val_data = data_builder.get_test_data()
 
     model = cnn1(data_builder)
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
-              epochs=12, batch_size=256)
+              epochs=12, batch_size=128)
 
     test_data = data_builder.get_test_data()
 

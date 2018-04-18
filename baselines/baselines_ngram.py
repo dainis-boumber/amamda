@@ -2,6 +2,8 @@ import logging
 
 from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.neighbors.classification import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import scorer
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -44,7 +46,7 @@ def all_diff():
     for method_name, vec_method in vectorization_methods.items():
         logging.info("Vectorization Method: " + method_name)
         (X_train, y_train), (X_val, y_val), (X_test, y_test) = prep.data_vector_diff(vec_method)
-        clfs = [LinearSVC(), BernoulliNB()]
+        clfs = [LinearSVC(), BernoulliNB(), KNeighborsClassifier(), RandomForestClassifier()]
 
         for clf in clfs:
             logging.info("training " + type(clf).__name__)
@@ -66,4 +68,4 @@ def try_one():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
-    try_one()
+    all_diff()

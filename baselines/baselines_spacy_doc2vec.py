@@ -8,6 +8,7 @@ import pickle
 from sklearn.svm import LinearSVC
 from sklearn.svm import SVC
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import scorer
 
 import baselines.prepare as prepare
@@ -60,7 +61,7 @@ def data_vector_diff():
 def main():
     logging.basicConfig(level=logging.INFO)
 
-    clfs = [LinearSVC(), BernoulliNB(), SVC(kernel='rbf'), SVC(kernel='poly')]
+    clfs = [LinearSVC(), BernoulliNB(), MLPClassifier()]
 
     logging.info("SBS Vector TESTS =======================================")
     (X_train, y_train), (X_val, y_val), (X_test, y_test) = data_vector_sbs()

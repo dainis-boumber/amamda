@@ -71,7 +71,6 @@ def dg_cnn_yifan(data_builder, embed_dim=100):
     k_input, u_input, k_poll, u_poll = _dg_cnn_base(data_builder, embed_dim)
     x = keras.layers.subtract([k_poll, u_poll])
     output = Flatten()(k_poll)
-    output = Dense(128, activation='relu')(output)
     model = Model([k_input, u_input], output)
 
     return model
@@ -153,12 +152,8 @@ def training_the_model(model, train, test, epochs=80, batch_size=256):
             ],
                 [ y_tgt[from_sample:to_sample], y_combo[from_sample:to_sample] ])
 
-        print('loss1: ' + str(loss1))
-        print('loss2: ' + str(loss2))
         output = model.predict([np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()),
                              np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()) ])
-        #print(output)
-        #print(test_label)
         acc_v = np.array(output[0] > 0.5).astype(int).squeeze() == test_label
         acc = np.count_nonzero(acc_v) / len(output[0])
         logging.info("ACCU: " + str(acc))
