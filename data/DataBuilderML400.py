@@ -1,15 +1,17 @@
+from pathlib import Path
+from multiprocessing import Pool
 import pickle
 import logging
 import numpy as np
 import pandas as pd
+
 import nltk
-from multiprocessing import Pool
 from nltk.tokenize.moses import MosesTokenizer
-from tensorflow.python.keras.preprocessing.text import Tokenizer
-from tensorflow.python.keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+
 from data.MLP400AV.mlpapi import MLPVLoader
-from base import DataObject, DataBuilder, clean_text
-from pathlib import Path
+from data.base import DataObject, DataBuilder, clean_text
 
 
 class DataBuilderML400(DataBuilder):
@@ -32,9 +34,6 @@ class DataBuilderML400(DataBuilder):
         self.tokenizer = MosesTokenizer()
         print("nltk model loaded")
         self.load_all_data()
-
-    def get_val_data(self) -> DataObject:
-        return self.val_data
 
     def str_2_sent_2_token(self, data, sent_split=True, word_split=False):
         if sent_split:
@@ -87,11 +86,11 @@ class DataBuilderML400(DataBuilder):
 
             logging.info("load data structure completed")
 
-            pickle.dump([train_data, val_data, test_data, train_y, val_y, test_y], open(data_pickle, mode="wb"))
+            pickle.dump([train_data, val_data, test_data, train_y, val_y, test_y], data_pickle.open(mode="wb"))
             logging.info("dumped all data structure in " + str(data_pickle))
         else:
             logging.info("loading data structure from PICKLE")
-            [train_data, val_data, test_data, train_y, val_y, test_y] = pickle.load(open(data_pickle, mode="rb"))
+            [train_data, val_data, test_data, train_y, val_y, test_y] = pickle.load(data_pickle.open(mode="rb"))
             logging.info("load data structure completed")
 
         return (train_data, train_y), (val_data, val_y), (test_data, test_y)

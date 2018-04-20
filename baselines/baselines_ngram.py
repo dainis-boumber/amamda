@@ -9,7 +9,7 @@ from sklearn.metrics import scorer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-import baselines.prepare as prep
+import baselines.prepare_ml as prep
 
 vector_comparison_methods = [prep.data_vector_sbs,
                              prep.data_vector_diff]

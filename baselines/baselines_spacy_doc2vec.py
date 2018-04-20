@@ -11,7 +11,7 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import scorer
 
-import baselines.prepare as prepare
+import baselines.prepare_ml as prepare
 
 
 def load_spacy_doc2vec():

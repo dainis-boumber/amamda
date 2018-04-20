@@ -7,8 +7,8 @@ import numpy as np
 import pandas as pd
 import textacy
 
-from tensorflow.python.keras.preprocessing.text import Tokenizer
-from tensorflow.python.keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 from data.base import DataObject, PANData, DataBuilder
 from utils.preprocessing.clean import clean_text
 

@@ -46,6 +46,9 @@ class LoadMethod(Enum):
 
 
 class PANData(object):
+    """
+    this class go find the PAN dataset dir, check it, list it
+    """
     def __init__(self, year, train_split, test_split):
         p = os.path.abspath(__file__ + "/../../data/PAN" + str(year) + '/')
         self.year = year
@@ -67,29 +70,21 @@ class PANData(object):
             for line in truth_file:
                 test_labels.append(line.strip().split())
         test_labels = dict(test_labels)
-        self.train_splits = []
 
+        self.train_splits = []
         for problem_dir in dir_list[train_split]:
-            doc_loader = self.load_one_problem(problem_dir)
-            problem = []
-            for doc in doc_loader:
-                problem.append(doc)
-            u = problem.pop(-1)
+            k_docs, u_doc = self.load_one_problem(problem_dir)
             l = train_labels[os.path.basename(problem_dir)]
-            for k in problem:
-                self.train_splits.append({'k_doc': k, 'u_doc': u, "label": l})
-                self.train_splits.append({'k_doc': u, 'u_doc': k, "label": l})#MAKE PERMANENT FIX LATER!!!
+            for k in k_docs:
+                self.train_splits.append({'k_doc': k, 'u_doc': u_doc, "label": l})
+                # self.train_splits.append({'k_doc': u_doc, 'u_doc': k, "label": l}) # MAKE PERMANENT FIX LATER!!!
 
         self.test_splits = []
         for problem_dir in dir_list[test_split]:
-            doc_loader = self.load_one_problem(problem_dir)
-            problem = []
-            for doc in doc_loader:
-                problem.append(doc)
-            u = problem.pop(-1)
+            k_docs, u_doc = self.load_one_problem(problem_dir)
             l = test_labels[os.path.basename(problem_dir)]
-            for k in problem:
-                self.test_splits.append({'k_doc': k, 'u_doc': u, "label": l})
+            for k in k_docs:
+                self.test_splits.append({'k_doc': k, 'u_doc': u_doc, "label": l})
 
         self.train_splits = pd.DataFrame(self.train_splits)
         self.test_splits = pd.DataFrame(self.test_splits)
@@ -106,13 +101,17 @@ class PANData(object):
     @staticmethod
     def load_one_problem(problem_dir):
         doc_file_list = sorted(os.listdir(problem_dir))
-        assert(doc_file_list[-1].startswith('unknown'))
+        k_docs = []
         for doc_file in doc_file_list:
             with open(os.path.join(problem_dir, doc_file), encoding='utf-8') as f:
-                if not doc_file.startswith("known") and not doc_file.startswith("unknown"):
+                if doc_file.startswith("known"):
+                    doc = f.read()
+                    k_docs.append(doc)
+                elif doc_file.startswith("unknown"):
+                    u_doc = f.read()
+                else:
                     raise Exception(doc_file + " is not right!")
-                doc = f.read()
-                yield doc
+        return k_docs, u_doc
 
 
 class DataBuilder(object):
@@ -121,9 +120,6 @@ class DataBuilder(object):
         logging.info("setting: %s is %s", "vocab_size", vocab_size)
         logging.info("setting: %s is %s", "target_doc_len", target_doc_len)
         logging.info("setting: %s is %s", "target_sent_len", target_sent_len)
-
-        assert embed_dim is not None
-        assert target_sent_len is not None
 
         self.num_classes = None
 
@@ -138,25 +134,28 @@ class DataBuilder(object):
         self.vocab = None
         self.embed_matrix = None
 
-        self.glove_dir = os.path.join(os.path.dirname(__file__), 'glove/')
-        self.glove_path = Path(self.glove_dir + "glove.6B." + str(self.embedding_dim) + "d.txt")
-
         self.data_path = os.path.join(os.path.dirname(__file__), '..', 'data/')
 
-        glove_pickle = Path(os.path.join(self.glove_dir, "glove" + str(self.embedding_dim) + ".pickle"))
-        if not glove_pickle.exists():
-            print("loading GLOVE embedding.")
-            self.glove_dict = self.load_glove_vector()
-            print("loading embedding completed.")
-            with open(glove_pickle, "wb") as f:
-                pickle.dump(self.glove_dict, f)
-            print("glove embedding pickled.")
-        else:
-            self.glove_dict = pickle.load(open(glove_pickle, "rb"))
-            print("loaded GLOVE from pickle.")
+        if(self.embedding_dim is None):
+            self.glove_dir = os.path.join(os.path.dirname(__file__), 'glove/')
+            self.glove_path = Path(self.glove_dir + "glove.6B." + str(self.embedding_dim) + "d.txt")
+            glove_pickle = Path(os.path.join(self.glove_dir, "glove" + str(self.embedding_dim) + ".pickle"))
+            if not glove_pickle.exists():
+                print("loading GLOVE embedding.")
+                self.glove_dict = self.load_glove_vector()
+                print("loading embedding completed.")
+                with glove_pickle.open("wb") as f:
+                    pickle.dump(self.glove_dict, f)
+                print("glove embedding pickled.")
+            else:
+                self.glove_dict = pickle.load(glove_pickle.open("rb"))
+                print("loaded GLOVE from pickle.")
 
     def get_train_data(self) -> DataObject:
         return self.train_data
+
+    def get_val_data(self) -> DataObject:
+        return self.val_data
 
     def get_test_data(self) -> DataObject:
         return self.test_data
@@ -165,7 +164,7 @@ class DataBuilder(object):
         return self.vocab
 
     def load_glove_vector(self):
-        glove_lines = list(open(self.glove_path, "r", encoding="utf-8").readlines())
+        glove_lines = list(self.glove_path.open("r", encoding="utf-8").readlines())
         glove_lines = [s.split(" ", 1) for s in glove_lines if (len(s) > 0 and s != "\n")]
         glove_words = [s[0] for s in glove_lines]
         vector_list = [s[1] for s in glove_lines]
