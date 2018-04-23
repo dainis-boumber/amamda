@@ -46,10 +46,13 @@ class LoadMethod(Enum):
 
 
 class PANData(object):
-    """
-    this class go find the PAN dataset dir, check it, list it
-    """
+
     def __init__(self, year, train_split, test_split):
+        """
+        this class go find the PAN dataset dir, check it, list it, load the whole txt.
+        also read in truth.txt for labels.
+        The results are in a Dataframe with 3 columns, k_doc, u_doc, label
+        """
         p = os.path.abspath(__file__ + "/../../data/PAN" + str(year) + '/')
         self.year = year
         self.name = 'PAN' + str(year)
@@ -102,6 +105,7 @@ class PANData(object):
     def load_one_problem(problem_dir):
         doc_file_list = sorted(os.listdir(problem_dir))
         k_docs = []
+        u_doc = None
         for doc_file in doc_file_list:
             with open(os.path.join(problem_dir, doc_file), encoding='utf-8') as f:
                 if doc_file.startswith("known"):
@@ -136,7 +140,7 @@ class DataBuilder(object):
 
         self.data_path = os.path.join(os.path.dirname(__file__), '..', 'data/')
 
-        if(self.embedding_dim is None):
+        if(self.embedding_dim is not None):
             self.glove_dir = os.path.join(os.path.dirname(__file__), 'glove/')
             self.glove_path = Path(self.glove_dir + "glove.6B." + str(self.embedding_dim) + "d.txt")
             glove_pickle = Path(os.path.join(self.glove_dir, "glove" + str(self.embedding_dim) + ".pickle"))

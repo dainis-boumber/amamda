@@ -8,6 +8,7 @@ import keras
 from keras.layers import Input
 from keras.layers import Embedding
 from keras.layers import Conv1D
+from keras.layers import GRU
 from keras.layers import MaxPooling1D
 from keras.layers import Flatten
 from keras.layers import Dense
@@ -18,12 +19,13 @@ from data.DataBuilderPan import DataBuilderPan
 from data.base import DataBuilder
 
 
-def cnn1(data_builder: DataBuilder):
+def rnn_1(data_builder: DataBuilder):
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                                 input_dim=data_builder.vocabulary_size + 1,
                                 output_dim=100,
                                 weights=[data_builder.embed_matrix],
-                                trainable=False)
+                                trainable=False,
+                                mask_zero=True)
 
     k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_doc_input")
     k_embedded_seq = embedding_layer(k_input)
@@ -31,19 +33,27 @@ def cnn1(data_builder: DataBuilder):
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
-    conv_first = Conv1D(filters=256, kernel_size=5, activation='relu')
-    poll_first = MaxPooling1D(pool_size=data_builder.target_doc_len - 5 + 1)
+    gru_layer = GRU(units=128)
+    # poll_first = MaxPooling1D(pool_size=data_builder.target_doc_len - 5 + 1)
 
-    k_cov = conv_first(k_embedded_seq)
-    k_poll = poll_first(k_cov)
+    k_gru = gru_layer(k_embedded_seq)
+    # k_poll = poll_first(k_cov)
 
-    u_cov = conv_first(u_embedded_seq)
-    u_poll = poll_first(u_cov)
+    u_gru = gru_layer(u_embedded_seq)
+    # u_poll = poll_first(u_cov)
 
-    x = keras.layers.subtract([k_poll, u_poll])
+    k_gru = Dense(8, activation='relu')(k_gru)
+    u_gru = Dense(8, activation='relu')(u_gru)
+
+    # x = keras.layers.subtract([k_feat, u_feat])
+
+    k_gru = keras.layers.Reshape([8, 1])(k_gru)
+    u_gru = keras.layers.Reshape([1, 8])(u_gru)
+    x = keras.layers.Multiply()([k_gru, u_gru])
+    # x = k_gru * u_gru
 
     x = Flatten()(x)
-    x = Dense(32, activation='relu')(x)
+    # x = Dense(32, activation='relu')(x)
     preds = Dense(1, activation='sigmoid')(x)
 
     model = Model([k_input, u_input], preds)
@@ -60,11 +70,11 @@ def try_ml():
     train_data = ml_data_builder.get_train_data()
     val_data = ml_data_builder.get_val_data()
 
-    save_path = Path("temp_model.h5")
-    if save_path.exists():
-        model = keras.models.load_model(save_path)
-    else:
-        model = cnn1(ml_data_builder)
+    # save_path = Path("temp_model.h5")
+    # if save_path.exists():
+    #     model = keras.models.load_model(save_path)
+    # else:
+    model = rnn_1(ml_data_builder)
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
@@ -88,11 +98,11 @@ def try_pan():
                                   word_split=True)
     train_data = data_builder.get_train_data()
 
-    model = cnn1(data_builder)
+    model = rnn_1(data_builder)
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
-              epochs=5, batch_size=64)
+              epochs=4, batch_size=32)
 
     test_data = data_builder.get_test_data()
 

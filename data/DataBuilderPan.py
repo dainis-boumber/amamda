@@ -46,32 +46,37 @@ class DataBuilderPan(DataBuilder):
     def load_and_proc_data(self, path_to_pickle):
         (train_data, train_y), (test_data, test_y) = self.load_dataframe(path_to_pickle)
 
-        def process_data(train_data, test_data):
+        if self.word_split:
             all_data = pd.concat([train_data, test_data])
-            uniq_doc = pd.unique(all_data.values.ravel('K'))
+            doc_vec_dict, tokenizer = self.make_doc_vector(all_data)
 
-            pool = Pool(processes=4)
-            uniq_doc_clean = pool.map(clean_text, uniq_doc)
+            train_vector = train_data.applymap(lambda x: doc_vec_dict[x])
+            test_vector = test_data.applymap(lambda x: doc_vec_dict[x])
 
-            # doc_lens = [len(d) for d in uniq_doc]
-            # print( sorted(doc_lens, reverse=True)[:20] )
+            self.train_data = self.make_data_obj(train_data, train_vector, train_y)
+            self.test_data = self.make_data_obj(test_data, test_vector, test_y)
+            self.vocab = tokenizer.word_index
+            self.embed_matrix =  self.build_embedding_matrix()
+        else:
+            pass
 
-            # notice we limit vocab size here
-            tokenizer = Tokenizer(num_words=self.vocabulary_size)
-            tokenizer.fit_on_texts(uniq_doc_clean)
-            uniq_seq = tokenizer.texts_to_sequences(uniq_doc_clean)
-            uniq_seq = pad_sequences(uniq_seq, maxlen=self.target_doc_len,
-                                     padding="post", truncating="post")
+    def make_doc_vector(self, all_data):
+        uniq_doc = pd.unique(all_data.values.ravel('K'))
+        logging.info("Total NO. of Unique Document: " + str(len(uniq_doc)))
 
-            # a map from raw doc to vec sequence
-            return dict(zip(uniq_doc, uniq_seq)), tokenizer
+        pool = Pool(processes=4)
+        uniq_doc_clean = pool.map(clean_text, uniq_doc)
 
-        raw_to_vec, tokenizer = process_data(train_data, test_data)
-        self.train_data = self.proc_data(train_data, train_y, raw_to_vec)
-        self.test_data = self.proc_data(test_data, test_y, raw_to_vec)
-        self.vocab = tokenizer.word_index
-        self.domain_list = self.match_domain_combo(train_data)
-        self.embed_matrix =  self.build_embedding_matrix()
+        # create an tokenizer to convert document into numerical vector
+        # notice we limit vocab size here
+        tokenizer = Tokenizer(num_words=self.vocabulary_size)
+        tokenizer.fit_on_texts(uniq_doc_clean)
+        uniq_seq = tokenizer.texts_to_sequences(uniq_doc_clean)
+        uniq_seq = pad_sequences(uniq_seq, maxlen=self.target_doc_len,
+                                 padding="post", truncating="post")
+
+        # a map from raw doc to vec sequence
+        return dict(zip(uniq_doc, uniq_seq)), tokenizer
 
     def match_domain_combo(self, train_data):
         uniq_doc = pd.unique(train_data["k_doc"].values.ravel('K'))
@@ -88,11 +93,13 @@ class DataBuilderPan(DataBuilder):
             loader = PANData(self.year, train_split=self.train_split, test_split=self.test_split)
             train_data, test_data = loader.get_data()
 
+            # Takes out label column
             train_y = train_data['label'].tolist()
             test_y = test_data['label'].tolist()
-
             train_data.drop(['label'], axis=1, inplace=True)
             test_data.drop(['label'], axis=1, inplace=True)
+            train_y = np.array([1 if lbl == "Y" else 0 for lbl in train_y])
+            test_y = np.array([1 if lbl == "Y" else 0 for lbl in test_y])
 
             logging.info("load data structure completed")
 
@@ -100,25 +107,19 @@ class DataBuilderPan(DataBuilder):
             # logging.info("dumped all data structure in " + str(data_pickle))
         else:
             logging.info("loading data structure from PICKLE")
-            [train_data, test_data, train_y, test_y] = pickle.load(open(data_pickle, mode="rb"))
+            [train_data, test_data, train_y, test_y] = pickle.load(data_pickle.open(mode="rb"))
             logging.info("load data structure completed")
 
         return (train_data, train_y), (test_data, test_y)
 
-    def proc_data(self, data_raw, label, raw_to_vec):
-        vector_sequences = data_raw.applymap(lambda x: raw_to_vec[x])
-        doc_label = np.array([1 if lbl == "Y" else 0 for lbl in label])
+    def make_data_obj(self, data_raw, data_vector, labels):
+        logging.info("data shape: " + str(data_vector.shape))
+        logging.info("label shape: " + str(labels.shape))
 
-        logging.info("data shape: " + str(vector_sequences.shape))
-        logging.info("label shape: " + str(doc_label.shape))
-
-        if self.sent_split:
-            raise NotImplementedError
-
-        data_obj = DataObject(self.problem_name, len(doc_label))
+        data_obj = DataObject(self.problem_name, len(labels))
         data_obj.raw = data_raw
-        data_obj.label_doc = doc_label
-        data_obj.value = vector_sequences
+        data_obj.label_doc = labels
+        data_obj.value = data_vector
         return data_obj
 
 

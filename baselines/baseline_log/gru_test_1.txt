@@ -1,0 +1,151 @@
+def rnn_1(data_builder: DataBuilder):
+    embedding_layer = Embedding(input_length=data_builder.target_doc_len,
+                                input_dim=data_builder.vocabulary_size + 1,
+                                output_dim=100,
+                                weights=[data_builder.embed_matrix],
+                                trainable=False,
+                                mask_zero=True)
+
+    k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_doc_input")
+    k_embedded_seq = embedding_layer(k_input)
+    u_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="u_doc_input")
+    u_embedded_seq = embedding_layer(u_input)
+
+    # shared first conv
+    gru_layer = GRU(units=128)
+    # poll_first = MaxPooling1D(pool_size=data_builder.target_doc_len - 5 + 1)
+
+    k_gru = gru_layer(k_embedded_seq)
+    # k_poll = poll_first(k_cov)
+
+    u_gru = gru_layer(u_embedded_seq)
+    # u_poll = poll_first(u_cov)
+
+    k_gru = Dense(8, activation='relu')(k_gru)
+    u_gru = Dense(8, activation='relu')(u_gru)
+
+    # x = keras.layers.subtract([k_feat, u_feat])
+
+    k_gru = keras.layers.Reshape([8, 1])(k_gru)
+    u_gru = keras.layers.Reshape([1, 8])(u_gru)
+    x = keras.layers.Multiply()([k_gru, u_gru])
+    # x = k_gru * u_gru
+
+    x = Flatten()(x)
+    # x = Dense(32, activation='relu')(x)
+    preds = Dense(1, activation='sigmoid')(x)
+
+    model = Model([k_input, u_input], preds)
+    model.compile(loss='binary_crossentropy',
+                  optimizer='adadelta',
+                  metrics=['acc'])
+
+    return model
+
+
+
+
+C:\Users\aerye\AppData\Local\conda\conda\envs\tensorflow-env\python.exe "C:\Program Files\JetBrains\PyCharm 2018.1.1\helpers\pydev\pydevd.py" --multiproc --qt-support=auto --client 127.0.0.1 --port 54945 --file C:/Project/amamda/baselines/baselines_keras_rnn.py
+pydev debugger: process 5196 is connecting
+
+Connected to pydev debugger (build 181.4445.76)
+Using TensorFlow backend.
+INFO:root:setting: embed_dim is 100
+INFO:root:setting: vocab_size is 30000
+INFO:root:setting: target_doc_len is 8192
+INFO:root:setting: target_sent_len is 1024
+loaded GLOVE from pickle.
+INFO:root:YEAR: 15
+INFO:root:TRAIN SPLIT: pan15_train
+INFO:root:TEST SPLIT: pan15_test
+INFO:root:setting: sent_split is False
+INFO:root:setting: word_split is True
+INFO:root:loading data structure from RAW
+INFO:root:load data structure completed
+INFO:root:Total NO. of Unique Document: 198
+Using TensorFlow backend.
+Using TensorFlow backend.
+Using TensorFlow backend.
+Using TensorFlow backend.
+INFO:root:data shape: (100, 2)
+INFO:root:label shape: (100,)
+INFO:root:data shape: (500, 2)
+INFO:root:label shape: (500,)
+2018-04-22 19:31:46.532556: I T:\src\github\tensorflow\tensorflow\core\platform\cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2
+2018-04-22 19:31:47.580351: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1344] Found device 0 with properties:
+name: GeForce GTX 1060 major: 6 minor: 1 memoryClockRate(GHz): 1.569
+pciBusID: 0000:02:00.0
+totalMemory: 6.00GiB freeMemory: 4.97GiB
+2018-04-22 19:31:47.580730: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1423] Adding visible gpu devices: 0
+2018-04-22 19:31:48.157111: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:911] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-04-22 19:31:48.157330: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:917]      0
+2018-04-22 19:31:48.157461: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:930] 0:   N
+2018-04-22 19:31:48.157686: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 4742 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1060, pci bus id: 0000:02:00.0, compute capability: 6.1)
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+WARNING:tensorflow:Tensor._shape is private, use Tensor.shape instead. Tensor._shape will eventually be removed.
+Epoch 1/4
+
+ 32/100 [========>.....................] - ETA: 38s - loss: 0.6846 - acc: 0.5625
+ 64/100 [==================>...........] - ETA: 20s - loss: 0.7046 - acc: 0.5156
+ 96/100 [===========================>..] - ETA: 2s - loss: 0.6998 - acc: 0.5000
+100/100 [==============================] - 80s 797ms/step - loss: 0.7008 - acc: 0.5000
+Epoch 2/4
+
+ 32/100 [========>.....................] - ETA: 43s - loss: 0.6937 - acc: 0.5000
+ 64/100 [==================>...........] - ETA: 22s - loss: 0.6932 - acc: 0.4844
+ 96/100 [===========================>..] - ETA: 2s - loss: 0.6900 - acc: 0.5000
+100/100 [==============================] - 81s 812ms/step - loss: 0.6901 - acc: 0.5100
+Epoch 3/4
+
+ 32/100 [========>.....................] - ETA: 43s - loss: 0.6780 - acc: 0.5000
+ 64/100 [==================>...........] - ETA: 24s - loss: 0.6801 - acc: 0.5156
+ 96/100 [===========================>..] - ETA: 2s - loss: 0.6757 - acc: 0.5729
+100/100 [==============================] - 91s 906ms/step - loss: 0.6781 - acc: 0.5600
+Epoch 4/4
+
+ 32/100 [========>.....................] - ETA: 45s - loss: 0.6762 - acc: 0.6562
+ 64/100 [==================>...........] - ETA: 24s - loss: 0.6781 - acc: 0.6094
+ 96/100 [===========================>..] - ETA: 2s - loss: 0.6738 - acc: 0.6146
+100/100 [==============================] - 96s 960ms/step - loss: 0.6731 - acc: 0.6200
+
+ 32/500 [>.............................] - ETA: 1:19
+ 64/500 [==>...........................] - ETA: 1:13
+ 96/500 [====>.........................] - ETA: 1:07
+128/500 [======>.......................] - ETA: 1:01
+160/500 [========>.....................] - ETA: 56s
+192/500 [==========>...................] - ETA: 51s
+224/500 [============>.................] - ETA: 45s
+256/500 [==============>...............] - ETA: 40s
+288/500 [================>.............] - ETA: 35s
+320/500 [==================>...........] - ETA: 29s
+352/500 [====================>.........] - ETA: 24s
+384/500 [======================>.......] - ETA: 19s
+416/500 [=======================>......] - ETA: 13s
+448/500 [=========================>....] - ETA: 8s
+480/500 [===========================>..] - ETA: 3s
+500/500 [==============================] - 85s 170ms/step
+INFO:root:LOSS: 0.6881080679893493
+INFO:root:ACCU: 0.5619999995231628
+INFO:root:ROC: 0.575744
+
+Process finished with exit code 0
+
+
+
+CHANGED TO TRAIN FOR 7 EPOCH
+
+INFO:root:LOSS: 0.7317808494567871
+INFO:root:ACCU: 0.5760000004768372
+INFO:root:ROC: 0.5820479999999999
+
+
