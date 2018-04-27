@@ -27,5 +27,13 @@ def clean_str(str):
 
 def clean_text(content):
     content = content.replace("\n", " ")
-    content = textacy.preprocess_text(content, lowercase=True, no_contractions=True)
+    content = textacy.preprocess_text(content,
+                                      lowercase=True,
+                                      no_contractions=True)
+    # content = textacy.preprocess_text(content,
+    #                                   fix_unicode=True,
+    #                                   lowercase=True,
+    #                                   transliterate=True,
+    #                                   no_numbers=True,
+    #                                   no_contractions=True)
     return content

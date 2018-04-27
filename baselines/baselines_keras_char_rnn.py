@@ -33,7 +33,7 @@ def rnn_1(data_builder: DataBuilder):
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
-    gru_layer = GRU(units=128)
+    gru_layer = GRU(units=128, dropout=0.2)
     # poll_first = MaxPooling1D(pool_size=data_builder.target_doc_len - 5 + 1)
 
     k_gru = gru_layer(k_embedded_seq)
@@ -42,15 +42,19 @@ def rnn_1(data_builder: DataBuilder):
     u_gru = gru_layer(u_embedded_seq)
     # u_poll = poll_first(u_cov)
 
-    k_gru = Dense(8, activation='relu')(k_gru)
-    u_gru = Dense(8, activation='relu')(u_gru)
+    # k_gru = keras.layers.Dropout(0.1)(k_gru)
+    # u_gru = keras.layers.Dropout(0.1)(u_gru)
+
+    d_layer = Dense(8, activation='relu')
+    k_gru = d_layer(k_gru)
+    u_gru = d_layer(u_gru)
 
     # x = keras.layers.subtract([k_feat, u_feat])
 
     k_gru = keras.layers.Reshape([8, 1])(k_gru)
     u_gru = keras.layers.Reshape([1, 8])(u_gru)
     x = keras.layers.Multiply()([k_gru, u_gru])
-    # x = k_gru * u_gru
+    # x = keras.layers.Dropout(0.3)(x)
 
     x = Flatten()(x)
     # x = Dense(32, activation='relu')(x)

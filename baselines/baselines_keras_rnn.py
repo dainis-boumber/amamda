@@ -33,7 +33,7 @@ def rnn_1(data_builder: DataBuilder):
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
-    gru_layer = GRU(units=128)
+    gru_layer = GRU(units=128, dropout=0.2)
     # poll_first = MaxPooling1D(pool_size=data_builder.target_doc_len - 5 + 1)
 
     k_gru = gru_layer(k_embedded_seq)
@@ -102,7 +102,7 @@ def try_pan():
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
-              epochs=7, batch_size=32)
+              epochs=4, batch_size=32)
 
     test_data = data_builder.get_test_data()
 
