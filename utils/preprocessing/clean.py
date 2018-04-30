@@ -1,3 +1,5 @@
+import logging
+
 import textacy
 import itertools
 import re
@@ -25,15 +27,24 @@ def clean_str(str):
     return str.strip()
 
 
-def clean_text(content):
+def clean_text_minor(content):
+    logging.info("Minor Text Cleanup: LOWERCASE, NO_CONTRACTION")
     content = content.replace("\n", " ")
     content = textacy.preprocess_text(content,
                                       lowercase=True,
                                       no_contractions=True)
-    # content = textacy.preprocess_text(content,
-    #                                   fix_unicode=True,
-    #                                   lowercase=True,
-    #                                   transliterate=True,
-    #                                   no_numbers=True,
-    #                                   no_contractions=True)
+
+    return content
+
+
+def clean_text_major(content):
+    logging.info("Minor Text Cleanup: UNICODE, LOWERCASE, TRANSLITERATE, NO_NUM, NO_CONTRACTION")
+    content = content.replace("\n", " ")
+    content = textacy.preprocess_text(content,
+                                      fix_unicode=True,
+                                      lowercase=True,
+                                      transliterate=True,
+                                      no_numbers=True,
+                                      no_contractions=True)
+
     return content

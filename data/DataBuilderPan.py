@@ -10,7 +10,8 @@ import textacy
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from data.base import DataObject, PANData, DataBuilder
-from utils.preprocessing.clean import clean_text
+from utils.preprocessing.clean import clean_text_minor
+from utils.preprocessing.clean import clean_text_major
 
 
 class DataBuilderPan(DataBuilder):
@@ -46,9 +47,13 @@ class DataBuilderPan(DataBuilder):
     def load_and_proc_data(self, path_to_pickle):
         (train_data, train_y), (test_data, test_y) = self.load_dataframe(path_to_pickle)
 
+        all_data = pd.concat([train_data, test_data])
+        uniq_doc = pd.unique(all_data.values.ravel('K'))
+        logging.info("Total NO. of Unique Document: " + str(len(uniq_doc)))
+
+        # Word_split result in word level embedding
         if self.word_split:
-            all_data = pd.concat([train_data, test_data])
-            doc_vec_dict, tokenizer = self.make_doc_vector(all_data)
+            doc_vec_dict, tokenizer = self.make_word_doc_vector(uniq_doc)
 
             train_vector = train_data.applymap(lambda x: doc_vec_dict[x])
             test_vector = test_data.applymap(lambda x: doc_vec_dict[x])
@@ -57,15 +62,41 @@ class DataBuilderPan(DataBuilder):
             self.test_data = self.make_data_obj(test_data, test_vector, test_y)
             self.vocab = tokenizer.word_index
             self.embed_matrix =  self.build_embedding_matrix()
-        else:
-            pass
 
-    def make_doc_vector(self, all_data):
-        uniq_doc = pd.unique(all_data.values.ravel('K'))
-        logging.info("Total NO. of Unique Document: " + str(len(uniq_doc)))
+        # This would be char level 1-hot encoding
+        else:
+            doc_vec_dict, tokenizer = self.make_char_doc_vector(uniq_doc)
+
+            train_vector = train_data.applymap(lambda x: doc_vec_dict[x])
+            test_vector = test_data.applymap(lambda x: doc_vec_dict[x])
+
+            self.train_data = self.make_data_obj(train_data, train_vector, train_y)
+            self.test_data = self.make_data_obj(test_data, test_vector, test_y)
+            self.vocab = tokenizer.word_index
+            self.vocabulary_size = len(self.vocab)
+            self.embed_matrix =  self.build_char_embedding_matrix()
+
+
+    def make_char_doc_vector(self, uniq_doc):
 
         pool = Pool(processes=4)
-        uniq_doc_clean = pool.map(clean_text, uniq_doc)
+        uniq_doc_clean = pool.map(clean_text_major, uniq_doc)
+
+        # create an tokenizer to convert document into numerical vector
+        # notice we limit vocab size here
+        tokenizer = Tokenizer(lower=False, char_level=True)
+        tokenizer.fit_on_texts(uniq_doc_clean)
+        uniq_seq = tokenizer.texts_to_sequences(uniq_doc_clean)
+        uniq_seq = pad_sequences(uniq_seq, maxlen=self.target_doc_len,
+                                 padding="post", truncating="post")
+
+        # a map from raw doc to vec sequence
+        return dict(zip(uniq_doc, uniq_seq)), tokenizer
+
+    def make_word_doc_vector(self, uniq_doc):
+
+        pool = Pool(processes=4)
+        uniq_doc_clean = pool.map(clean_text_minor, uniq_doc)
 
         # create an tokenizer to convert document into numerical vector
         # notice we limit vocab size here
@@ -118,8 +149,8 @@ class DataBuilderPan(DataBuilder):
 
         data_obj = DataObject(self.problem_name, len(labels))
         data_obj.raw = data_raw
-        data_obj.label_doc = labels
         data_obj.value = data_vector
+        data_obj.label_doc = labels
         return data_obj
 
 

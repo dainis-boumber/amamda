@@ -217,6 +217,14 @@ class DataBuilder(object):
             if embedding_vector is not None:
                 # words not found in embedding index will be all-zeros.
                 embedding_matrix[i] = embedding_vector
+            else:
+                embedding_matrix[i] = np.random.normal(0.1, 0.3, (self.embedding_dim))
+        return embedding_matrix
+
+    def build_char_embedding_matrix(self):
+        embedding_matrix = np.zeros((self.vocabulary_size + 1, self.vocabulary_size))
+        for char, i in list(self.vocab.items())[:self.vocabulary_size]:
+            embedding_matrix[i][i-1] = 1
         return embedding_matrix
 
     @staticmethod

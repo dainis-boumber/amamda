@@ -11,7 +11,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
 from data.MLP400AV.mlpapi import MLPVLoader
-from data.base import DataObject, DataBuilder, clean_text
+from data.base import DataObject, DataBuilder, clean_text_minor
 
 
 class DataBuilderML400(DataBuilder):
@@ -102,7 +102,7 @@ class DataBuilderML400(DataBuilder):
         uniq_doc = pd.unique(all_data.values.ravel('K'))
 
         pool = Pool(processes=4)
-        uniq_doc_clean = pool.map(clean_text, uniq_doc)
+        uniq_doc_clean = pool.map(clean_text_minor, uniq_doc)
 
         # doc_lens = [len(d) for d in uniq_doc]
         # print( sorted(doc_lens, reverse=True)[:20] )

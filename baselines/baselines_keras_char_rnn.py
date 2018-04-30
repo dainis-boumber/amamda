@@ -9,6 +9,7 @@ from keras.layers import Input
 from keras.layers import Embedding
 from keras.layers import Conv1D
 from keras.layers import GRU
+from keras.layers import LSTM
 from keras.layers import MaxPooling1D
 from keras.layers import Flatten
 from keras.layers import Dense
@@ -22,7 +23,7 @@ from data.base import DataBuilder
 def rnn_1(data_builder: DataBuilder):
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                                 input_dim=data_builder.vocabulary_size + 1,
-                                output_dim=100,
+                                output_dim=data_builder.vocabulary_size,
                                 weights=[data_builder.embed_matrix],
                                 trainable=False,
                                 mask_zero=True)
@@ -34,29 +35,30 @@ def rnn_1(data_builder: DataBuilder):
 
     # shared first conv
     gru_layer = GRU(units=128, dropout=0.2)
+    # gru_layer = LSTM(units=128)
     # poll_first = MaxPooling1D(pool_size=data_builder.target_doc_len - 5 + 1)
 
-    k_gru = gru_layer(k_embedded_seq)
+    k_feat = gru_layer(k_embedded_seq)
     # k_poll = poll_first(k_cov)
 
-    u_gru = gru_layer(u_embedded_seq)
+    u_feat = gru_layer(u_embedded_seq)
     # u_poll = poll_first(u_cov)
 
     # k_gru = keras.layers.Dropout(0.1)(k_gru)
     # u_gru = keras.layers.Dropout(0.1)(u_gru)
 
-    d_layer = Dense(8, activation='relu')
-    k_gru = d_layer(k_gru)
-    u_gru = d_layer(u_gru)
-
-    # x = keras.layers.subtract([k_feat, u_feat])
-
-    k_gru = keras.layers.Reshape([8, 1])(k_gru)
-    u_gru = keras.layers.Reshape([1, 8])(u_gru)
-    x = keras.layers.Multiply()([k_gru, u_gru])
+    # d_layer = Dense(8, activation='tanh')
+    # k_s_feat = d_layer(k_feat)
+    # u_s_feat = d_layer(u_feat)
+    #
+    x = keras.layers.subtract([k_feat, u_feat])
+    #
+    # k_s_feat = keras.layers.Reshape([8, 1])(k_s_feat)
+    # u_s_feat = keras.layers.Reshape([1, 8])(u_s_feat)
+    # x = keras.layers.Multiply()([k_s_feat, u_s_feat])
     # x = keras.layers.Dropout(0.3)(x)
 
-    x = Flatten()(x)
+    # x = Flatten()(x)
     # x = Dense(32, activation='relu')(x)
     preds = Dense(1, activation='sigmoid')(x)
 
@@ -98,8 +100,8 @@ def try_ml():
 
 def try_pan():
     data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
-                                  embed_dim=100, vocab_size=30000, target_doc_len=8192, target_sent_len=1024,
-                                  word_split=True)
+                                  embed_dim=None, vocab_size=-1, target_doc_len=4096, target_sent_len=1024,
+                                  word_split=False)
     train_data = data_builder.get_train_data()
 
     model = rnn_1(data_builder)

@@ -94,7 +94,7 @@ def try_ml():
 
 def try_pan():
     data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
-                                  embed_dim=100, vocab_size=30000, target_doc_len=8192, target_sent_len=1024,
+                                  embed_dim=100, vocab_size=30000, target_doc_len=5000, target_sent_len=1024,
                                   word_split=True)
     train_data = data_builder.get_train_data()
 
