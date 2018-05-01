@@ -18,6 +18,11 @@ from data.DataBuilderML400 import DataBuilderML400
 from data.DataBuilderPan import DataBuilderPan
 from data.base import DataBuilder
 
+from keras import backend as K
+from keras.utils.generic_utils import get_custom_objects
+
+def custom_activation(x):
+    return K.max( K.sqrt(x + 1) - 1, 0 )
 
 def rnn_1(data_builder: DataBuilder):
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
@@ -25,7 +30,8 @@ def rnn_1(data_builder: DataBuilder):
                                 output_dim=100,
                                 weights=[data_builder.embed_matrix],
                                 trainable=False,
-                                mask_zero=True)
+                                mask_zero=True,
+                                name="embedding_layer")
 
     k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_doc_input")
     k_embedded_seq = embedding_layer(k_input)
@@ -33,26 +39,24 @@ def rnn_1(data_builder: DataBuilder):
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
-    gru_layer = GRU(units=128, dropout=0.2)
-    # poll_first = MaxPooling1D(pool_size=data_builder.target_doc_len - 5 + 1)
+    gru_layer = GRU(units=128, activation=custom_activation)
 
-    k_gru = gru_layer(k_embedded_seq)
-    # k_poll = poll_first(k_cov)
+    k_feat = gru_layer(k_embedded_seq)
 
-    u_gru = gru_layer(u_embedded_seq)
-    # u_poll = poll_first(u_cov)
+    u_feat = gru_layer(u_embedded_seq)
 
-    k_gru = Dense(8, activation='relu')(k_gru)
-    u_gru = Dense(8, activation='relu')(u_gru)
+    d_layer = Dense(8, activation='relu')
+    k_feat = Dense(8, activation='relu')(k_feat)
+    u_feat = Dense(8, activation='relu')(u_feat)
+
+    k_feat = keras.layers.Reshape([8, 1])(k_feat)
+    u_feat = keras.layers.Reshape([1, 8])(u_feat)
+    x = keras.layers.Multiply()([k_feat, u_feat])
+
+    x = Flatten()(x)
 
     # x = keras.layers.subtract([k_feat, u_feat])
 
-    k_gru = keras.layers.Reshape([8, 1])(k_gru)
-    u_gru = keras.layers.Reshape([1, 8])(u_gru)
-    x = keras.layers.Multiply()([k_gru, u_gru])
-    # x = k_gru * u_gru
-
-    x = Flatten()(x)
     # x = Dense(32, activation='relu')(x)
     preds = Dense(1, activation='sigmoid')(x)
 
@@ -66,7 +70,7 @@ def rnn_1(data_builder: DataBuilder):
 
 def try_ml():
     ml_data_builder = DataBuilderML400(embed_dim=100, vocab_size=20000,
-                                       target_doc_len=8192, target_sent_len=1024)
+                                       target_doc_len=8000, target_sent_len=1024)
     train_data = ml_data_builder.get_train_data()
     val_data = ml_data_builder.get_val_data()
 
@@ -94,7 +98,7 @@ def try_ml():
 
 def try_pan():
     data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
-                                  embed_dim=100, vocab_size=30000, target_doc_len=5000, target_sent_len=1024,
+                                  embed_dim=100, vocab_size=30000, target_doc_len=600, target_sent_len=1024,
                                   word_split=True)
     train_data = data_builder.get_train_data()
 
@@ -102,7 +106,7 @@ def try_pan():
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
-              epochs=4, batch_size=32)
+              epochs=1, batch_size=32)
 
     test_data = data_builder.get_test_data()
 
@@ -120,6 +124,12 @@ def try_pan():
     roc_result = roc_auc_score(test_data.label_doc, pred_output)
     logging.info("ROC: " + str(roc_result))
 
+    get_k_gru_output = K.function(model.input,
+                                      [model.get_layer("embedding_layer").get_output_at(0),
+                                       model.get_layer("embedding_layer").get_output_at(1)])
+    layer_output = get_k_gru_output([test_data.value["k_doc"][0].reshape([1,600]),
+                                     test_data.value["u_doc"][0].reshape([1,600])] )
+    print(layer_output)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
