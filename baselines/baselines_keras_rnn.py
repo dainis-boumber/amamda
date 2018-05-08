@@ -24,7 +24,10 @@ from keras.utils.generic_utils import get_custom_objects
 def custom_activation(x):
     return K.max( K.sqrt(x + 1) - 1, 0 )
 
-def rnn_1(data_builder: DataBuilder):
+
+def rnn_concat(data_builder: DataBuilder):
+    logging.info("BUILDING RNN USING CONCATENATION")
+
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
                                 input_dim=data_builder.vocabulary_size + 1,
                                 output_dim=100,
@@ -39,15 +42,52 @@ def rnn_1(data_builder: DataBuilder):
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
-    gru_layer = GRU(units=128, activation=custom_activation)
+    gru_layer = GRU(units=128, name="gru_layer", dropout=0.3, recurrent_dropout=0.3)
+
+    k_feat = gru_layer(k_embedded_seq)
+
+    u_feat = gru_layer(u_embedded_seq)
+
+    # d_layer = Dense(8, activation='relu')
+
+    all_feat = keras.layers.concatenate([k_feat, u_feat])
+
+    all_feat = Dense(64, activation='relu')(all_feat)
+    preds = Dense(1, activation='sigmoid')(all_feat)
+
+    model = Model([k_input, u_input], preds)
+    model.compile(loss='binary_crossentropy',
+                  optimizer='adadelta',
+                  metrics=['acc'])
+
+    return model
+
+
+def rnn_outer_product(data_builder: DataBuilder):
+    logging.info("BUILDING RNN USING OUTER PRODUCT")
+    embedding_layer = Embedding(input_length=data_builder.target_doc_len,
+                                input_dim=data_builder.vocabulary_size + 1,
+                                output_dim=100,
+                                weights=[data_builder.embed_matrix],
+                                trainable=False,
+                                mask_zero=True,
+                                name="embedding_layer")
+
+    k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_doc_input")
+    k_embedded_seq = embedding_layer(k_input)
+    u_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="u_doc_input")
+    u_embedded_seq = embedding_layer(u_input)
+
+    # shared first conv
+    gru_layer = GRU(units=128, name="gru_layer", dropout=0.3, recurrent_dropout=0.3)
 
     k_feat = gru_layer(k_embedded_seq)
 
     u_feat = gru_layer(u_embedded_seq)
 
     d_layer = Dense(8, activation='relu')
-    k_feat = Dense(8, activation='relu')(k_feat)
-    u_feat = Dense(8, activation='relu')(u_feat)
+    k_feat = d_layer(k_feat)
+    u_feat = d_layer(u_feat)
 
     k_feat = keras.layers.Reshape([8, 1])(k_feat)
     u_feat = keras.layers.Reshape([1, 8])(u_feat)
@@ -78,7 +118,7 @@ def try_ml():
     # if save_path.exists():
     #     model = keras.models.load_model(save_path)
     # else:
-    model = rnn_1(ml_data_builder)
+    model = rnn_outer_product(ml_data_builder)
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
@@ -96,17 +136,18 @@ def try_ml():
     logging.info("LOSS: " + str(loss))
     logging.info("ACCU: " + str(acc))
 
+
 def try_pan():
     data_builder = DataBuilderPan(year="15", train_split="pan15_train", test_split="pan15_test",
-                                  embed_dim=100, vocab_size=30000, target_doc_len=600, target_sent_len=1024,
+                                  embed_dim=100, vocab_size=5000, target_doc_len=600, target_sent_len=1024,
                                   word_split=True)
     train_data = data_builder.get_train_data()
 
-    model = rnn_1(data_builder)
+    model = rnn_outer_product(data_builder)
 
     model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
               train_data.label_doc,
-              epochs=1, batch_size=32)
+              epochs=6, batch_size=32)
 
     test_data = data_builder.get_test_data()
 
@@ -124,12 +165,14 @@ def try_pan():
     roc_result = roc_auc_score(test_data.label_doc, pred_output)
     logging.info("ROC: " + str(roc_result))
 
-    get_k_gru_output = K.function(model.input,
-                                      [model.get_layer("embedding_layer").get_output_at(0),
-                                       model.get_layer("embedding_layer").get_output_at(1)])
-    layer_output = get_k_gru_output([test_data.value["k_doc"][0].reshape([1,600]),
-                                     test_data.value["u_doc"][0].reshape([1,600])] )
-    print(layer_output)
+    print(pred_output)
+
+    # get_k_gru_output = K.function(model.input,
+    #                                   [model.get_layer("gru_layer").get_output_at(0),
+    #                                    model.get_layer("gru_layer").get_output_at(1)])
+    # layer_output = get_k_gru_output([test_data.value["k_doc"][0].reshape([1,400]),
+    #                                  test_data.value["u_doc"][0].reshape([1,400])] )
+    # print(layer_output)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)

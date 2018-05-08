@@ -211,14 +211,16 @@ class DataBuilder(object):
         return data
 
     def build_embedding_matrix(self):
+        np.random.seed(0)
         embedding_matrix = np.zeros((self.vocabulary_size + 1, self.embedding_dim))
-        for word, i in list(self.vocab.items())[:self.vocabulary_size]:
-            embedding_vector = self.glove_dict.get(word)
-            if embedding_vector is not None:
-                # words not found in embedding index will be all-zeros.
-                embedding_matrix[i] = embedding_vector
-            else:
-                embedding_matrix[i] = np.random.normal(0.1, 0.3, (self.embedding_dim))
+        for word, i in list(self.vocab.items()):
+            if i <= self.vocabulary_size:
+                embedding_vector = self.glove_dict.get(word)
+                if embedding_vector is not None:
+                    # words not found in embedding index will be all-zeros.
+                    embedding_matrix[i] = embedding_vector
+                else:
+                    embedding_matrix[i] = np.random.normal(0.0, 0.7, (self.embedding_dim))
         return embedding_matrix
 
     def build_char_embedding_matrix(self):

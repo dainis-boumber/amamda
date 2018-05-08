@@ -27,12 +27,16 @@ def clean_str(str):
     return str.strip()
 
 
-def clean_text_minor(content):
+def clean_text_minor(content:str):
     logging.info("Minor Text Cleanup: LOWERCASE, NO_CONTRACTION")
+
     content = content.replace("\n", " ")
     content = textacy.preprocess_text(content,
                                       lowercase=True,
                                       no_contractions=True)
+
+    # content = re.sub("\'", " \' ", content)
+    # content = re.sub("\"", " \" ", content)
 
     return content
 
