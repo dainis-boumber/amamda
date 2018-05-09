@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 import nltk
-from nltk.tokenize.moses import MosesTokenizer
+from nltk.tokenize.stanford import StanfordTokenizer
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
@@ -31,7 +31,7 @@ class DataBuilderML400(DataBuilder):
         self.tokenizer = None
         print("loading nltk model")
         self.sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
-        self.tokenizer = MosesTokenizer()
+        self.tokenizer = StanfordTokenizer()
         print("nltk model loaded")
         self.load_all_data()
 

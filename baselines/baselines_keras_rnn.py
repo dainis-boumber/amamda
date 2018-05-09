@@ -2,8 +2,12 @@ import logging
 from pathlib import Path
 
 import numpy as np
-from sklearn.metrics import roc_auc_score
 import keras
+from keras import backend as K
+from keras import regularizers
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_auc_score
 
 from keras.layers import Input
 from keras.layers import Embedding
@@ -14,11 +18,13 @@ from keras.layers import Flatten
 from keras.layers import Dense
 from keras.models import Model
 from keras.layers import Dropout
+
 from data.DataBuilderML400 import DataBuilderML400
 from data.DataBuilderPan import DataBuilderPan
 from data.base import DataBuilder
 
-from keras import backend as K
+import matplotlib.pyplot as pyplot
+
 from keras.utils.generic_utils import get_custom_objects
 
 def custom_activation(x):
@@ -42,7 +48,9 @@ def rnn_concat(data_builder: DataBuilder):
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
-    gru_layer = GRU(units=128, name="gru_layer", dropout=0.3, recurrent_dropout=0.3)
+    gru_layer = GRU(units=64, name="gru_layer",
+                    dropout=0.4, recurrent_dropout=0.4,
+                    kernel_regularizer=regularizers.l2(0.05))
 
     k_feat = gru_layer(k_embedded_seq)
 
@@ -52,7 +60,8 @@ def rnn_concat(data_builder: DataBuilder):
 
     all_feat = keras.layers.concatenate([k_feat, u_feat])
 
-    all_feat = Dense(64, activation='relu')(all_feat)
+    # all_feat = Dense(64, activation='relu')(all_feat)
+    all_feat = Dropout(rate=0.4)(all_feat)
     preds = Dense(1, activation='sigmoid')(all_feat)
 
     model = Model([k_input, u_input], preds)
@@ -142,30 +151,43 @@ def try_pan():
                                   embed_dim=100, vocab_size=5000, target_doc_len=600, target_sent_len=1024,
                                   word_split=True)
     train_data = data_builder.get_train_data()
-
-    model = rnn_outer_product(data_builder)
-
-    model.fit([np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
-              train_data.label_doc,
-              epochs=6, batch_size=32)
-
     test_data = data_builder.get_test_data()
 
-    loss, acc = model.evaluate(x=[np.stack(test_data.value["k_doc"].as_matrix()),
-                                  np.stack(test_data.value["u_doc"].as_matrix())],
-                               y=test_data.label_doc, batch_size=32)
+    model = rnn_concat(data_builder)
+
+    history = model.fit(
+        [np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
+        train_data.label_doc,
+        epochs=5, batch_size=32,
+        validation_data=([np.stack(test_data.value["k_doc"][1:100].as_matrix()),
+                         np.stack(test_data.value["u_doc"][1:100].as_matrix())],
+                         test_data.label_doc[1:100])
+    )
+
+
+    # loss, acc = model.evaluate(x=[np.stack(test_data.value["k_doc"].as_matrix()),
+    #                               np.stack(test_data.value["u_doc"].as_matrix())],
+    #                            y=test_data.label_doc, batch_size=32)
 
     pred_output = model.predict(x=[np.stack(test_data.value["k_doc"].as_matrix()),
                                   np.stack(test_data.value["u_doc"].as_matrix())],
                                 batch_size=32)
 
-    logging.info("LOSS: " + str(loss))
+    acc = accuracy_score(test_data.label_doc, np.rint(pred_output).astype(int))
     logging.info("ACCU: " + str(acc))
 
     roc_result = roc_auc_score(test_data.label_doc, pred_output)
     logging.info("ROC: " + str(roc_result))
 
-    print(pred_output)
+    print(pred_output[:10])
+
+    pyplot.plot(history.history['loss'])
+    pyplot.plot(history.history['val_loss'])
+    pyplot.title('model train vs validation loss')
+    pyplot.ylabel('loss')
+    pyplot.xlabel('epoch')
+    pyplot.legend(['train', 'validation'], loc='upper right')
+    pyplot.show()
 
     # get_k_gru_output = K.function(model.input,
     #                                   [model.get_layer("gru_layer").get_output_at(0),
