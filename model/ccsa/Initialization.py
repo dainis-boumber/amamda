@@ -8,11 +8,14 @@ from data.base import DataObject
 
 from keras.layers import Input
 from keras.layers import Conv1D
+from keras.layers import GRU
 from keras.layers import MaxPooling1D
 from keras.models import Model
 from keras.layers import Flatten, Dense
 from keras import backend as K
 from keras.layers import Embedding
+
+from sklearn.metrics import roc_auc_score
 
 
 def printn(string):
@@ -57,7 +60,7 @@ def _dg_cnn_base(data_builder, embed_dim, activation='relu'):
     u_embedded_seq = embedding_layer(u_input)
 
     conv_first = Conv1D(filters=128, kernel_size=5, activation='relu')
-    poll_first = MaxPooling1D(pool_size=1024)
+    poll_first = MaxPooling1D(pool_size=596)
 
     k_cov = conv_first(k_embedded_seq)
     k_poll = poll_first(k_cov)
@@ -66,6 +69,41 @@ def _dg_cnn_base(data_builder, embed_dim, activation='relu'):
     u_poll = poll_first(u_cov)
 
     return k_input, u_input, k_poll, u_poll
+
+def rnn_yifan(data_builder, embed_dim=100):
+    logging.info("BUILDING RNN USING CONCATENATION")
+
+    embedding_layer = Embedding(input_length=data_builder.target_doc_len,
+                                input_dim=data_builder.vocabulary_size + 1,
+                                output_dim=100,
+                                weights=[data_builder.embed_matrix],
+                                trainable=False,
+                                mask_zero=True,
+                                name="embedding_layer")
+
+    k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_doc_input")
+    k_embedded_seq = embedding_layer(k_input)
+    u_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="u_doc_input")
+    u_embedded_seq = embedding_layer(u_input)
+
+    # shared first conv
+    gru_layer = GRU(units=64, name="gru_layer", dropout=0.3, recurrent_dropout=0.3,
+                    reset_after=True, recurrent_activation="sigmoid")
+
+    k_feat = gru_layer(k_embedded_seq)
+
+    u_feat = gru_layer(u_embedded_seq)
+
+    # d_layer = Dense(8, activation='relu')
+
+    all_feat = keras.layers.concatenate([k_feat, u_feat])
+
+    all_feat = Dense(32, activation='relu')(all_feat)
+
+    model = Model([k_input, u_input], all_feat)
+
+    return model
+
 
 def dg_cnn_yifan(data_builder, embed_dim=100):
     k_input, u_input, k_poll, u_poll = _dg_cnn_base(data_builder, embed_dim)
@@ -121,17 +159,17 @@ def make_pairs(data_object: DataObject):
 
     return pair_combo, source_l, target_l, y_combo
 
-def training_the_model(model, train, test, epochs=80, batch_size=256):
+def training_the_model(model:Model, train, test, epochs=80, batch_size=256):
     pair_combo, y_src, y_tgt, y_combo = train
     test_value, test_label = test
 
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
     if batch_size > len(y_tgt):
-        print('Lowering batch size, to %d, number of inputs is too small for it.' % len(y2))
+        print('Lowering batch size, to %d, number of inputs is too small for it.' % len(y_tgt))
         batch_size = len(y_tgt)
     for e in range(epochs):
-        printn(str(e) + '->')
+        print(str(e) + '->')
         for i in range(len(y_tgt) // batch_size):
             # flipping stuff here
             from_sample = i * batch_size
@@ -144,13 +182,19 @@ def training_the_model(model, train, test, epochs=80, batch_size=256):
             ],
                 [ y_src[from_sample:to_sample], y_combo[from_sample:to_sample] ])
 
-            loss2 = model.train_on_batch([
-                np.array(pair_combo["t_k_doc"].iloc[from_sample:to_sample].tolist()),
-                np.array(pair_combo["t_u_doc"].iloc[from_sample:to_sample].tolist()),
-                np.array(pair_combo["s_k_doc"].iloc[from_sample:to_sample].tolist()),
-                np.array(pair_combo["s_u_doc"].iloc[from_sample:to_sample].tolist()),
-            ],
-                [ y_tgt[from_sample:to_sample], y_combo[from_sample:to_sample] ])
+            # loss2 = model.train_on_batch([
+            #     np.array(pair_combo["t_k_doc"].iloc[from_sample:to_sample].tolist()),
+            #     np.array(pair_combo["t_u_doc"].iloc[from_sample:to_sample].tolist()),
+            #     np.array(pair_combo["s_k_doc"].iloc[from_sample:to_sample].tolist()),
+            #     np.array(pair_combo["s_u_doc"].iloc[from_sample:to_sample].tolist()),
+            # ],
+            #     [ y_tgt[from_sample:to_sample], y_combo[from_sample:to_sample] ])
+
+            pred_output = model.predict([np.array(test_value["k_doc"][:100].tolist()), np.array(test_value["u_doc"][:100].tolist()),
+                           np.array(test_value["k_doc"][:100].tolist()), np.array(test_value["u_doc"][:100].tolist())])
+            roc_result = roc_auc_score(test_label[:100], pred_output[0])
+
+            print("step: " + str(i) + " : " + str(roc_result))
 
         output = model.predict([np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()),
                              np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()) ])
