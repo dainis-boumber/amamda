@@ -12,10 +12,15 @@ from keras.layers import GRU
 from keras.layers import MaxPooling1D
 from keras.models import Model
 from keras.layers import Flatten, Dense
-from keras import backend as K
 from keras.layers import Embedding
+from keras.layers import Dropout
+
+from keras import backend as K
+from keras import regularizers
 
 from sklearn.metrics import roc_auc_score
+import matplotlib
+import matplotlib.pyplot as pyplot
 
 
 def printn(string):
@@ -87,18 +92,18 @@ def rnn_yifan(data_builder, embed_dim=100):
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
-    gru_layer = GRU(units=64, name="gru_layer", dropout=0.3, recurrent_dropout=0.3,
-                    reset_after=True, recurrent_activation="sigmoid")
+    gru_layer = GRU(units=64, name="gru_layer", dropout=0.5, recurrent_dropout=0.5,
+                    kernel_regularizer = regularizers.l2(0.02),
+                    activity_regularizer = regularizers.l2(0.02))
 
     k_feat = gru_layer(k_embedded_seq)
-
     u_feat = gru_layer(u_embedded_seq)
 
     # d_layer = Dense(8, activation='relu')
-
     all_feat = keras.layers.concatenate([k_feat, u_feat])
 
-    all_feat = Dense(32, activation='relu')(all_feat)
+    all_feat = Dropout(rate=0.5)(all_feat)
+    all_feat = Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.02))(all_feat)
 
     model = Model([k_input, u_input], all_feat)
 
@@ -126,7 +131,7 @@ def load_data(data_builder):
     train = data_builder.train_data
     test = data_builder.test_data
     pair_combo, y1, y2, y_combo = make_pairs(train)
-    return (pair_combo, y1, y2, y_combo), (test.value, test.label_doc)
+    return (train), (pair_combo, y1, y2, y_combo), (test.value, test.label_doc)
 
 
 def make_pairs(data_object: DataObject):
@@ -159,9 +164,21 @@ def make_pairs(data_object: DataObject):
 
     return pair_combo, source_l, target_l, y_combo
 
-def training_the_model(model:Model, train, test, epochs=80, batch_size=256):
+def training_the_model(model:Model, orig_train:DataObject, train, test, epochs=80, batch_size=256):
     pair_combo, y_src, y_tgt, y_combo = train
     test_value, test_label = test
+
+    train_auc_list = []
+    test_auc_list = []
+
+    pyplot.ion()
+
+    # fig = pyplot.figure()
+    # ax = fig.add_subplot(111)
+    # train_line, = ax.plot([1])
+    # test_line, = ax.plot([1])
+    # ax.legend(['train', 'test'], loc='upper right')
+    # pyplot.draw()
 
     print('Training the model - Epochs '+str(epochs))
     best_acc = 0
@@ -192,17 +209,45 @@ def training_the_model(model:Model, train, test, epochs=80, batch_size=256):
 
             pred_output = model.predict([np.array(test_value["k_doc"][:100].tolist()), np.array(test_value["u_doc"][:100].tolist()),
                            np.array(test_value["k_doc"][:100].tolist()), np.array(test_value["u_doc"][:100].tolist())])
-            roc_result = roc_auc_score(test_label[:100], pred_output[0])
+            test_auc = roc_auc_score(test_label[:100], pred_output[0])
 
-            print("step: " + str(i) + " : " + str(roc_result))
+            pred_output = model.predict([np.stack(orig_train.value["k_doc"][:100].as_matrix()),
+                                         np.stack(orig_train.value["u_doc"][:100].as_matrix()),
+                                         np.stack(orig_train.value["k_doc"][:100].as_matrix()),
+                                         np.stack(orig_train.value["u_doc"][:100].as_matrix())])
+
+            train_auc = roc_auc_score(orig_train.label_doc[:100], pred_output[0])
+
+            train_auc_list.append(train_auc)
+            test_auc_list.append(test_auc)
+
+            # train_line.set_data([range(len(train_auc_list)), train_auc_list])
+            # test_line.set_data([range(len(train_auc_list)), test_auc_list])
+            # ax.set_xlim(left=0, right=len(train_auc_list))
+            # ax.set_ylim(bottom=0, top=1.0)
+            # pyplot.draw()
+            # pyplot.pause(0.02)
+
+            print("step: " + str(i) + " : " + str(train_auc) + " : " + str(test_auc))
+
+        pyplot.plot(train_auc_list)
+        pyplot.plot(test_auc_list)
+        pyplot.legend(['train', 'test'], loc='upper right')
+        pyplot.show()
 
         output = model.predict([np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()),
                              np.array(test_value["k_doc"].tolist()), np.array(test_value["u_doc"].tolist()) ])
         acc_v = np.array(output[0] > 0.5).astype(int).squeeze() == test_label
         acc = np.count_nonzero(acc_v) / len(output[0])
         logging.info("ACCU: " + str(acc))
-        if best_acc < acc:
-            best_acc = acc
-            logging.info("BEST ACCU: " + str(acc))
+
+        train_auc = roc_auc_score(test_label, output[0])
+        logging.info("ROC : " + str(train_auc))
+
+        # if best_acc < acc:
+        #     best_acc = acc
+        #     logging.info("BEST ACCU: " + str(acc))
+    # pyplot.ioff()
+    # pyplot.show()
 
     return best_acc

@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 import numpy as np
+np.random.seed(1337)
 import keras
 from keras import backend as K
 from keras import regularizers
@@ -18,6 +19,8 @@ from keras.layers import Flatten
 from keras.layers import Dense
 from keras.models import Model
 from keras.layers import Dropout
+from keras.callbacks import Callback
+from keras.utils.generic_utils import get_custom_objects
 
 from data.DataBuilderML400 import DataBuilderML400
 from data.DataBuilderPan import DataBuilderPan
@@ -25,11 +28,48 @@ from data.base import DataBuilder
 
 import matplotlib.pyplot as pyplot
 
-from keras.utils.generic_utils import get_custom_objects
+
+class roc_callback(Callback):
+    def __init__(self, training_data, validation_data):
+        self.x = training_data[0]
+        self.y = training_data[1]
+        self.x_val = validation_data[0]
+        self.y_val = validation_data[1]
+
+    def on_train_begin(self, logs=None):
+        return
+
+    def on_train_end(self, logs=None):
+        return
+
+    def on_epoch_begin(self, epoch, logs=None):
+        return
+
+    def on_epoch_end(self, epoch, logs=None):
+        y_pred = self.model.predict(self.x)
+        roc = roc_auc_score(self.y, y_pred)
+        if "train_roc" in self.model.history.history:
+            self.model.history.history["train_roc"].append(roc)
+        else:
+            self.model.history.history["train_roc"] = [roc]
+
+        y_pred_val = self.model.predict(self.x_val)
+        roc_val = roc_auc_score(self.y_val, y_pred_val)
+        if "val_roc" in self.model.history.history:
+            self.model.history.history["val_roc"].append(roc_val)
+        else:
+            self.model.history.history["val_roc"] = [roc_val]
+        print('\rroc-auc: %s - roc-auc_val: %s' % (str(round(roc,4)),str(round(roc_val,4))),end=100*' '+'\n')
+        return
+
+    def on_batch_begin(self, batch, logs=None):
+        return
+
+    def on_batch_end(self, batch, logs=None):
+        return
 
 def custom_activation(x):
     return K.max( K.sqrt(x + 1) - 1, 0 )
-
 
 def rnn_concat(data_builder: DataBuilder):
     logging.info("BUILDING RNN USING CONCATENATION")
@@ -49,19 +89,19 @@ def rnn_concat(data_builder: DataBuilder):
 
     # shared first conv
     gru_layer = GRU(units=64, name="gru_layer",
-                    dropout=0.4, recurrent_dropout=0.4,
-                    kernel_regularizer=regularizers.l2(0.05))
+                    dropout=0.3, recurrent_dropout=0.3
+                    # ,
+                    # kernel_regularizer=regularizers.l2(0.01),
+                    # activity_regularizer = regularizers.l2(0.01)
+                    )
 
     k_feat = gru_layer(k_embedded_seq)
-
     u_feat = gru_layer(u_embedded_seq)
-
-    # d_layer = Dense(8, activation='relu')
 
     all_feat = keras.layers.concatenate([k_feat, u_feat])
 
-    # all_feat = Dense(64, activation='relu')(all_feat)
-    all_feat = Dropout(rate=0.4)(all_feat)
+    all_feat = Dense(16, activation='relu', kernel_regularizer=regularizers.l2(0.05))(all_feat)
+    # all_feat = Dropout(rate=0.3)(all_feat)
     preds = Dense(1, activation='sigmoid')(all_feat)
 
     model = Model([k_input, u_input], preds)
@@ -155,13 +195,18 @@ def try_pan():
 
     model = rnn_concat(data_builder)
 
+    input_x = [np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())]
+    val_x = [np.stack(test_data.value["k_doc"][:100].as_matrix()),
+             np.stack(test_data.value["u_doc"][:100].as_matrix())]
+    val_y = test_data.label_doc[:100]
+
+    # TRAIN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     history = model.fit(
-        [np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())],
+        input_x,
         train_data.label_doc,
-        epochs=5, batch_size=32,
-        validation_data=([np.stack(test_data.value["k_doc"][1:100].as_matrix()),
-                         np.stack(test_data.value["u_doc"][1:100].as_matrix())],
-                         test_data.label_doc[1:100])
+        epochs=10, batch_size=32,
+        callbacks=[roc_callback(training_data=(input_x, train_data.label_doc), validation_data=(val_x, val_y))]
+        , validation_data=(val_x, val_y)
     )
 
 
@@ -185,6 +230,14 @@ def try_pan():
     pyplot.plot(history.history['val_loss'])
     pyplot.title('model train vs validation loss')
     pyplot.ylabel('loss')
+    pyplot.xlabel('epoch')
+    pyplot.legend(['train', 'validation'], loc='upper right')
+    pyplot.show()
+
+    pyplot.plot(history.history['train_roc'])
+    pyplot.plot(history.history['val_roc'])
+    pyplot.title('model train vs validation ROC AUC')
+    pyplot.ylabel('AUC')
     pyplot.xlabel('epoch')
     pyplot.legend(['train', 'validation'], loc='upper right')
     pyplot.show()
