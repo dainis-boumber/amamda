@@ -20,7 +20,6 @@ from keras.layers import Dense
 from keras.models import Model
 from keras.layers import Dropout
 from keras.callbacks import Callback
-from keras.utils.generic_utils import get_custom_objects
 
 from data.DataBuilderML400 import DataBuilderML400
 from data.DataBuilderPan import DataBuilderPan
@@ -112,6 +111,41 @@ def rnn_concat(data_builder: DataBuilder):
     return model
 
 
+def rnn_subtract(data_builder: DataBuilder):
+    logging.info("BUILDING RNN USING OUTER PRODUCT")
+    embedding_layer = Embedding(input_length=data_builder.target_doc_len,
+                                input_dim=data_builder.vocabulary_size + 1,
+                                output_dim=100,
+                                weights=[data_builder.embed_matrix],
+                                trainable=False,
+                                mask_zero=True,
+                                name="embedding_layer")
+
+    k_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="k_doc_input")
+    k_embedded_seq = embedding_layer(k_input)
+    u_input = Input(shape=(data_builder.target_doc_len,), dtype='int32', name="u_doc_input")
+    u_embedded_seq = embedding_layer(u_input)
+
+    # shared first conv
+    gru_layer = GRU(units=64, name="gru_layer",
+                    dropout=0.3, recurrent_dropout=0.3)
+
+    k_feat = gru_layer(k_embedded_seq)
+    u_feat = gru_layer(u_embedded_seq)
+
+    x = keras.layers.subtract([k_feat, u_feat])
+
+    # x = Dense(32, activation='relu')(x)
+    preds = Dense(1, activation='sigmoid')(x)
+
+    model = Model([k_input, u_input], preds)
+    model.compile(loss='binary_crossentropy',
+                  optimizer='adadelta',
+                  metrics=['acc'])
+
+    return model
+
+
 def rnn_outer_product(data_builder: DataBuilder):
     logging.info("BUILDING RNN USING OUTER PRODUCT")
     embedding_layer = Embedding(input_length=data_builder.target_doc_len,
@@ -193,7 +227,7 @@ def try_pan():
     train_data = data_builder.get_train_data()
     test_data = data_builder.get_test_data()
 
-    model = rnn_concat(data_builder)
+    model = rnn_subtract(data_builder)
 
     input_x = [np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())]
     val_x = [np.stack(test_data.value["k_doc"][:100].as_matrix()),
@@ -204,15 +238,11 @@ def try_pan():
     history = model.fit(
         input_x,
         train_data.label_doc,
-        epochs=10, batch_size=32,
+        epochs=1, batch_size=32,
         callbacks=[roc_callback(training_data=(input_x, train_data.label_doc), validation_data=(val_x, val_y))]
         , validation_data=(val_x, val_y)
     )
 
-
-    # loss, acc = model.evaluate(x=[np.stack(test_data.value["k_doc"].as_matrix()),
-    #                               np.stack(test_data.value["u_doc"].as_matrix())],
-    #                            y=test_data.label_doc, batch_size=32)
 
     pred_output = model.predict(x=[np.stack(test_data.value["k_doc"].as_matrix()),
                                   np.stack(test_data.value["u_doc"].as_matrix())],
