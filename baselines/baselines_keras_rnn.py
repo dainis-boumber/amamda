@@ -88,10 +88,8 @@ def rnn_concat(data_builder: DataBuilder):
 
     # shared first conv
     gru_layer = GRU(units=64, name="gru_layer",
-                    dropout=0.3, recurrent_dropout=0.3
-                    # ,
-                    # kernel_regularizer=regularizers.l2(0.01),
-                    # activity_regularizer = regularizers.l2(0.01)
+                    dropout=0.3, recurrent_dropout=0.3,
+                    reset_after=True
                     )
 
     k_feat = gru_layer(k_embedded_seq)
@@ -99,7 +97,7 @@ def rnn_concat(data_builder: DataBuilder):
 
     all_feat = keras.layers.concatenate([k_feat, u_feat])
 
-    all_feat = Dense(16, activation='relu', kernel_regularizer=regularizers.l2(0.05))(all_feat)
+    # all_feat = Dense(32, activation='relu')(all_feat)
     # all_feat = Dropout(rate=0.3)(all_feat)
     preds = Dense(1, activation='sigmoid')(all_feat)
 
@@ -134,7 +132,6 @@ def rnn_subtract(data_builder: DataBuilder):
     u_feat = gru_layer(u_embedded_seq)
 
     x = keras.layers.subtract([k_feat, u_feat])
-
     # x = Dense(32, activation='relu')(x)
     preds = Dense(1, activation='sigmoid')(x)
 
@@ -162,10 +159,9 @@ def rnn_outer_product(data_builder: DataBuilder):
     u_embedded_seq = embedding_layer(u_input)
 
     # shared first conv
-    gru_layer = GRU(units=128, name="gru_layer", dropout=0.3, recurrent_dropout=0.3)
+    gru_layer = GRU(units=64, name="gru_layer", dropout=0.3, recurrent_dropout=0.3)
 
     k_feat = gru_layer(k_embedded_seq)
-
     u_feat = gru_layer(u_embedded_seq)
 
     d_layer = Dense(8, activation='relu')
@@ -227,18 +223,18 @@ def try_pan():
     train_data = data_builder.get_train_data()
     test_data = data_builder.get_test_data()
 
-    model = rnn_subtract(data_builder)
+    model = rnn_concat(data_builder)
 
     input_x = [np.stack(train_data.value["k_doc"].as_matrix()), np.stack(train_data.value["u_doc"].as_matrix())]
-    val_x = [np.stack(test_data.value["k_doc"][:100].as_matrix()),
-             np.stack(test_data.value["u_doc"][:100].as_matrix())]
-    val_y = test_data.label_doc[:100]
+    val_x = [np.stack(test_data.value["k_doc"].as_matrix()),
+             np.stack(test_data.value["u_doc"].as_matrix())]
+    val_y = test_data.label_doc
 
     # TRAIN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     history = model.fit(
         input_x,
         train_data.label_doc,
-        epochs=1, batch_size=32,
+        epochs=8, batch_size=32,
         callbacks=[roc_callback(training_data=(input_x, train_data.label_doc), validation_data=(val_x, val_y))]
         , validation_data=(val_x, val_y)
     )
@@ -270,6 +266,9 @@ def try_pan():
     pyplot.ylabel('AUC')
     pyplot.xlabel('epoch')
     pyplot.legend(['train', 'validation'], loc='upper right')
+    pyplot.show()
+
+    pyplot.hist(pred_output, 20, (0.0, 1.0))
     pyplot.show()
 
     # get_k_gru_output = K.function(model.input,
