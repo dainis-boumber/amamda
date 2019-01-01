@@ -1,0 +1,80 @@
+﻿Setting the boid’s vision cone radius-length or radius-angle will result in the boid not
+seeing the obstacles and as a result will run right over the top of them. Why? What needs to be fixed
+so that even without any sensing ability, it will still bounce off the obstacles?
+Increasing the radius-length (while keeping the other variables the same) discernibly changes
+the behaviour of the boid. (Try doing this dynamically while moving the radius-length slider
+back and forth). Instead of covering most of the environment, when the radius length is large then
+the boid covers a much smaller more constrained area usually at the top of the environment.
+Sometimes it can get stuck, seemingly trapped in the same place.
+Try adjusting the boid’s speed, radius angle and radius length to see how this affects the boid’s
+behaviour. Also try changing the Interface Settings to see if this has any affect.
+Try adding obstacles to see how this affects the boid’s ability to cover the entire environment. For
+example, add obstacles in the form of a maze. Try to create “black spots” where the boid never
+visits. Alternatively, try to trap the boid into a small area.
+The model could be extended to add gradual acceleration and deceleration. This would enhance the
+boids simulation.
+The code uses the in-cone command to simulate the boid’s cone of vision.
+See the following models: Crowd Path Following, Flocking With Obstacles, Follow and Avoid,
+Obstacle Avoidance 1, Obstacle Avoidance 2, Vision Cone Example 2, Wall Following Example 2.
+These are basic implementations of various Craig Reynold’s steering behaviours for boids.
+Another boid related model is the Biology/Flocking model in the Models Library.
+This model implements a boid (see Craig Reynold's work) that employs basic obstacle avoidance
+steering behaviour.
+It does this by generating a wanderer turtle (boid) that simple wanders around randomly in the
+environment avoiding the obstacles. The boid is implemented using NetLogo’s in-cone
+command that implements a turtle with a cone of vision.
+The model’s Interface buttons are defined as follows:
+- Setup: This sets up the environment with a grid of obstacles and an outside border (drawn
+using blue patches). One turtle agent (the wanderer boid) is created and placed at a random
+location.
+- Go: The boid starts wandering around the environment avoiding obstacles.
+- Draw Obstacle: The user can draw further obstacles in the environment. These are coloured
+brown.
+- Follow Wanderer: This allows the perspective of the visualisation to be altered so that it is
+centred on the wanderer.
+- Plot: This instructs the wanderer turtle agent to put its pen down when wandering. Hence this
+will draw the path it has taken while wandering around.
+The model’s Interface sliders are defined as follows:
+- boid-speed: This controls the speed of the boid i.e. how much it moves forward each tick.
+- rate-of-random-turn: This controls how much the wandering boid turns each time tick.
+The boid has a tendency to head in a right turning direction as the rate of random turn to the right
+(as specified by the slider) is twice that of the rate of random turn to the left.
+- radius-angle: This defines the radius angle of the boid’s vision cone.
+- radius-length: This defines the radius length of the boid’s vision cone.
+Press the Setup button first, then press Go. To see where the boid wanders, press Plot. You can
+draw extra obstacles by pressing the Draw Obstacle button and then holding down the mouse at
+the point where you want the obstacles to be drawn. You can change the frame of reference so that
+the visualisation is centred around where the boid currently is situated by pressing the Follow
+Wanderer button.
+Setting the boid-speed to 0.1, rate-of-random-turn to 40, radius-angle to 300,
+radius-length to 1, and pressing the Plot button once, followed by moving the speed slider
+(just below the Information tab in the Interface) from "normal speed" to "faster" will
+result in the boid rapidly covering the entire environment while reliably avoiding the blue obstacles.
+Increasing the radius-length to 5 (while keeping the other variables the same) discernibly
+changes the behaviour of the boid. Instead of covering most of the environment, the boid covers a
+rectangular path of width 4 to 5 around the outside of the environment but indented by about 3 to 4
+patches in from the outer boundary. The boid seems to refrain from going inside of the rectangular
+path. Sometimes the boid can get stuck spinning around one of the obstacles.
+Try adjusting the boid’s speed, radius angle and radius length to see how this affects the boid’s
+behaviour. Also try changing the Interface Settings to see if this has any affect.
+Try adding obstacles to see how this affects the boid’s ability to cover the entire environment. For
+example, add obstacles in the form of a maze. Try to create “black spots” where the boid never
+visits. Alternatively, try to trap the boid into a small area.
+The model could be extended to add gradual acceleration and deceleration. This would enhance the
+simulation of the boids model.
+The code uses the in-cone command to simulate the boid’s cone of vision.
+See the following models: Crowd Path Following, Flocking With Obstacles, Follow and Avoid,
+Obstacle Avoidance 1, Obstacle Avoidance 2, Vision Cone Example 2, Wall Following Example 2.
+These are basic implementations of various Craig Reynold's steering behaviours for boids.
+Another boid related model is the Biology/Flocking model in the Models Library.
+The turtles in this example follow walls made out of colored patches. The blue turtles try to keep
+the wall on their right; the green turtles keep the wall on their left. Hence, the blue turtles end up
+heading in a clockwise direction, and the blue turtles end up in an anti-clockwise direction.
+(Only the Information in the model that is different to the Wall Following Example model
+provided by Uri Wilensky is included below.)
+The model implements the standard unmodified behaviour as provided by Uri Wilensky’s original
+model, but also provides an alternative modified behaviour where the actions have been split into
+three independent parts as follows:
+1. walk-modified-1: The turtle turns right if necessary.
+2. walk-modified-2: The turtle turns left if necessary.
+3. walk-modified-3: The turtle moves forward.

@@ -1,0 +1,47 @@
+﻿A pointer is a special kind of variable which contains a memory address to for instance a number instead of directly refer to the number. That implies a detour to the value via the memory address. 
+This might sound unnecessarily complicated, but implies a number of advantages like for instance more efficient program code, faster execution and memory saving. Especially in object oriented programming you get these advantages when copying objects or sending objects to functions. Object oriented programming is however beyond the scope of this course. 
+The pointer concept is unique for C++. It is for instance not present in the programming languages Visual Basic or Java. As a consequence C++ might be felt more complicated than other languages. 
+In this chapter we will aqcuire basic knowledge about pointers. We will learn how to use pointers to different data types, how to declare pointers and assign values. We will examine the anology between pointers and arrays and how to use pointers as parameters to functions. 
+Finally we will touch the subject dynamic memory allocation, which actually does not closely relate to pointers, but still often is used in connection with pointers.
+A pointer is a variable of a special kind which only can contain a memory address of the primary memory. This memory location in turn contains a value of some kind.
+Le tus first study the situation for a common variable
+In the figure above we have the variable iNumber which contains the actual value of the variable, in our example 34. 
+Let us now focus on the corresponding pointer:
+In the figure above we have a pointer named pNumber. It contains an address in the primary memory. If we go to that address, there is a number, 23 in our example.
+The asterisc (*) indicates that it is a pointer. int* means that it is a pointer to an integer value. You must always specify the data type pointed to by the pointer variable. Below we declare a pointer to a double value: 
+Below we declare a pointer to a char value:
+You can as well place the space in front of the asterisc. The declarations above could be written:
+You can use both variants.
+To get the address to the variable iNo, we use the & operator. The expression &iNo gives the address to the variable iNo. 
+In the declaration you can specify the memory location to be pointed at by a pointer variable:
+Here we create a pointer variable named pNumber and assign the address of the variable iNo to it. The variable iNo and the pointer variable pNumber now points to the same memory location, which means the value 23. 
+Note that in a pointer declaration you can’t directly assign a fixed value:
+since currently there is no specific memory location pointed to by pNumber. However, when pNumber has got its memory address, we can change the value in the location indicated by pNumber:
+Here we must remember to use the asterisc together with the name of the pointer variable. The program then understands that it is the value that is to be changed. 
+Compare this to this erroneous statement:
+This would mean that we updated the address pointed to by pNumber. The address 25 would be pointed to, which of course is erroneous. 
+We have introduced two operators in connection with pointers: 
+* means ‘the content of ’ & means ‘the address to’ 
+In the same way we can write:
+When printing a value pointed to by a pointer variable, you use:
+This means ‘print the content of pNumber’.
+To print the address pointed to by a pointer variable you write:
+The printed address is in hexadecimal format. Normally we don’t have to bother about the exact address. The only thing to remember is whether we mean ‘the address to’ or ‘the content of ’.
+We will now take a look at how pointers work in connection with string variables, i.e. arrays of char type. We declare a string array named cName:
+We then declare a char pointer named pName which points to the same text as the content of cName.
+Why didn’t we use the & operator in front of cName like in the previous example? The explanation is that an array actually is a pointer. When using the name of the array, cName, it is interpreted as a pointer to the first item of the array. So when writing the statement:
+it means that we let the pointer pName get the same address as the pointer (array) cName.
+The print function cout has some peculiarities you ought to know when printing strings. The statement:
+should actually print the address in hexadecimal format of pName. But cout performs a reinterpretation. It takes the content in the memory location pointed to by pName, i.e. the character ‘J’, and prints character by character until the null character is found. This means that the entire name ‘John Smith’ is printed. Compare the statement:
+which gives the same result, which we discussed in the Strings chapter. 
+The statement:
+correctly prints the content of the memory location pointed to by pName, but it only takes that character. This means that only ‘J’ is printed. 
+The statement:
+prints the address of the memory location in which pName is stored. 
+The statement
+prints the address of the memory location where the name ’John Smith’ is stored.
+We will now create a program which reads quantity and unit price of a product from the user, and the name of the user. The program will then calculate the total price of the product and print a personal price note on the screen. We will use pointer variables. 
+The logical process is given by the following JSP graph:
+Let us say that we enter ‘John Smith’, quantity 5 and unit price 12. Then the printout will be:
+By pointer arithmetics we mean how to increment and decrement a pointer, i.e. how to make a pointer to an array move stepwise from item to item. 
+Let’s say that we have an array of integers:

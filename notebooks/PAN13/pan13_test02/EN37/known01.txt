@@ -1,0 +1,72 @@
+﻿As its name implies control engineering involves the design of an engineering product or system
+where a requirement is to accurately control some quantity, say the temperature in a room or the
+position or speed of an electric motor. To do this one needs to know the value of the quantity
+being controlled, so that being able to measure is fundamental to control. In principle one can
+control a quantity in a so called open loop manner where ‘knowledge’ has been built up on what
+input will produce the required output, say the voltage required to be input to an electric motor
+for it to run at a certain speed. This works well if the ‘knowledge’ is accurate but if the motor is
+driving a pump which has a load highly dependent on the temperature of the fluid being pumped
+then the ‘knowledge’ will not be accurate unless information is obtained for different fluid
+temperatures. But this may not be the only practical aspect that affects the load on the motor and
+therefore the speed at which it will run for a given input, so if accurate speed control is required
+an alternative approach is necessary.
+This alternative approach is the use of feedback whereby the quantity to be controlled, say C, is
+measured, compared with the desired value, R, and the error between the two,
+E = R - C used to adjust C. This gives the classical feedback loop structure of Figure 1.1.
+In the case of the control of motor speed, where the required speed, R, known as the reference is
+either fixed or moved between fixed values, the control is often known as a regulatory control, as
+the action of the loop allows accurate speed control of the motor for the aforementioned situation
+in spite of the changes in temperature of the pump fluid which affects the motor load. In other
+instances the output C may be required to follow a changing R, which for example, might be the
+required position movement of a robot arm. The system is then often known as a
+servomechanism and many early textbooks in the control engineering field used the word
+servomechanism in their title rather than control.
+The use of feedback to regulate a system has a long history [1.1, 1.2], one of the earliest concepts,
+used in Ancient Greece, was the float regulator to control water level, which is still used today in
+water tanks. The first automatic regulator for an industrial process is believed to have been the
+flyball governor developed in 1769 by James Watt. It was not, however, until the wartime period
+beginning in 1939, that control engineering really started to develop with the demand for
+servomechanisms for munitions fire control and guidance. With the major improvements in
+technology since that time the applications of control have grown rapidly and can be found in all
+walks of life. Control engineering has, in fact, been referred to as the ‘unseen technology’ as so
+often people are unaware of its existence until something goes wrong. Few people are, for
+instance, aware of its contribution to the development of storage media in digital computers
+where accurate head positioning is required. This started with the magnetic drum in the 50’s and
+is required today in disk drives where position accuracy is of the order of 1μm and movement
+between tracks must be done in a few ms.
+Feedback is, of course, not just a feature of industrial control but is found in biological, economic
+and many other forms of system, so that theories relating to feedback control can be applied to
+many walks of life.
+The book is concerned with theoretical methods for continuous linear feedback control system
+design, and is primarily restricted to single-input single-output systems. Continuous linear time
+invariant systems have linear differential equation mathematical models and are always an
+approximation to a real device or system. All real systems will change with time due to age and
+environmental changes and may only operate reasonably linearly over a restricted range of
+operation. There is, however, a rich theory for the analysis of linear systems which can provide
+excellent approximations for the analysis and design of real world situations when used within
+the correct context. Further simulation is now an excellent means to support linear theoretical
+studies as model errors, such as the affects of neglected nonlinearity, can easily be assessed.
+There are total of 11 chapters and some appendices, the major one being Appendix A on Laplace
+transforms. The next chapter provides a brief description of the forms of mathematical model
+representations used in control engineering analysis and design. It does not deal with
+mathematical modelling of engineering devices, which is a huge subject and is best dealt with in
+the discipline covering the subject, since the devices or components could be electrical,
+mechanical, hydraulic etc. Suffice to say that one hopes to obtain an approximate linear
+mathematical model for these components so that their effect in a system can be investigated
+using linear control theory. The mathematical models discussed are the linear differential
+equation, the transfer function and a state space representation, together with the notations used
+for them in MATLAB.
+Chapter 3 discusses transfer functions, their zeros and poles, and their responses to different
+inputs. The following chapter discusses in detail the various methods for plotting steady state
+frequency responses with Bode, Nyquist and Nichols plots being illustrated in MATLAB.
+Hopefully sufficient detail, which is brief when compared with many textbooks, is given so that
+the reader clearly understands the information these plots provide and more importantly
+understands the form of frequency response expected from a specific transfer function.
+The material of chapters 2-4 could be covered in other courses as it is basic systems theory, there
+having been no mention of control, which starts in chapter 5. The basic feedback loop structure
+shown in Figure 1.1 is commented on further, followed by a discussion of typical performance
+specifications which might have to be met in both the time and frequency domains. Steady state
+errors are considered both for input and disturbance signals and the importance and properties of
+an integrator are discussed from a physical as well as mathematical viewpoint. The chapter
+concludes with a discussion on stability and a presentation of several results including the
+Mikhailov criterion, which is rarely mentioned in English language texts.

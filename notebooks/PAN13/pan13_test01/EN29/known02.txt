@@ -1,0 +1,63 @@
+﻿The Unified Modelling Language, UML, is sometimes described as though it was a methodology. It is not!
+A methodology is a system of processes in order to achieve a particular outcome e.g. an organised sequence of activities in order to gather user requirements. UML does not describe the procedures a programmer should follow – hence it is not a methodology. It is, on the other hand, a precise diagramming notation that will allow program designs to be represented and discussed. As it is graphical in nature it becomes easy to visualise, understand and discuss the information presented in the diagram. However, as the diagrams represent technical information they must be precise and clear – in order for them to work - therefore there is a precise notation that must be followed.
+As UML is not a methodology it is left to the user to follow whatever processes they deem appropriate in order to generate the designs described by the diagrams. UML does not constrain this – it merely allows those designs to be expressed in an easy to use, but precise, graphical notation. 
+A process will be explained in chapter 6 that will help you to generate good UML designs. Developing good designs is a skill that takes practise to this end the process is repeated in the case study (chapter 11). For now we will just concentrate on the UML notation not these processes.
+Classes are the basic components of any object oriented software system and UML class diagrams provide an easy way to represent these. As well as showing individual classes, in detail, class diagrams show multiple classes and how they are related to each other. Thus a class diagram shows the architecture of a system.
+A class consists of :- 
+• a unique name (conventionally starting with an uppercase letter)
+• a list of attributes (int, double, boolean, String etc)
+• a list of methods
+This is shown in a simple box structure…
+For attributes and methods visibility modifiers are shown (+ for public access, – for private access). Attributes are normally kept private and methods are normally made public.
+Accessor methods are created to provide access to private attributes when required. Thus a public method SetTitle() can be created to change the value of a private attribute ‘title’. 
+Thus a class Book, with String attributes of title and author, and the following methods SetTitle(), GetTitle(), SetAuthor(), GetAuthor() and ToString() would be shown as ….
+Note: String shown above is not a primitive data type but is itself a class. Hence it starts with a capital letter.
+Some programmers use words beginning in capitals to denote class names and words beginning in lowercase to represent attributes or methods (thus ToString() would be shown as toString()). This is a common convention when designing and writing programs in Java (another common OO language). However it is not a convention followed by C# programmers – where method names usually start in Uppercase. Method names can be distinguished from class names by the use of (). This in the example above.
+‘Book’ is a class
+‘title’ is an attribute and
+‘SetTitle()’ is a method.
+UML diagrams are not language specific thus a software design, communicated via UML diagrams, can be implemented in a range of OO languages. 
+Furthermore traditional accessor methods, getters and setters, are not required in C# programs as they are replaced by ‘properties’. Properties are in effect hidden accessor methods thus the getter and setter methods shown above, GetTitle(), SetTitle() etc are not required in a C# program. In C# an attribute would be defined called ‘title’ and a property would be defined as ‘Title’. This would allow us to set the ‘title’ directly by using the associated property ‘Title =…..;’. 
+The UML diagrams shown in this book will use the naming convention common among C# programmers … for the simple reason that we will be writing sample code in C# to demonstrate the OO principles discussed here. Though initially we will show conventional assessor methods these will be replaced with properties when coding.
+UML allows us to suppress any information we do not wish to highlight in our diagrams – this allows us to suppress irrelevant detail and bring to the readers attention just the information we wish to focus on. Therefore the following are all valid class diagrams…
+Firstly with the access modifiers not shown….
+Secondly with the access modifiers and the data types not shown…..
+And finally with the attributes and methods not shown…..
+i.e. there is a class called ‘BankAccount’ but the details of this are not being shown.
+Of course virtually all C# programs will be made up of many classes and classes will relate to each other – some classes will make use of other classes. These relationships are shown by arrows. Different type of arrow indicate different relationships (including inheritance and aggregation relationships). 
+In addition to this class diagrams can make use of keywords, notes and comments.
+As we will see in examples that follow, a class diagram can show the following information :-
+• Classes
+--attributes
+--operations
+--visibility
+• Relationships
+--navigability
+--multiplicity
+--dependency
+--aggregation 
+--composition
+• Generalization / specialization
+--inheritance
+--interfaces
+• Keywords
+• Notes and Comments
+As UML diagrams convey precise information there is a precise syntax that should be followed.
+Attributes should be shown as: visibility name : type multiplicity
+Where visibility is one of :-
+--‘+’ public
+--‘-’ private
+--‘#’ protected
+--‘~’ package
+and Multiplicity is one of :-
+--‘n’ exactly n
+--‘*’ zero or more
+--‘m..‘n’ between m and n
+The following are examples of attributes correctly specified using UML :-
+- custRef : int [1]
+a private attribute custRef is a single int value
+this would often be shown as - custRef : int However with no multiplicity shown we cannot safely assume a multiplicity of one was intended by the author.
+# itemCodes : String [1..*]
+a protected attribute itemCodes is one or more String values
+validCard : boolean
+an attribute validCard, of unspecified visibility, has unspecified multiplicity

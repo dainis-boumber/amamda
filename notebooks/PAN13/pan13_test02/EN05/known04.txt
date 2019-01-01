@@ -1,0 +1,59 @@
+﻿Spreadsheet tables can be created, complete with calculations, directly in Keynote. Clicking the Table icon in the Toolbar
+places a basic three column by three row table onto a slide. The Table Inspector can be used to modify that Table adding
+extra rows and columns as needed. The Table Inspector be used to format the Table. However in most circumstances
+spreadsheet data is best copied and pasted into slides from iWork’s Numbers.
+As Numbers is a dedicated spreadsheet package it offers far more data editing and function control than Keynote. Having
+Table creation control in Keynote is great though the primary reason for having this capability is to allow table and chart
+data to be modified within Keynote. For instance, if sales figures change immediately before a business presentation, the
+table and chart data can be changed in Keynote without the need to locate the original spreadsheet data.
+Clicking on any Table Cell that contains a formula invokes the Formula Editor. Once active the Formula Editor can be
+used to modify equations. If Numbers is not available, create a simple table, select a cell and press the equals (=) key.
+In common with the other iWork applications Keynote runs automatic spell checking. To switch this off go to Edit >
+Spelling > Check Spelling As You Type and mark sure it is un–ticked. When on potentially misspelt words are automatically
+underlined with a red dotted line. Using the context menu spelling suggestions are offered. The context menu also allows
+words to be learnt. To invoke the Context Menu use Right Click or Control Click. This context menu also launches the
+Mac’s dictionary and thesaurus, and even links to Wikipedia, or the Google search engine.
+To run spell check across a document go to Edit > Spelling >Spelling… The spell check dialogue box appears.
+Automatic Corrections can be controlled from Keynotes Preferences. For example typing ‘teh’ will automatically change
+to ‘the’. Also, scientific terms or business names can be abbreviated. Here typing ‘mwp’ will automatically change to
+Mark Wood | Photography. Genuine fractions can be achieved but only with certain font types. Once enabled Automatic
+Corrections, Symbol and Text Substitution will replace 1/3 with ⅓, but only if the chosen font contains glyphs for fractions.
+If the chosen font does not contain the required glyph an alternative font is used.
+Photographs, Movies and Sound can be added to a Keynote document in one of four different ways.
+1. The Media Browser
+2. The Insert menu and Choose…
+3. Dragging files from Finder
+4. Copying and Pasting from other applications
+The hassle free method is to use Media Browser, as it connects to other Apple software including iTunes. The available
+media will be in a Keynote compatible format. To include files from the Media Browser locate the correct tab for the
+media type, either Photos, Movies, Audio, then find the desired file and drag it on to a Keynote slide.
+Using the Insert command from the application menu bypasses the need to have files included in the Media Browser, but
+be aware that not all picture, movie and audio formats are supported by iWork and Keynote. If a file appears greyed out
+in the Finder Import window it means that file format is not supported.
+Supported file formats are:
+For Pictures – all QuickTime-supported formats, including TIFF, GIF, JPEG, PDF, PSD, EPS, PICT
+For Movies and Audio - any QuickTime or iTunes file type, including MOV, MP3, MPEG-4, AIFF and AAC
+Supported files can be simply dragged from a Finder window onto a Slide. If the contents of an entire folder are required,
+drag the folder from its Finder window onto the Media Browser. For a folder of mixed media, being Pictures, Movies and
+Audio this operation will have to be executed three times. Once for each tab of the Media Browser.
+
+If images placed onto slides look too dark or lack contrast Keynote has an Adjust Image control. This is a window that
+can be used to adjust the brightness, contrast, saturation and other image parameters directly within Keynote. There
+are several image parameters that can be used to finesse imported photographs, though often just clicking the Enhance
+button will improve a picture.
+Adjust Image is an icon in the Toolbar, or it can be launched from View > Adjust.
+By default Keynote’s preferences are set to include audio and movies in the document file. This option, found in the General
+tab of Keynote’s Preferences, should be left ticked; its default. This ensures media is saved within Keynote documents.
+There is no mechanism for excluding picture data from automatically being saved in Keynote.
+Because Keynote embeds media files, presentations can become rather bloated, filling hard drive space. On modern
+workstations this is not a big problem but for the fast transmission of a Keynote via a network, file size can jeopardize
+smooth playback.
+All iWork applications have a Reduce File Size command found in the File menu. Use this to resample media files contained
+in Keynote. Caution: do not overwrite, that is save over, the original Keynote file. Using Reduce File Size may reduce the
+fidelity of media during resampling. This may not be an issue, but keeping the higher quality Keynote is a sensible precaution.
+Global Transitions can be added to slides. They help to indicate a change is taking place. The Dissolve Effect set to two
+or three seconds makes a pleasing transition from one picture slide to another. With so many transitions it is all too easy
+to overload a presentation with effects, and so obscure the intended message.
+Often transitions are triggered by a click, though they can also be set to change after a time delay. Mixing click-triggered
+transitions with time-delayed transitions can be confusing to a presenter. It is probably best to use click-triggering and
+no delays because often when a computer appears unresponsive users start clicking freely and frustratedly.

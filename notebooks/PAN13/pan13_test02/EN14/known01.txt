@@ -1,0 +1,48 @@
+﻿Computing is a constantly changing our world and our environment. In the 1960s large machines called mainframes were created to manage large volumes of data (numbers) efficiently. Bank account and payroll programs changed the way organisations worked and made parts of these organisations much more efficient. In the 1980s personal computers became common and changed the way many individuals worked. People started to own their own computers and many used word processors and spreadsheets applications (to write letters and to manage home accounts). In the 1990s email became common and the world wide web was born. These technologies revolutionised communications allowing individuals to publish information that could easily be accessed on a global scale. The ramifications of these new technologies are still not fully understood as society is adapting to opportunities of internet commerce, new social networking technologies (twitter, facebook, myspace, online gaming etc) and the challenges of internet related crime.
+Just as new computing technologies are changing our world so too are new techniques and ideas changing the way we develop computer systems. In the 1950s the use machine code (unsophisticated, complex and machine specific) languages were common. 
+In the 1960s high level languages, which made programming simpler, became common. However these led to the development of large complex programs that were difficult to manage and maintain. 
+In the 1970s the structured programming paradigm became the accepted standard for large complex computer programs. The structured programming paradigm proposed methods to logically structure the programs developed into separate smaller, more manageable components. Furthermore methods for analysing data were proposed that allowed large databases to be created that were efficient, preventing needless duplication of data and protected us against the risks associated with data becoming out of sync. However significant problems still persisted in a) understanding the systems we need to create and b) changing existing software as users requirements changed. 
+In the 1980s ‘modular’ languages, such as Modula-2 and ADA were developed that became the precursor to modern Object Oriented languages. 
+In the 1990s the Object Oriented paradigm and component-based software development ideas were developed and Object Oriented languages became the norm from 2000 onwards. 
+The object oriented paradigm is based on many of the ideas developed over the previous 30 years of abstraction, encapsulation, generalisation and polymorphism and led to the development of software components where the operation of the software and the data it operates on are modelled together. Proponents of the Object Oriented software development paradigm argue that this leads to the development of software components that can be re-used in different applications thus saving significant development time and cost savings but more importantly allow better software models to be produced that make systems more maintainable and easier to understand.
+It should perhaps be noted that software development ideas are still evolving and new agile methods of working are being proposed and tested. Where these will lead us in 2020 and beyond remains to be seen.
+The structured programming paradigm proposed that programs could be developed in sensible blocks that make the program more understandable and easier to maintain.
+Activity 1 
+Assume you undertake the following activities on a daily basis. Arrange this list into a sensible order then split this list into three blocks of related activities and give each block a heading to summarise the activities carried out in that block.
+Get out of bed
+Eat breakfast
+Park the car
+Get dressed
+Get the car out of the garage
+Drive to work
+Find out what your boss wants you to do today
+Feedback to the boss on today’s results.
+Do what the boss wants you to do 
+Feedback 1
+You should have been able to organise these into groups of related activities and give each group a title that summarises those activities.
+Get up :-
+Get out of bed
+Get dressed
+Eat breakfast
+Go to Work :-
+Get the car out of the garage
+Drive to work
+Park the car
+Do your job :-
+Find out what your boss wants you to do today
+Do what the boss wants you to do
+Feedback to the boss on today’s results.
+By structuring our list of instructions and considering the overall structure of the day (Get up, go to work, do your job) we can change and improve one section of the instructions without changing the other parts. For example we could improve the instructions for going to work….
+Listen to the local traffic and weather report
+Decide whether to go by bus or by car
+If going by car, get the car and drive to work.
+Else walk to the bus station and catch the bus
+without worrying about any potential impact this may have on ‘getting up’ or ‘doing your job’. In the same way structuring computer programs can make each part more understandable and make large programs easier to maintain. 
+Feedback 2
+With an address book we would want to be able to perform the following actions :- find out details of a friend i.e. their telephone number, add an address to the address book and, of course, delete an address.
+We can create a simple software component to store the data in the address book (i.e. list of names etc) and the operations, things we can do with the address book (i.e add address, find telephone number etc). 
+By creating a simple software component to store and manage addresses of friends we can reuse this in another software system i.e. it could be used by a business manager to store and find details of customers. It could also become part of a library system to be used by a librarian to store and retrieve details of the users of the library. 
+Thus in object oriented programming we can create re-usable software components (in this case an address book).
+While we can focus our attention on the actual program code we are writing, whatever development methodology is adopted, it is not the creation of the code that is generally the source of most problems. Most problems arise from :-
+• poor maintainability: the system is hard to understand and revise when, as is inevitable, requests for change arise.
+• Statistics show 70% of the cost of software is not incurred during its initial development phase but is incurred during subsequent years as the software is amended to meet the ever changing needs of the organisation for which it was developed. For this reason it is essential that software engineers do everything possible to ensure that software is easy to maintain during the years after its initial creation.

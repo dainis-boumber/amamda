@@ -1,0 +1,71 @@
+﻿The frequency response of a transfer function G(j ) was introduced in the last chapter. As G(j )
+is a complex number with a magnitude and argument (phase) if one wishes to show its behaviour
+over a frequency range then one has 3 parameters to deal with the frequency,  , the magnitude,
+M, and the phase  . Engineers use three common ways to plot the information, which are known
+as Bode diagrams, Nyquist diagrams and Nichols diagrams in honour of the people who
+introduced them. All portray the same information and can be readily drawn in MATLAB for a
+system transfer function object G(s).
+One diagram may prove more convenient for a particular application, although engineers often
+have a preference. In the early days when computing facilities were not available Bode diagrams,
+for example, had some popularity because of the ease with which they could, in many instances,
+be rapidly approximated. All the plots will be discussed below, quoting many results without
+going into mathematical detail, in the hope that the reader will obtain enough knowledge to know
+whether MATLAB plots obtained are of the general shape expected.
+A Bode diagram consists of two separate plots the magnitude, M, as a function of frequency and
+the phase   as a function of frequency. For both plots the frequency is plotted on a logarithmic
+(log) scale along the x axis. A log scale has the property that the midpoint between two
+frequencies  1 and  2 is the frequency 1 2     . A decade of frequency is from a value to
+ten times that value and an octave from a value to twice that value. The magnitude is plotted
+either on a log scale or in decibels (dB), where dB M 10  20log . The phase is plotted on a linear
+scale. Bode showed that for a transfer function with no right hand side (rhs) s-plane zeros the
+phase is related to the slope of the magnitude characteristic by the relationship
+It can be further shown from this expression that a relatively good approximation is that the
+phase at any frequency is 15° times the slope of the magnitude curve in dB/octave. This was a
+useful concept to avoid drawing both diagrams when no computer facilities were available.
+For two transfer functions G1 and G2 in series the resultant transfer function, G, is their product,
+this means for their frequency response
+which in terms of their magnitudes and phases can be written
+Thus since a log scale is used on the magnitude of a Bode diagram this means Bode magnitude
+plots for two transfer functions in series can be added, as also their phases on the phase diagram.
+Hence a transfer function in zero-pole form can be plotted on the magnitude and phase Bode
+diagrams simple by adding the individual contributions from each zero and pole. It is thus only
+necessary to know the Bode plots of single roots and quadratic factors to put together Bode plots
+for a complicated transfer function if it is known in zero-pole form.
+The single pole transfer function is normally considered in time constant form with unit steady
+state gain, that is
+It is easy to show that this transfer function can be approximated by two straight lines, one
+constant at 0 dB, as G(0) = 1, until the frequency, 1/T, known as the break point, and then from
+that point by a line with slope -6dB/octave. The actual curve and the approximation are shown in
+Figure 4.1 together with the phase curve. The differences between the exact magnitude curve and
+the approximation are symmetrical, that is a maximum at the breakpoint of 3dB, 1dB one octave
+each side of the breakpoint, 0.3 dB two octaves away etc. The phase changes between 0° and -
+90° again with symmetry about the breakpoint phase of -45°. Note a steady slope of -6 dB/octave
+has a corresponding phase of -90°
+The Bode magnitude plot of a single zero time constant, that is
+is simply a reflection in the 0 dB axis of the pole plot. That is the approximate magnitude curve is
+flat at 0 dB until the break point frequency, 1/T, and then increases at 6 dB/octave. Theoretically
+as the frequency tends to infinity so does its gain so that it is not physically realisable. The phase
+curve goes from 0° to +90°
+The transfer function of an integrator, which is a pole at the origin in the zero-pole plot, is 1/s. It
+is sometimes taken with a gain K, i.e.K/s. Here K will be replaced by 1/T to give the transfer
+function
+On a Bode diagram the magnitude is a constant slope of -6 dB/octave passing through 0 dB at the
+frequency 1/T. Note that on a log scale for frequency, zero frequency where the integrator has
+infinite gain (the transfer function can only be produced electronically by an active device) is
+never reached. The phase is -90° at all frequencies. A differentiator has a transfer function of sT
+which gives a gain characteristic with a slope of 6 dB/octave passing through 0dB at a frequency
+of 1/T. Theoretically it produces infinite gain at infinite frequency so again it is not physically
+realisable. It has a phase of +90° at all frequencies.
+The quadratic factor form is again taken for two complex poles with   < 1 as in equation (3.7),
+that is
+Again G(0) = 1 so the response starts at 0 dB and can be approximated by a straight line at 0 dB
+until  o and by a line from  o at -12 dB/octave. However, this is a very coarse approximation as
+the behaviour around  o is highly dependent on  . It can be shown that the magnitude reaches a
+maximum value of
+which is approximately 1/2  for small  , at a frequency
+of
+This frequency is thus always less than  o and only exists for   < 0.707.
+The response with   = 0.707 always has magnitude, M < 1. The phase curve goes from 0° to -
+180° as expected from the original and final slopes of the magnitude curve, it has a phase shift of
+-90° at the frequency  o independent of   and changes more rapidly near  o for smaller  , as
+expected due to the more rapid change in the slope of the corresponding magnitude curve.

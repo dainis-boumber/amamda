@@ -1,0 +1,76 @@
+﻿While there is a study guide (available from Ventus) that focuses largely on objects and their
+characteristics, it will be instructive to the learner (of the Java programming language) to understand how
+the concept of an object is applied to their construction and use in Java applications. Therefore, Chapter
+One (of this guide) introduces the concept of an object from a language-independent point of view and
+examines the essential concepts associated with object-oriented programming (OOP) by briefly comparing
+how OOP and non-OOP approach the representation of data and information in an application. The
+chapter goes on to explain classes, objects and messages and concludes with an explanation of how a class
+is described with a special diagram known as a class diagram.
+
+Despite the wide use of OOP languages such as Java, C++ and C#, non-OOP languages continue to be
+used in specific domains such as for some categories of embedded applications. In a conventional,
+procedural language such as C, data is sent to a procedure for processing; this paradigm of information
+processing is illustrated in Figure 1.1 below.
+
+The figure shows that the number 4 is passed to the function (SQRT) which is ‘programmed’ to calculate
+the result and output it (to the user of the procedure). In general, we can think of each procedure in an
+application as ready and waiting for data items to be sent to them so that they can do whatever they are
+programmed to do on behalf of the user of the application. Thus an application written in C will typically
+comprise a number of procedures along with ways and means to pass data items to them.
+
+The way in which OOP languages process data, on the other hand, can be thought of as the inverse of the
+procedural paradigm. Consider Figure 1.2 below.
+
+In the figure, the data item – the number 4 – is represented by the box (with the label ‘4’ on its front face).
+This representation of the number 4 can be referred to as the object of the number 4. This simple object
+doesn’t merely represent the number 4, it includes a button labeled sqrt which, when pressed, produces
+the result that emerges from the slot labeled return.
+Whilst it is obvious that the object-oriented example is expected to produce the same result as that for the
+procedural example, it is apparent that the way in which the result is produced is entirely different when
+the object-oriented paradigm considered. In short, the latter approach to producing the result 2 can be
+expressed as follows.
+
+A message is sent to the object to tell it what to do. Other messages might press other buttons associated
+with the object. However for the present purposes, the object that represents the number 4 is a very simple
+one in that it has only one button associated with it. The result of sending a message to the object to press
+its one and only button ‘returns’ another object. Hence in Figure 1.2, the result that emerges from the
+‘return’ slot - the number 2 – is an object in its own right with its own set of buttons.
+Despite the apparent simplicity of the way in which the object works, the question remains: how does it
+calculate the square root of itself? The answer to this question enshrines the fundamental concept
+associated with objects, which is to say that objects carry their programming code around with them.
+Applying this concept to the object shown in Figure 1.2, it has a button which gives access to the
+programming code which calculates the square root (of the number represented by the object). This
+amalgam of data and code is further illustrated by an enhanced version of the object shown in Figure
+1.3 below.
+
+The enhanced object (representing the number 4) has two buttons: one to calculate the square root of itself
+– as before - and a second button that adds a number to the object. In the figure, a message is sent to the
+object to press the second button – the button labeled ‘+’ – to add the object that represents the number 3
+to the object that represents the number 4. For the ‘+’ button to work, it requires a data item to be sent to it
+as part of the message to the object. This is the reason why the ‘+’ button is provided with a slot into
+which the object representing the number 3 is passed. The format of the message shown in the figure can
+be expressed as follows.
+
+When this message is received and processed by the object, it returns an object that represents the number
+7. In this case, the message has accessed the code associated with the ‘+’ button. The enhanced object can
+be thought of as having two buttons, each of which is associated with its own programming code that is
+available to users of the object.
+
+Extrapolating the principal of sending messages to the object depicted in Figure 1.3 gives rise to the
+notion that an object can be thought of as comprising a set of buttons that provide access to operations
+which are carried out depending on the details in the messages sent to that object.
+
+In summary:
+􀁸in procedural programming languages, data is sent to a procedure;
+􀁸in an object-oriented programming language, messages are sent to an object;
+􀁸an object can be thought of as an amalgam of data and programming code: this is known as
+encapsulation.
+
+Whilst the concept of encapsulation is likely to appear rather strange to learners who are new to OOP,
+working with objects is a much more natural way of designing applications compared to designing them
+with procedures. Objects can be constructed to represent anything in the world around us and, as such,
+they can be easily re-used or modified. Given that we are surrounded by things or objects in the world
+around us, it seems natural and logical that we express this in our programming paradigm.
+
+The next section takes the fundamental concepts explored in this section and applies them to a simple
+object.

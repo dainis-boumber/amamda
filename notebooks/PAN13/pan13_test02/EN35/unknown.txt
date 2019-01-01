@@ -1,0 +1,71 @@
+﻿English law distinguishes two kinds of defamation: slander (in speech) and libel (in writing);
+because writing is permanent, libel is treated as being more seriously damaging than slander. Emails
+and the like are often composed as casually and carelessly as spoken remarks, but they can
+be preserved indefinitely and so the applicable law is libel law.
+English libel law is strict: compared to other countries, it is easy for someone who feels damaged
+by the written word to win a case against whoever is responsible, and awards for loss of reputation
+have traditionally been large (though recent changes have moderated that to some extent).
+As business first used the Web, libel law was scarcely relevant. Commercial websites were
+concerned with promoting their own businesses, not normally with knocking their competitors.
+But the Web is coming to be used in new ways. We have heard a great deal recently about “Web
+2.0”. This is a vague, hype-laden piece of terminology, but one thing it commonly refers to is the
+idea that websites – including commercial websites – are ceasing to be outlets for one-way
+communication exclusively, and turning into two-way, conversational affairs, where for instance
+a company will draw its customers and other interested parties into participation via blogs,
+chatrooms, and similar mechanisms.
+There are several business reasons why the “virtual communities” fostered by interactive
+websites are potentially beneficial for a company. However, if members of the public are
+encouraged to post material on a company website, the legal danger is that some individuals’
+postings might include defamatory remarks about third parties. We know that electronic
+communication tends to encourage a kind of “flaming” that is rare in other media. For the firm
+owning the website, it would be regrettable enough to find one of its customers having to defend
+a lawsuit as a consequence of contributing to a blog which that firm had set up. Even worse
+would be the possibility of itself defending a defamation suit, if it is held responsible for others’
+contributions to its site. A plaintiff who hopes for a large damages award will be more interested
+in going after the firm than the individual; the firm is more likely to be able to pay.
+So the question arises what legal responsibility a website owner has for material posted by others.
+Questions like this arose before Web 2.0 days, in connexion with ISPs and operators of bulletin
+boards. One way that lawyers think about the issue is to compare that kind of electronic
+communication infrastructure with the world of newspapers and magazines, and to ask whether
+the organizations are more like distributors (such as newsagents) or publishers. If a newspaper
+contains a libellous article, the newsagents who sell the paper to readers would not normally be
+held liable – they have no control over what appears in the paper and may not even be aware of it;
+but the newspaper publisher has editorial control over what its journalists write, so will routinely
+be treated as equally responsible with them for any libel.
+In the case of electronic bulletin boards, some are moderated and others not. Ironically, although
+providing moderation would normally be seen as the responsible thing for a bulletin board
+operator to do, legally it might be a rather dangerous thing to do: it implies taking on a role more
+like publisher than distributor.
+In the USA (although libel law is far milder there) this situation was seen as creating such risks
+for organizations which undertake the socially-valuable task of promoting electronic
+communication that the risks were eliminated by statute (section 230 of the Telecommunications
+Act 1996). This broadly says that service providers are not to be held responsible for content
+posted by others, and that no liability arises from the moderating role.
+Without a blanket exemption such as American law provides, a website run by a commercial firm
+would be more likely to be held responsible for its contents than some bulletin board run by
+amateur enthusiasts – the site contributes to business profits, so there would be little excuse for
+not taking the trouble to moderate it. English law contains nothing parallel to §230 of the US
+Telecommunications Act. Our Defamation Act 1996 provides that no-one is liable for the
+contents of electronic communications if they act purely as unwitting distributors, but if they act
+as “publishers” they are liable; a commercial website owner, like a newspaper publisher, would
+have a duty to take reasonable care about what it publishes.
+Even an ISP, with no commercial interest of its own in the contents of material it hosts, will
+probably not escape liability under the 1996 Act if it has been told about defamatory material on
+its servers (so that it can no longer claim to be an unwitting distributor). Consider Godfrey v.
+Demon Internet Ltd (1999).
+Dr Godfrey was a British computer science lecturer who allegedly made a hobby of starting
+online flame wars and then bringing libel actions when people responded to his flames by being
+nasty about him. In 1997 he faxed the MD of the leading British ISP Demon demanding the
+removal of a scurrilous newsgroup posting which had come in from the USA. Demon routinely
+deleted newsgroup postings after a fortnight, so the issue concerned only the ten days between
+Godfrey’s fax and the normal deletion date; during that period, Demon failed to act (apparently
+the fax never reached the MD’s desk). In view of this delay, the court found in preliminary
+hearings in 1999 that Demon could not satisfy the requirement about taking reasonable care – at
+which point Demon threw in the towel and settled out of court, paying Godfrey about a quarter of
+a million pounds.
+Although Godfrey v. Demon set no formal legal precedent (because it was settled rather than
+fought out to a conclusion), the terms on which it was settled sent a thrill of fear through the
+industry. It seems that (unless an ISP is prepared to investigate and satisfy itself that a complaint
+is legally unfounded, which would often be difficult or impossible for it to achieve), its only safe
+response to any complaint will be automatically to take down the material complained about.
+This is what British ISPs have been tending to do.

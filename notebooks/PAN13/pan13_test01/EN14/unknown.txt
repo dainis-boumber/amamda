@@ -1,0 +1,88 @@
+﻿Before a computer can complete useful tasks for us (e.g. check the spelling in our documents) software
+needs to be written and implemented on the machine it will run on. Software implementation involves
+the writing of program source code and preparation for execution on a particular machine. Of course
+before the software is written it needs to be designed and at some point it needs to be tested. There are
+many iterative lifecycles to support the process of design, implementation and testing that involve
+multiple implementation phases. Of particular concern here are the three long established approaches
+to getting source code to execute on a particular machine…
+􀁸compilation into machine-language object code
+􀁸direct execution of source code by ‘interpreter’ program
+􀁸compilation into intermediate object code which is then interpreted by run-time system
+Implementing Java programs involves compiling the source code (Java) into intermediate object code
+which is then interpreted by a run-time system called the JRE. This approach has some advantages and
+disadvantages and it is worth comparing these three options in order to appreciate the implications for
+the Java developer.
+The compiler translates the source code into machine code for the relevant hardware/OS combination.
+Strictly speaking there are two stages: compilation of program units (usually files), followed by
+‘linking’ when the complete executable program is put together including the separate program units
+and relevant library code etc.
+The compiled program then runs as a ‘native’ application for that platform.
+This is the oldest model, used by early languages like Fortran and Cobol, and many modern ones like
+C++. It allows fast execution speeds but requires re-compilation of the program each time the code
+is changed.
+Here the source code is not translated into machine code. Instead an interpreter reads the source code
+and performs the actions it specifies.
+We can say that the interpreter is like a ‘virtual machine’ whose machine language is the source
+code language.
+No re-compilation is required after changing the code, but the interpretation process inflicts a
+significant impact on execution speed.
+Scripting languages tend to work in this way.
+This model is a hybrid between the previous two.
+Compilation takes place to convert the source code into a more efficient intermediate representation
+which can be executed by a ‘run-time system’ (again a sort of ‘virtual machine’) more quickly that
+direct interpretation of the source code. However, the use of an intermediate code which is then
+executed by run-time system software allows the compilation process to be independent of the
+OS/hardware platform, i.e. the same intermediate code should run on different platforms so long as an
+appropriate run-time system is available for each platform.
+This approach is long-established (e.g. in Pascal from the early 1970s) and is how Java works.
+To run Java programs we must first generate intermediate code (called bytecode) using a compiler
+available as part of the Java Development Kit (JDK) – see section 8.4 below.
+A version of the Java Runtime Environment (JRE), which incorporates a Java Virtual machine (VM),
+is required to execute the bytecode and the Java library packages. Thus a JRE must be present on any
+machine which is to run Java programs.
+The Java bytecode is standard and platform independent and as JRE’s have been created for most
+computing devices (including PC’s, laptops, mobile devices, mobile phones, internet devices etc) this
+makes Java programs highly portable.
+Whatever mode of execution is employed, programmers can work with a variety of tools to create
+source code. Options include the use of simple discrete tools (e.g. editor, compiler, interpreter)
+invoked manually as required or alternatively the use of an Integrated Development Environment (IDE)
+which incorporates these implementation tools behind a seamless interface. Still more sophisticated
+CASE (Computer Aided Software Engineering) tools which integrate the implementation process with
+other phases of the development cycle – such software could take UML class diagrams and generate
+classes and method stubs automatically saving some of the effort required to write the Java code.
+When writing java programs each class (or interface) in a Java program has its own name.java file
+containing the source code.
+These are processed by the compiler to produce name.class files containing the corresponding
+bytecode.
+To actually run as an application, one of the classes must contain a main() method with the signature
+shown above.
+To develop Java programs you must first install the Java Development Kit (JDK). This was developed
+by Sun and is available freely from the internet via http://java.sun.com/. Prior to version 5.0 (or 1.5)
+this was known as the Java Software Development Kit (SDK).
+A Java IDE’s, e.g. Eclipse or NetBeans, sits on top of’ the JDK to add the IDE features - these may
+include interface development tools, code debugging tools, testing tools and refactoring tools (more on
+these later). When using an IDE it is easy to forget that much of the functionality is in fact part of the
+JDK and when the IDE is asked to compile a program it is infact just passing on this request to the
+JDK sitting underneath.
+We can use the JDK directly from the command line to compile and run Java programs though mostly
+it is easier to use the additional facilities offered by an IDE.
+Somewhat confusingly the current version of Java is known both as 6.0, 1.6 and even 1.6.0. These
+supposedly have subtly different meanings – don’t worry about it!
+There are many tools in the JDK. A description of each of these is available from
+http://java.sun.com/javase/downloads/ and following the links for Documentation, APIs and JDK
+Programmer guides.
+The two most important basic tools are:
+javac – the java compiler
+java – the java program launcher (that runs the VM)
+To compile MyProg.java we type
+javac MyProg.java
+If successful this will create MyProg.class
+To run Myprog (assuming it has a main() method) we type
+java MyProg
+Another, extremely useful tool, is javadoc - this uses comments in Java source code to generate
+automatic documentation for programs.
+Moving to an ‘industrial strength’ IDE is an important stepping stone in your progress as a software
+developer, like riding a bicycle without stabilisers for the first time. With some practice you will soon
+find it offers lots of helpful and time-saving facilities that you will not want to work without again…
+Eclipse is a flexible and extensible IDE platform. It was first developed by IBM but is now open
+source and can be downloaded from the Eclipse Foundation at www.eclipse.org.

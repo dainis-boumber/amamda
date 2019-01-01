@@ -1,0 +1,83 @@
+﻿This chapter gives a very broad overview of
+•what a database is
+•what a relational database is, in particular
+•what a database management system (DBMS) is
+•what a DBMS does
+•how a relational DBMS does what a DBMS does
+We start to familiarise ourselves with terminology and notation used in the remainder of the book, and we
+get a brief introduction to each topic that is covered in more detail in later sections.
+
+You will find many definitions of this term if you look around the literature and the Web. At one time (in
+2008), Wikipedia [1] offered this: “A structured collection of records or data.” I prefer to elaborate a little:
+
+The organized, machine-readable collection of symbols is what you “see” if you “look at” a database at a
+particular point in time. It is to be interpreted as a true account of the enterprise at that point in time. Of
+course it might happen to be incorrect, incomplete or inaccurate, so perhaps it is better to say that the
+account is believed to be true.
+The alternative view of a database as a collection of variables reflects the fact that the account of the
+enterprise has to change from time to time, depending on the frequency of change in the details we choose
+to include in that account.
+The suitability of a particular kind of database (such as relational, or object-oriented) might depend to
+some extent on the requirements of its user(s). When E.F. Codd developed his theory of relational
+databases (first published in 1969), he sought an approach that would satisfy the widest possible ranges of
+users and uses. Thus, when designing a relational database we do so without trying to anticipate specific
+uses to which it might be put, without building in biases that would favour particular applications. That is
+perhaps the distinguishing feature of the relational approach, and you should bear it in mind as we explore
+some of its ramifications.
+
+For example, the table in Figure 1.1 shows an organized collection of symbols.
+
+Can you guess what this tabular arrangement of symbols might be trying to tell us? What might it mean,
+for symbols to appear in the same row? In the same column? In what way might the meaning of the
+symbols in the very first row (shown in blue) differ from the meaning of those below them?
+Do you intuitively guess that the symbols below the first row in the first column are all student
+identifiers, those in the second column names of students, and those in the third course identifiers? Do
+you guess that student S1’s name is Anne? And that Anne is enrolled on courses C1 and C2? And that
+Cindy is enrolled on neither of those two courses? If so, what features of the organization of the symbols
+led you to those guesses?
+Remember those features. In an informal way they form the foundation of relational theory. Each of them
+has a formal counterpart in relational theory, and those formal counterparts are the only constituents of the
+organized structure that is a relational database.
+
+Perhaps those green symbols, organized as they are with respect to the blue ones, are to be
+understood to mean:
+“Student S1, named Anne, is enrolled on course C1.”
+An important thing to note here is that only certain symbols from the sentence in quotes appear in the
+table—S1, Anne, and C1. None of the other words appear in the table. The symbols in the top row of
+the table (presumably column headings, though we haven’t actually been told that) might help us to
+guess “student”, “named”, and “course”, but nothing in the table hints at “enrolled”. And even if those
+assumed column headings had been A, B and C, or X, Y and Z, the given interpretation might still be
+the intended one.
+Now, we can take the sentence “Student S1, named Anne, is enrolled on course C1” and replace
+each of S1, Anne, and C1 by the corresponding symbols taken from some other row in the table, such
+as S2, Boris, and C1. In so doing, we are applying exactly the same mode of interpretation to each row.
+If that is indeed how the table is meant to be interpreted, then we can conclude that the following
+sentences are all true:
+Student S1, named Anne, is enrolled on course C1.
+Student S1, named Anne, is enrolled on course C2.
+Student S2, named Boris, is enrolled on course C1.
+Student S3, named Cindy, is enrolled on course C3.
+
+In Chapter 3, “Predicates and Propositions”, we shall see exactly how such interpretations can be
+systematically formalized. In Chapter 4, “Relational AlgebraThe Foundation”, and Chapter 5, “Building
+on The Foundation”, we shall see how they help us to formulate correct queries to derive useful
+information from a relational database.
+
+We have added the name, ENROLMENT, above the table, and we have added an extra row.
+ENROLMENT is a variable. Perhaps the table we saw earlier was once its value. If so, it (the variable) has
+been updated since thenthe row for S4 has been added. Our interpretation of Figure 1.1 now has to be
+revised to include the sentence represented by that additional row:
+Student S1, named Anne, is enrolled on course C1.
+Student S1, named Anne, is enrolled on course C2.
+Student S2, named Boris, is enrolled on course C1.
+Student S3, named Cindy, is enrolled on course C3.
+Student S4, named Devinder, is enrolled on course C1.
+Notice that in English we can join all these sentences together to form a single sentence, using
+conjunctions like “and”, “or”, “because” and so on. If we join them using “and” in particular, we get a
+single sentence that is logically equivalent to the given set of sentences in the sense that it is true if each
+one of them is true (and false if any one of them is false). A database, then, can be thought of as a
+representation of an account of the enterprise expressed as a single sentence! (But it’s more usual to think
+in terms of a collection of individual sentences.)
+We might also be able to conclude that the following sentences (for example) are false:
+Student S2, named Boris, is enrolled on course C2.
+Student S2, named Beth, is enrolled on course C1.

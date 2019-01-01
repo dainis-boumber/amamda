@@ -1,0 +1,39 @@
+﻿Historically in computer programs method names were required to be unique. Thus the compiler could identify which method was being invoked just by looking at its name.
+However several methods were often required to perform very similar functionality for example a method could add two integer numbers together and another method may be required to add two floating point numbers. If you have to give these two methods unique names which one would you call ‘Add()’? 
+In order to give each method a unique name the names would need to be longer and more specific. We could therefore call one method AddInt() and the other AddFloat() but this could lead to a proliferation of names each one describing different methods that are essentially performing the same operation i.e. adding two numbers.
+To overcome this problem in C# you are not required to give each method a unique name – thus both of the methods above could be called Add(). However if method names are not unique the C# must have some other way of deciding which method to invoke at run time. i.e. when a call is made to Add(number1, number2) the machine must decide which of the two methods to use. It does this by looking at the parameter list.
+While the two methods may have the same name they can still be distinguished by looking at the parameter list. :-
+Add(int number1, int number2)
+Add(float number1, float number2)
+This is resolved at run time by looking at the method call and the actual parameters being passed. If two integers are being passed then the first method is invoked. However if two floating point numbers are passed then the second method is used.
+Overloading refers to the fact that several methods may share the same name. As method names are no longer uniquely identify the method then the name is ‘overloaded’.
+Having several methods that essentially perform the same operation, but which take different parameter lists, can lead to enhanced flexibility and robustness in a system. 
+Imagine a University student management system. A method would probably be required to enrol, or register, a new student. Such a method could have the following signature …
+EnrollStudent(String name, String address, String coursecode) 
+However if a student had just arrived in the city and had not yet sorted out where they were living would the University want to refuse to enrol the student? They could do so but would it not be better to allow such a student to enrol (and set the address to ‘unkown’)?
+To allow this the method EnrollStudent() could be overloaded and an alternative method provided as…
+EnrollStudent(String name, String coursecode) 
+At run time the method invoked will depend upon the parameter list provided. Thus given a call to 
+EnrollStudent(“Fred”, “123 Abbey Gardens”, “G700”)
+the first method would be used.
+Overloading methods don’t just provide more flexibility for the user they also provide more flexibility for programmers who may have the job of extending the system in the future and thus overloading methods can make the system more future proof and robust to changing requirements.
+Constructors can be overloaded as well as ordinary methods.
+We can make our programs more adaptable by overloading constructors and other methods. Even if we don’t initially use all of the different constructors, or methods, by providing them we are making our programs more flexible and adaptable to meet changing requirements.
+Method overloading is the name given to the concept that several methods may exist that essentially perform the same operation and thus have the same name.
+The CLR engine distinguishes these by looking at the parameter list. If two or more methods have the same name then their parameter list must be different.
+At run time each method call, which may be ambiguous, is resolved by the CLR engine by looking at the parameters passed and matching the data types with the method signatures defined in the class. 
+By overloading constructors and ordinary methods we are providing extra flexibility to the programmers who may use our classes in the future. Even if these are not all used initially, providing these can help make the program more flexible to meet changing user requirements.
+The development of any computer program starts by identifying a need :- 
+• An engineer who specialises in designing bridges may need some software to create three dimensional models of the designs so people can visualise the finished bridge long before it is actually built.
+• A manager may need a piece of software to keep track of personnel, what projects they are assigned to, what skills they have and what skills need to be developed etc.
+But how do we get from a ‘need’ for some software to an object oriented software design that will meet this need?
+Some software engineers specialise in the task of Requirement Analysis which is the task of clarifying exactly what is required of the software. Often this is done by iteratively performing the following tasks :- 
+1) interviewing clients and potential users of the system to find out what they say about the system needed
+2) documenting the results of these conversations,
+3) identifying the essential features of the required system
+4) producing preliminary designs (and possibly prototypes of the system)
+5) evaluating these initial plans with the client and potential users
+6) repeating the steps above until a finished design has evolved.
+Performing requirements analysis is a specialised skill that is outside the scope of this text but here we will focus on steps three and four above ie. given a description of a system how do we convert this into a potential OO design.
+While we can hope to develop preliminary design skills experience is a significant factor in this task. Producing simple and elegant designs is important if we want the software to work well and be easy to develop however identifying good designs from weaker designs is not simple and experience is a key factor.
+A novice chess player may know all the rules but it takes experience to learn how to choose good moves from bad moves and experience is essential to becoming a skilled player. Similarly experience is essential to becoming skilled at performing user requirements analysis and in producing good designs.

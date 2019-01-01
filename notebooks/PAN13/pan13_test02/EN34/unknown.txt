@@ -1,0 +1,73 @@
+﻿The thread object is instantiated by calling the start method of the Thread class; this invocation places the
+thread in a runnable state, which means that it becomes available for scheduling by the JVM. The start
+method automatically calls the thread’s run method.
+The thread is typically instantiated in a separate, lightweight class that includes a main method. A
+template for this class follows.
+The body of the main method instantiates an instance of the thread by calling its no-arguments constructor;
+the start method of the thread is called on this instance.
+A template for the class definition of a class that implements the Runnable interface is as follows.
+The next template instantiates objects of the class that implements the Runnable interface.
+In this case, the body of the main method instantiates an instance of the class that implements the
+Runnable interface and it passes this object reference to the constructor of the Thread class that takes a
+Runnable object as its only parameter. The start method of the thread is called, as before.
+The outcome of using either of the two methods that can be used to create threads is that the developer
+provides the body of the thread’s run method; it is this method that does the work that the thread is
+required to do in a Java application.
+There are a number of tasks that could be designed to execute in a dedicated thread; these include:
+• I/O tasks that require substantial resources or are large in scale;
+• large-scale printing tasks where the print driver executes in its own thread;
+• synchronised multiple read/write tasks;
+• server applications that provide an application service to multiple clients.
+The fourth item in the list above identifies applications that require shared access to resources from
+multiple client applications and implies a high degree of synchronisation in order to maintain the
+integrity and security of data. The next sub-section explains, with an example, how synchronisation
+can be achieved.
+It seems reasonable to assert that data that is required to be accessed by multiple client applications must
+be synchronised to protect the state of the data so that it is consistent from the point of view of client
+applications that need to use it. Synchronisation logic is required for any server application that provides
+simultaneous services to multiple clients that require read/write access to shared data. This can be
+achieved in Java applications by controlling the thread that accesses an object’s data values by identifying
+the critical sections of code that require exclusive access to shared data and ‘flagging’ such code by using
+the keyword synchronized.
+Synchronisation of critical sections of code relies on an entity known as the intrinsic lock of an object. A
+thread ‘owns’ an object’s lock between the time it acquires it and releases it. The Java language provides
+two synchronising idioms: synchronised methods and synchronised statements.
+When a thread invokes a synchronised method, it acquires the lock for that method’s object and releases it
+when the method returns. Synchronising a method allows exclusive access to code that accesses shared
+data and ensures that it is not possible for two invocations of the method to interleave and interfere with
+one another. When a thread invokes a synchronised method of an object, all other threads that invoke
+synchronised methods of that object are blocked until the first thread has finished with the object and
+releases its lock. Thus, sharing an object amongst threads is made safe by declaring methods to be
+synchronised using the keyword synchronized as follows:
+Synchronising statements, on the other hand, provides a finer-grained approach than with synchronising
+methods. When synchronising a block of statements, the block must specify the object that provides the
+lock, as shown next.
+When the thread reaches the synchronised block, it examines the object passed as an argument and obtains
+the object’s lock before continuing with the execution of the statements in the block. The lock is released
+when the thread passes the end of the block.
+The example that follows on the next few pages illustrates how methods and statements are synchronised
+in the thread that runs a banking application. The author (of this guide) uses the example to teach some of
+the principles of distributed, client/server applications where the client and server run in separate JVMs on
+a computer network. The outcome of distributing the client and server components of the application
+means that the synchronised code in the server ensures that only one client at a time can access a
+customer’s account. Some of the code of the bank’s server class is omitted in order to allow the reader to
+identify and study the purpose of the code that is synchronised. The definitions of the Account and
+BankingException classes do not need to be shown here.
+An object of the class that follows is instantiated in the run method of a thread so that its methods can be
+called from multiple clients.
+The reader is not expected to understand fully how the bank application works. Rather, the aim of
+presenting the substantive code for the BankServer class is so that the reader can gain an understanding
+how synchronisation is used to synchronise methods and blocks of code in order to meet the requirements
+of the application in a way that ensures that a named account can be accessed by only one client
+application at a time.
+Chapter Four explains how the Thread class and the Runnable interface are used in a Java programme to
+create threads of execution. An example is used to illustrate how synchronised access to code is achieved
+in situations that require exclusive access to shared data resources.
+The chapter omits any discussion of thread scheduling. It is sufficient to say, for the purposes of this guide,
+that Java threads are pre-emptive. This means that the pre-emptive scheduler knows that a number of
+threads are runnable because their run method has been invoked implicitly by the JVM or explicitly by the
+developer’s code. However, only one thread is actually running at a time. A running thread continues to
+run until it ceases to be runnable or another thread of higher priority becomes runnable. In the latter case,
+the lower priority thread is pre-empted by the higher priority thread. A thread might cease to be runnable
+(i.e. it become blocked) for a variety of reasons, such as it might have to wait to access a resource. This
+gives other threads a chance to execute.

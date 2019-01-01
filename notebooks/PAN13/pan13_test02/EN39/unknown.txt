@@ -1,0 +1,72 @@
+﻿NetBeans has a visual tool to help with the development of graphical user interfaces. This tools allows
+a window to be created and a range of objects to be dropped onto it including panels, tabbed panes,
+scrolled panes, buttons, radio buttons, check boxes, combo boxes, password fields, progress bars,
+and trees.
+When designing a graphical user interface it is ‘normal’ for objects to be placed on a window in
+precise positions. Interfaces are thus displayed exactly how they are designed. For this to work well an
+interface designer usually has some idea of the size of the display they are designing an interface for.
+Most PC games are designed to run on window of 14” – 21”. Most mobile games are designed to work
+on much smaller screens.
+However Java programs are expected to be platform independent – one of the strengths of Java is that
+code written in Java will work on a PC, laptop or small mobile device irrespective of the hardware or
+operating systems these devices use (as long as they all have a JRE). Thus the same interface should
+work on a large visual display unit or small mobile screen. For this reason when developing interfaces
+in Java it is usual to give Java some control over deciding exactly how / where to display objects. Thus,
+at run time, Java can reconfigure a window to fit whatever device is being used to run the program.
+This has benefits as the display will be reconfigured automatically to fit whatever device is being used
+to run the program but this flexibility comes at a cost. As some control is given to Java the interface
+designer cannot be certain exactly how the interface will look though they can give Java some
+‘instructions’ on how an interface should be displayed.
+Layout Managers are ‘objects’ that define how an interface should be displayed and it is normal to
+create a layout manager and assign it to a ‘container’ object such as a window frame.
+There are a range of common layout managers - two of the most common being flow layout and grid
+layout. Using flow layout Java will arrange objects in a row and objects will automatically flow onto
+another row if the window is not big enough to hold each object on one row.
+Two windows are shown below with ten buttons on each – in the second figure Java places some of
+the buttons on a second row as the window has been resized and the object will not fit on one line.
+A flow manager can be created with various properties to define the justification of the object (centre,
+left or right) and to define the horizontal and vertical space between objects.
+Another very common layout manager is gird layout. When applying objects in a grid a number of
+rows can be specified. Java will work out how many columns it needs to use in order to place the
+required number of objects in that number of rows. The objects will be resized to fit the window. Java
+will shrink or enlarge the objects to fit the window – even if this means that not all of the text can
+be shown.
+The two figures below show the same 10 buttons being displayed on a grid with three rows.
+Note in the second of these the buttons have been resized to fit a different window – in doing so there
+is not enough space to display all of the text for button ten.
+Layout managers can be used in layers and applied to any container object Thus we can create a grid
+where one element contains multiple objects arranged in a flow.
+By using layout managers we can create displays that are flexible and can be displayed on a range of
+display equipment thus enabling our programs to be platform independent - however this does mean
+we lose some of the fine control in the design.
+Creating a layout managers and setting their properties using NetBeans is very easy. Right clicking on
+a container object will bring up a context sensitive menu one option of which will be to apply a layout
+manager. Selecting this option will display the list of layout managers possible. Once a layout
+manager has been selected a window will appear to allow its properties to be specified.
+The final step in creating a working interface is to create Action Listeners and apply them to object on
+the interface. Action listeners are objects that listen for user actions and respond accordingly – thus
+when a ‘calculate’ button is pushed a program will calculate and display some results.
+Action listeners can be created for all objects on an interface and for a range of actions for each object.
+Though many objects, such as labels, will be not be required to respond to a users interactions.
+Creating an action listener in NetBeans is very easy.
+When any object is selected, in design mode, a properties window is displayed. Selecting the events
+tab will allow a range of actions to be created for this object. Once one has been selected an ‘Action
+Listener’ stub will be written. Code will automatically be written to create an object of this class and
+assign this to the object selected in the design.
+All that remains is for the programmer to write the code to define the response to the users action.
+In the example below an event has been created to listen for button1 being pushed.
+One particularly useful tool within the JDK is ‘javadoc’.
+Programmers for many years have been burdened with the tedious and time consuming task of writing
+documentation. Some of this documentation is intended for users and explain what a program does and
+how to use it. Other documentation is intended for future programmers who will need to amend and
+adapt the program so that its functionality will change as the needs of an organisation change. These
+programmers need to know what the program does and how it is structured. They need to know :-
+ what packages it contains
+ what classes exist in each of these packages and what these classes do,
+ what methods exist in each class and for each of these methods
+o what does the method do
+o what parameters does it require
+o what, if any, value is returned.
+The javadoc tool won’t produce a user guide but it will provide a technical description of the program.
+The tool analyses *.java source files and produces documentation as a set of web pages (HTML files)
+in the same format as API documentation on the Sun website.

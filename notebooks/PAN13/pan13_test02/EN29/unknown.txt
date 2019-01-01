@@ -1,0 +1,78 @@
+﻿We can can use the following C constructs to control program execution.
+When we can count our way through a sequence or series:
+When we are waiting for some condition to change:
+or if we want to do something at least once then test:
+When we have a single option to test:
+When we have more options to test:
+When we have more options to test based on an integer or single character value:
+This part is all about if, and then, and else and true and false – the nuts and bolts of how we express
+and control the execution of a program. This can be very dry and dusty material so to make it more
+understandable we are going to solve a problem you are going to need to solve to do any interactive
+web work of any complexity.
+We will build something we can use in order to provide something like the functionality that can be
+obtained from typical getParameter(“ITEM1”) method in Java servlets or $_REQUEST[''ITEM1”]
+function in PHP.
+In Chapter 1 we saw that environment variables can be accessed by the implicit argument to the main
+function. We can also use the library function getenv() to request the value of any named environment
+variable.
+Here we display the QUERY_STRING which is what the program gets as the entire contents of an
+HTML form which contains NAME=VALUE pairs for all the named form elements.
+An HTML form by default uses the GET method which transmits all form data back to the program or
+page that contains the form unless otherwise specified in an action attribute. This data is contained in
+the QUERY_STRING as a series of variable = value pairs separated by the & character.
+Note that in HTML values of things are enclosed in quotation marks, so to embed these inside a
+C string we have to “escape” the character with a special sign \ like this “\”ITEM1\” “. Also we
+are using “\n” or explicit new line characters at the end of each piece of HTML output, so that
+when we select “view source” in the browser we get some reasonably formatted text to view
+rather than the whole page appearing as one long single line.
+Calling this program in a browser we see a form and can enter some data in the boxes:
+And after submitting the form we see:
+To make much sense of the QUERY_STRING and find a particular value in it, we are going to have to
+parse it, to chop it up into its constituent pieces and for this we will need some conditional logic (if,
+else etc) and some loop to count through the characters in the variable. A basic function to do this
+would ideally be created as this is a task you might need to do do again and again so it makes sense to
+have a chunk of code that can be called over again.
+In the next example we add this function and the noticeable difference in the output is that we can
+insert the extracted values into the HTML boxes after we have parsed them. We seem to have
+successfully created something like a java getParameter() function – or have we?
+Have a good long look at chapter4_2.c and try it out with characters other than A-Z a-z or numerals
+and you will see something is not quite right. There is some kind of encoding going on here!
+If I were tp type DAVID !!! into the first field:
+I get this result:
+A space character has become a + and ! has become %21.
+This encoding occurs because certain characters are explicitly used in the transmission protocol itself.
+The & for example is used to separate portions of the QUERY_STRING and the space cannot be sent
+at all as it is.
+Any program wishing to use information from the HTML form must be able to decode all this stuff
+which will now attempt to do.
+The program chapter4_2.c accomplishes what we see so far. It has a main function and a decode_value
+function all in the same file.
+The decode_value function takes three arguments:
+the name of the value we are looking for “ITEM1=” or “ITEM2=”.
+the address of the variable into which we are going to put the value if found
+the maximum number of characters to copy
+The function looks for the start and end positions in the QUERY_STRING of the value and then
+copies the characters found one by one to the value variable, adding a NULL charcter to terminate the
+string.
+It looks like we are going to have to do some serious work on this decode_value package so as this is
+work we can expect to do over and over again it makes sense to write a function that can be reused.
+First off we can put this function into a separate file called decode_value.c and create a file for all the
+functions we may write called c_in_linux.h and compile all this into a library. In the Make file we
+can add:
+This looks horrible and complex but all it means is this:
+typing “make all” will:
+compile all the *.c files listed in the list OBJ_SRC and into object files *.o
+compile all the object files into a library archive called lib_c_in_linux.a
+compile 4-4 using this new archive.
+This is the model we will use to keep our files as small as possible and the share-ability of code at its
+maximum.
+We can now have a simpler “main” function file, and files for stuff we might want to write as call-able
+functions from anywhere really which we do not yet know about. All this is organised into a library
+file (*.a for archive) – these can also be compiled as dynamically loadable shared objects *.so whch
+are much like Windows DLLs. This exactly how all Linux software is written and delivered.
+For example the MySQL C Application Programmers Interface (API) comprises:
+all the header files in /usr/include/mysql
+the library file /usr/lib/mysql/libmysqlclient.a
+What we are doing really is how all of Linux is put together – we are simply adding to it in the
+same way.
+Our main file now looks like this:

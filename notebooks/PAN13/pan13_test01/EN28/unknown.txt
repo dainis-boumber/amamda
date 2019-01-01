@@ -1,0 +1,74 @@
+﻿State space modelling was briefly introduced in chapter 2. Here more coverage is provided of
+state space methods before some of their uses in control system design are covered in the next
+chapter. A state space model, or representation, as given in equation (2.26), is denoted by the two
+equations
+where equations (10.1) and (10.2) are respectively the state equation and output equation.
+The representation can be used for both single-input single-output systems (SISO) and multipleinput
+multiple-output systems (MIMO). For the MIMO representation A, B, C and D will all be
+matrices. If the state dimension is n and there are r inputs and m outputs then A, B , C and D will
+be matrices of order, n x n, n x r, m x n and m x r, respectively. For SISO systems B will be an n
+x 1 column vector, often denoted by b, C a 1 x n row vector, often denoted by cT, and D a scalar
+often denoted by d. Here the capital letter notation will be used, even though only SISO systems
+are considered, and B, C, and D will have the aforementioned dimensions. As mentioned in
+chapter 2 the choice of states is not unique and this will be considered further in section 10.3.
+First, however, obtaining a solution of the state equation is discussed in the next section.
+Obtaining the time domain solution to the state equation is analogous to the classical approach
+used to solve the simple first order equation
+The procedure in this case is to take u = 0, initially, and to assume a solution for x(t) of eatx(0)
+where x(0) is the initial value of x(t). Differentiating this expression gives
+so that the assumed solution is valid. Now if the input u is considered
+this is assumed to yield a solution of the form
+which on differentiating gives
+Thus the differential equation is satisfied if
+which has the solution
+where 􀄲 is a dummy variable. This
+solution can be written
+so that the complete solution for x(t) consists of
+the sum of the two solutions, known as the complimentary function (or initial condition response)
+and particular integral (or forced response), respectively and is
+For equation (10.1) x is an n vector and A an n x n matrix not a scalar a and to obtain the
+complimentary function one assumes x(t) 􀀠e At x(0) . eAt is now a function of a matrix, which is
+defined by an infinite power series in exactly the same way as the scalar expression, so that
+where I is the n x n identity matrix. Term by term differentiation of equation (10.5) shows that
+the derivative of eAt is AeAt and that x(t) 􀀠e At x(0) satisfies the differential equation with u = 0.
+eAt is often denoted by 􀄳(t) and is known as the state transition matrix. Using the same approach
+as for the scalar case to get the forced response the total solution is found to be
+It is easily shown that the state transition matrix 􀁍(􀁗) 􀀠e A􀁗has the property that
+so that equation (10.6) can be written alternatively as
+This time domain solution of equation (10.1) is useful but most engineers prefer to make use of
+the Laplace transform approach. Taking the Laplace transform of equation (10.1) gives
+which on rearranging as X(s) is an n vector and A a n x n matrix gives
+Taking the inverse Laplace transform of this and comparing with equation (10.7) indicates that
+Also taking the Laplace transform of the output equation (10.2) and substituting for X(s) gives
+so that the transfer function, G(s), between the input u and output y is
+This will, of course, be the same independent of the choice of the states.
+Obviously there must be an algebraic relationship between different possible choices of state
+variables. Let this relationship be
+where x is the original choice in equations (10.1) and (10.2) and z is the new choice. Substituting
+this relationship in equation (10.2) givesTz􀀆 􀀠ATz 􀀎Bu which can be written
+Also substituting in the output equation (10.2) gives
+Thus under the state transformation of equation (10.13) a different state space representation
+(T 􀀐1AT,T 􀀐1B,CT,D) is obtained. If the new A matrix is denoted by A T AT z
+􀀠􀀐1 then it is
+easy to show that A and Az have the following properties
+(i) The same eigenvalues
+(ii) The same determinant
+(iii) The same trace (Sum of elements on the main diagonal)
+There are some specific forms of the A matrix which are often commonly used in control
+engineering and not unsurprisingly these relate to how one might consider obtaining a state space
+representation for a transfer function, the topic of the next section.
+This topic was introduced in section 2.3 where the controllable canonical form for a differential
+equation was considered. Here this and some other forms will be considered by making use of
+block diagrams where every state will be an integrator output. To develop some representations
+consider the transfer function
+As seen from equation (2.20) the first n-1 state variables are integrals of the next state, that is
+􀀠􀂳􀀐x x dx ( j 1) j , or as shown in the equation by j j x 􀀠x ( 􀀐1) 􀀆 , for j = 2 to n. Thus the block
+diagram to represent this is n integrators in series. The input to the first integrator is n x􀀆 and its
+value is given by x a x a x a x u n 􀀠􀀐􀀐􀀐..... 􀀎􀀆 0 1 1 2 2 3 , the last row of the matrix representation of
+equation (2.20). The numerator terms are provided by feeding forward from the states to give the
+required output. Thus, for our simple example, this can be shown in the block diagram of Figure
+10.1, done in SIMULINK, where since the transfer function is third order n = 3, there are three
+integrators, blocks with transfer functions 1/s, in series. Feedback from the states, where the
+integrator outputs from left to right are the states x3, x2, and x1, respectively, is by the coefficients
+-8, -14 and -7. (negative and in the reverse order of the transfer function denominator). The
+numerator coefficients provide feedforward from the states, with the s2 term from x3.

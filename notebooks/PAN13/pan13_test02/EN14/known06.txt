@@ -1,0 +1,31 @@
+﻿We have seen previously how methods are identified at run time by their signature i.e. the name of the method and the list of parameters the method takes.
+Thus we can have two methods with the same name. Shown below are two methods that find a highest value… one finds the highest value given two integer numbers, the other finds the highest value of two double numbers.
+Given the following code the CLR engine will invoke the first of these methods then the second as the correct method to implement is identified by its name and the type of its parameters.
+Given the following definition of a Student class…
+We could even define a version of this method to find the highest student (alphabetically).
+And invoke this using ..
+In doing this we have created three methods that essentially do exactly the same thing only using different parameter types. This leads us to the idea that it would be nice to create just one method that would work with objects of any type.
+The method below is a first attempt to do this :-
+This method takes any two ‘Objects’ as parameters. ‘Object’ is the base class of all other classes thus this method can take any two objects of any more specific type and treat these as of the base type ‘Object’. This is polymorphism. 
+The method above then converts these two ‘Object’s to strings and compares these strings.
+Thus this one method can be invoked three times using the following code….
+In these cases respectively the CLR engine will treat int, double, and Student objects as the most general type of thing available ‘Object’. It will then convert this object to a string and compare the strings. 
+This will work however in many situations creating methods which take parameters of type ‘Object’ is flawed or at least very limited. 
+Inside these methods we do not know what type of object was actually passed as a parameter and hence in the example above we do not know what type of object is actually being returned. When two students object are passed the object returned is a student but we cannot invoke Student specific methods on this object unless we first cast the object returned to a Student.
+Assume that we want to invoke an ‘AwardMerit() method on the ‘Student’ returned via the Highest() method. We can do this is we first cast the returned ‘Object’ onto a ‘Student’ object. E.g.
+However the compiler cannot be certain that the returned object is a ‘Student’ and the compiler cannot detect the potentially critical error that would occur is we invoked Highest() on two integer numbers and then tried to cast the returning integer onto an object of type ‘Student’.
+This leads us to the idea that we would like to be able to create a method that will take parameters of ANY type and return values that are again of ANY type but where we will define these types when we invoke these methods. Such methods do exist and they are called Generic Methods.
+Generic methods are methods where the parameter types are not defined until the method is invoked. Parameter types are specified each time the method is invoked and the compiler can thus still check the code is valid.
+In other words a generic method uses a parameterized type – a data type that is determined by a parameter. 
+In the code below a generic method Highest() has been defined as a method that takes two objects as parameters of unspecified type :-
+We can use this method and each time we invoke it we define the type of object being compared. If two students are compared the compiler will know that the object being returned is also type student and will therefore know it is legal to invoke student specific methods on this object. 
+A list of generic data types contained between angle brackets that follow the method’s name is provided. If multiple generic types are used by a method, their names are separated by commas.
+In the example above, the identifer T can stand for any data type. So, when T is used within the brackets in the method’s parameter list to describe data, it might be an int, double, ‘Student’ or any other data type. The only requirement is that the method must work no matter what type of object is passed to it. All objects have a ToString() method because every data type inherits the ToString() method form the ‘Object’ class, or contains its own overriding version.
+In the case above only one generic data type is specified. This is used to define the type of both parameters and the return value.
+The generic data type identifier for a generic method can be any legal C# identifier, but by convention it is usually an upper case letter. “T” is used to stand for “type”.
+When a generic method is defined i.e. one that works with any data type the type is specified when the method is used.
+Thus in the code below, while Highest() is a generic method, the compiler can see that a ‘Student’ object is being passed as a parameter and thus the object being returned must also be of type ‘Student’.
+Given the object being returned is of type ‘Student’ it must be OK to store this in a variable of type Student and it must be OK to invoke and Student methods on the object returned.
+Generic methods can therefore that work with any type data but the compiler can still check for type errors (as the type is specified each time the method is invoked).
+Generic classes have been created, based on the same mechanisms as generic methods and these are particularly useful because there were used by the creators of the .NET libraries to create generic collections. 
+While we won’t be making much use of generic methods and generic classes ourselves in this book we will be making significant use of generic collections, but before using these we need a basic understanding of collections themselves.

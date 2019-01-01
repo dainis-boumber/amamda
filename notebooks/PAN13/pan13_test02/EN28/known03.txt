@@ -1,0 +1,75 @@
+﻿As mentioned previously a major reason for wishing to obtain a mathematical model of a device
+is to be able to evaluate the output in response to a given input. Using the transfer function and
+Laplace transforms provides a particularly elegant way of doing this. This is because for a block
+with input U(s) and transfer function G(s) the output Y(s) = G(s)U(s). When the input, u(t), is a
+unit impulse which is conventionally denoted by  (t), U(s) = 1 so that the output Y(s) = G(s).
+Thus in the time domain, y(t) = g(t), the inverse Laplace transform of G(s), which is called the
+impulse response or weighting function of the block. The evaluation of y(t) for any input u(t) can
+be done in the time domain using the convolution integral (see Appendix A, theorem (ix))
+but it is normally much easier to use the transform relationship Y(s) = G(s)U(s). To do this one
+needs to find the Laplace transform of the input u(t), form the product G(s)U(s) and then find its
+inverse Laplace transform. G(s)U(s) will be a ratio of polynomials in s and to find the inverse
+Laplace transform, the roots of the denominator polynomial must be found to allow the
+expression to be put into partial fractions with each term involving one denominator root (pole).
+Assuming, for example, the input is a unit step so that U(s) = 1/s then putting G(s)U(s) into
+partial fractions will result in an expression for Y(s) of the form
+where in the transfer function G(s) = B(s)/A(s), the n poles of G(s) [zeros of A(s)] are  i, i = 1…n
+and the coefficients C0 and Ci, i = 1…n, will depend on the numerator polynomial B(s), and are
+known as the residues at the poles. Taking the inverse Laplace transform yields
+The first term is a constant C0, sometimes written C0u0(t) because the Laplace transform is
+defined for t   0, where u0(t) denotes the unit step at time zero. Each of the other terms is an
+exponential, which provided the real part of  i is negative will decay to zero as t becomes large.
+In this case the transfer function is said to be stable as a bounded input has produced a bounded
+output. Thus a transfer function is stable if all its poles lie in the left hand side (lhs) of the s plane
+zero-pole plot illustrated in Figure 2.1. The larger the negative value of  i the more rapidly the
+contribution from the ith term decays to zero. Since any poles which are complex occur in
+complex pairs, say of the form  1, 2 =   ± j , then the corresponding two residues C1 and C2 will
+be complex pairs and the two terms will combine to give a term of the form Ce t sin( t  ) .
+This is a damped oscillatory exponential term where  , which will be negative for a stable
+transfer function, determines the damping and   the frequency [strictly angular frequency] of the
+oscillation. For a specific calculation most engineers, as mentioned earlier, will leave a complex
+pair of roots as a quadratic factor in the partial factorization process, as illustrated in the Laplace
+transform inversion example given in Appendix A. For any other input to G(s), as with the step
+input, the poles of the Laplace transform of the input will occur in a term of the partial fraction
+expansion (3.2), [as for the C0/s term above], and will therefore produce a bounded output for a
+bounded input.
+In control engineering the major deterministic input signals that one may wish to obtain
+responses to are a step, an impulse, a ramp and a constant frequency input. The purpose of this
+section is to discuss step responses of specific transfer functions, hopefully imparting an
+understanding of what can be expected from a knowledge of the zeros and poles of the transfer
+function without going into detailed mathematics.
+A transfer function with a single pole is
+s a
+G s K
+ 
+( )  1 , which may also be written in the socalled
+time constant form
+sT
+G s K
+ 
+ 
+1
+( ) , where K K / a 1  and T  1/ a The steady state
+gainG(0)  K , that is the final value of the response, and T is called the time constant as it
+determines the speed of the response. K will have units relating the input quantity to the output
+quantity, for example °C/V, if the input is a voltage and the output temperature. T will have the
+same units of time as s-1, normally seconds. The output, Y(s), for a unit step input is given by
+Taking the inverse Laplace transform gives the result
+The larger the value of T (i.e. the smaller the value of a), the slower the exponential response. It
+can easily be shown that y(T)  0.632K , T
+dt
+dy(0)  
+and y(5T)  0.993K or in words, the
+output reaches 63.2% of the final value after a time T, the initial slope of the response is T and
+the response has essentially reached the final value after a time 5T. The step response in
+MATLAB can be obtained by the command step(num,den). The figure below shows the step
+response for the transfer function with K = 1 on a normalised time scale.
+Here the transfer function G(s) is often assumed to be of the form
+It has a unit steady state gain, i.e G(0) = 1, and poles at       1  2 o o s j , which are
+complex when   1. For a unit step input the output Y(s), can be shown after some algebra,
+which has been done so that the inverse Laplace transforms of the second and third terms are
+damped cosinusoidal and sinusoidal expressions, to be given by
+Taking the inverse Laplace transform it yields, again after some algebra,
+where   cos 1 .  is known as the damping ratio. It can also be seen that the angle to the
+negative real axis from the origin to the pole with positive imaginary part is
+tan 1 (1  2 )1/ 2 /  cos 1   .

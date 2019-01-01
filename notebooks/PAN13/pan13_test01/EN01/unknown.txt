@@ -1,0 +1,75 @@
+﻿I should make it clear right away that to most people the term “normalization”, in the context of databases,
+means projection-join normalization specifically. But the term does seem to be equally appropriate in
+connection with other kinds of design choice, hence my decision to use it in the first two sections of
+this chapter.
+I promised a discussion of 1NF in this section. It is here, but later.
+Some examples in this chapter refer to the relvars COURSE and EXAM_MARK introduced at the beginning
+of Chapter 5. Their current values are repeated here in Figure 8.1.
+And here again are the relvar definitions for COURSE and EXAM_MARK:
+In Chapter 5, Example 5.12 illustrates the Tutorial D operator GROUP. The expression
+EXAM_MARK GROUP ( { StudentId, Mark } AS ExamResult ), operating on the current
+value of EXAM_MARK, yields the relation shown in Figure 5.6, repeated here as Figure 8.2 for
+convenience:
+Recall also that we can reverse the process by use of UNGROUP. Thus, a relvar defined as in Example 8.1
+might be considered as a valid alternative to EXAM_MARK, but note the constraints needed to make the
+“grouped” design genuinely equivalent.
+The first of those two constraints reflects the fact that EXAM_MARK by itself cannot accommodate a
+course for which nobody sat the exam. It would probably make better sense to disregard that putative
+requirement and drop the constraint. The second constraint is a key constraint on the attribute values for
+ExamResult, a logical consequence of KEY { StudentId, CourseId } specified for EXAM_MARK.
+The KEY shorthand could be considered for relation-valued attributes of relvars but it is not included in
+Tutorial D, one reason being that such a design is in general contraindicated and should be discouraged.
+Here are some points against it:
+1. The particular grouping chosen is arbitrary. Why not group on { CourseId, Mark } instead?
+2. The constraints are more complicated, even if we drop the one requiring ExamResult values
+to be nonempty.
+3. Updating can be particularly awkward. Consider how to write a Tutorial D UPDATE statement
+to change student S1’s mark in course C1. Consider how to write an INSERT statement to record
+that mark in the first place.
+4. The playing field for queries, as with non-5NF relvars, is not level. True, some aggregation
+queries are slightly simplified (try obtaining the average exam mark for each course), but many
+others become quite complex unless a preliminary invocation of UNGROUP is injected (try
+obtaining all of student S1’s exam marks).
+In short, the asymmetric structure illustrated in Example 8.1 leads to asymmetric queries, asymmetric
+constraints, and asymmetric updates.
+Now, C_ER is in 5NF, as you can easily verify, and it exhibits no redundancy. But see, in Figure 8.3, what
+happens if we apply a similar treatment to our original non-5NF relvar, ENROLMENT, having the attribute
+Name in place of EXAM_MARK’s Mark, giving the relvar C_ES with relation-valued attribute
+EnrolledStudents.
+C_ES is in 5NF but exhibits exactly the same redundancy that ENROLMENT exhibits: in the current value
+of C_ES, student S1’s name is recorded twice.
+For these reasons, perhaps a group-ungroup normal form (GUNF?) could be usefully defined: relvar r is in
+GUNF if and only if no attribute of r is relation valued; but as far as the present author is aware no such
+definition is to be found in the literature (apart from this book). Codd proposed a normal form that he
+called first normal form (1NF), and he included a requirement for 1NF in his definitions for 2NF, 3NF,
+and subsequently BCNF. Under 1NF as he defined it, relation-valued attributes were “outlawed”; that is to
+say, a relvar having such an attribute was not in 1NF. However, certain examples do exist where to avoid
+a relation valued attribute we have to resort to artifice.
+Consider, for example, the relvar, in the catalog, to record the keys of all the relvars in the database. The
+straightforward definition, shown in Example 8.2, involves a relation-valued attribute.
+We cannot obtain an equivalent design by ungrouping, because a relvar can have several keys. A tuple
+appearing in the ungrouping, simply pairing relvar name r with attribute name a tells, us only that a is a
+member of some key of r. A truly equivalent design in GUNF is unachievable. The best we can do is
+probably as shown in Example 8.3, where we have to introduce an extra attribute. Moreover, this design
+does not admit relvars with empty keys (specified by KEY { })those would have to be represented by a
+separate relvar in the catalog.
+Having to number the keys of each relvar is artificial and burdensome. Most of the noted disadvantages of
+relation-valued attributes are not so relevant here because we expect catalog relvars to be maintained by
+the DBMS. The natural, non-GUNF design of Example 8.2 is probably preferable.
+Now, Codd’s definition of 1NF attempted similarly to outlaw attributes of certain other types too, because
+relation types are not the only types that, if used for attributes of relvars, give rise to the problems
+identified with relation types, as we shall now see.
+Instead of defining C_ES with its relation-valued attribute EnrolledStudents, derived from
+ENROLMENT using GROUP, we could apply WRAP to derive the relvar C_EST, as shown in Example 8.4.
+Like C_ER, C_EST is in 5NF and yet still exhibits the same redundancy as ENROLMENT. Codd’s
+definition of 1NF precluded tuple-typed attributes too. Perhaps a “wrap-unwrap” normal form (WUNF?)
+could be usefully defined along similar lines to the GUNF previously mooted. But even outlawing relation
+and tuple types wasn’t sufficient for the purpose at hand. A similar effect can be obtained with userdefined
+types, as Example 8.5 shows.
+Codd attempted to preclude the use of such types in his definition of 1NF, but unfortunately this definition
+appealed to an unclear notion of atomicity. To be in 1NF, a relvar’s attributes all had to be of types
+consisting of “atomic” values only. However, he did not give a clear definition of what it means for a
+value to be atomic and we now believe the notion has no absolute meaning. Suffice it just to say that the
+relational database designer should generally avoid futile attempts, such as those shown in this section, to
+obtain 5NF without achieving the elimination of redundancy that 5NF is supposed to achieve. In particular,
+stick, where possible, to GUNF and WUNF.

@@ -1,0 +1,62 @@
+﻿The Media Browser appears in many of Apple’s application software. It is a system wide utility that is accessed from within
+programs such as Keynote. It has a distinct icon displaying a frame of film, a picture frame and two musical notes. This
+icon appears in different places in different applications.
+The Media Browser can be launched from the Toolbar or View > Media Browser. It contains three tabs, Audio, Photos
+and Movies.
+Audio – This contains tracks from the current user’s iTune account. Garage band projects, these might include voice–overs
+or podcasts and audio from other applications such as Aperture or Final Cut.
+Photos – This contains images stored in iPhoto or Aperture is it is installed
+Movies – This contains video files stored in iMovie, the current user’s Movies Folder, or in iTunes. If Final Cut or Aperture
+are installed video files from those applications will also appear here.
+The bottom pane of the Media Browser contains thumbnails of the respective media files. Double–clicking the thumbnail
+previews the file. In the case of Photos it enlarges the thumbnail to fill the Media Browser pane.
+As with all iWork applications, Keynote stores graphics and other media within the file itself, with the exception of Fonts.
+This makes for easy transfer of files from workstation to laptop et cetera. A consequence of this is that iWork documents
+may have large files sizes though there is an easy remedy in the Reduce File Size command. This will be illustrated in
+Section 16 — Sharing Your Work.
+To insert a media file or files select them in the Media Browser and drag them onto the Keynote Slide Canvas.
+When images are placed into Keynote they may look too dark or lack contrast. Like all iWork applications there is an
+Adjust Image window that can be used to adjust the brightness, contrast, saturation and other image parameters directly
+within Keynote. There are several image parameters that can be used to finesse imported photographs though often just
+clicking the Enhance button will improve a picture.
+Image Adjust is an icon in the Toolbar, or can be launched from View > Adjust.
+When you have taken the time to format a picture frame or text box there is no need to repeat all the steps taken when
+you wish to apply that style to subsequent objects. Styles can be copied and pasted. Start this process by creating two text
+boxes. Use the Graphics Inspector to stylize one box. Ensure that Text Box is selected then go to Format > Copy Style.
+Select the second text box and go to Format > Paste Style. The second Text Box will take on the general appearance of
+the stylized one.
+There are several methods for preparing presentations. With presentations planning and rehearsal are essential. As
+previously stated this guide does not aim to explain the art of presentation. Information on presentation creation and
+delivery can be found on the web with several sites offering Keynote tips and techniques. Suffice to say planning is required
+before opening Keynote.
+Keynote can help structure planning processes, once you have a concept in mind. Outline mode is a particularly useful
+way to list bullet points as hierarchies and sequences when creating a presentation from scratch.
+There are five stages in the life of a presentation:
+1. Planning – What you need to do before opening Keynote and using Keynote in Outline mode.
+2. Construction – Using Outline, Navigator and Light Table modes to build and sequence the presentation.
+3. Rehearsal — For presentations that are to be delivered to an audience rehearsal is very important. Keynote has
+a rehearsal mode that can be used to check timings.
+4. Delivery — After rehearsals comes the main event often in front of an audience. Being able to stop and jump to
+different slides is a useful skill. Keynote presentations don’t have to be delivered in person. Using Kiosk mode
+allows users to navigate through presentation material on their own.
+5. Legacy – Making a presentation may be sufficient, though legacy items can be created, such as handouts or
+narrated versions of the presentation in video form that can be accessed on-demand, by whoever.
+Keynote ships with forty-four Apple designed themes. Themes are collections of Master Slides, for example, titles slides,
+bullets, bullets with photos, and so on. Themes have a coordinated design for fonts, colours and style across their respective
+Master Slides.
+An Apple Designed Theme may be a perfect starting point for a presentation, though users can generate and save their
+own themes, or purchase extra themes online. Defining Master Slides and creating custom themes will be explored later.
+Some Keynote Themes only have two resolutions, 800 x 600 pixels and 1024 x 768 pixels. Newer Themes come in three
+additional sizes; 1280 x 720, 1920 x 1080†, and 1680 x 1050. Although presentations can be set to playback so that they
+fill the screen, choosing an option with sufficient resolution at an appropriate aspect ratio is very important.
+The Theme Chooser contains all the themes currently available including any custom ones you might make. To see
+previews of all the Master Slides in a Theme, skim the cursor over the Theme’s thumbnail. Before selecting a slide select
+the correct slide resolution from the Slide SIze Pop–up menu.
+Master Slides are preset layouts for title slides, bullet point slides, bullets with a picture and so on. Themes are a collection
+of Master Slides. The Master icon in the toolbar can be used to change one or more slides to a different master layout.
+The View icon in the toolbar can be used to Show Master Slides. Click dragging Master Slide thumbnails onto existing
+slides thumbnails changes their master layout.
+Although many users begin making their Keynote, or Powerpoint, presentations in slide view, Outline view is a great way
+to structure ideas. iWork’s Pages has several Outline templates to help with this task.
+Outline view is one of several options that can be found under the View menu. If the default Outline view is not suitable it
+can be adjusted. To make the Slide pane areas bigger move the cursor over the resize handle and click drag to adjust its size.

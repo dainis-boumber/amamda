@@ -1,0 +1,68 @@
+﻿Control systems exist in many fields of engineering so that components of a control system may
+be electrical, mechanical, hydraulic etc. devices. If a system has to be designed to perform in a
+specific way then one needs to develop descriptions of how the outputs of the individual
+components, which make up the system, will react to changes in their inputs. This is known as
+mathematical modelling and can be done either from the basic laws of physics or from
+processing the input and output signals in which case it is known as identification. Examples of
+physical modelling include deriving differential equations for electrical circuits involving
+resistance, inductance and capacitance and for combinations of masses, springs and dampers in
+mechanical systems. It is not the intent here to derive models for various devices which may be
+used in control systems but to assume that a suitable approximation will be a linear differential
+equation. In practice an improved model might include nonlinear effects, for example Hooke’s
+Law for a spring in a mechanical system is only linear over a certain range; or account for time
+variations of components. Mathematical models of any device will always be approximate, even
+if nonlinear effects and time variations are also included by using more general nonlinear or time
+varying differential equations. Thus, it is always important in using mathematical models to have
+an appreciation of the conditions under which they are valid and to what accuracy.
+Starting therefore with the assumption that our model is a linear differential equation then in
+general it will have the form:-
+where D denotes the differential operator d/dt. A(D) and B(D) are polynomials in D with
+Di  d i / dt i , the ith derivative, u(t) is the model input and y(t) its output. So that one can write
+where the a and b coefficients will be real numbers. The orders of the polynomials A and B are
+assumed to be n and m, respectively, with n   m.
+Thus, for example, the differential equation
+with the dependence of y and u on t assumed can be written 
+
+In order to solve an nth order differential equation, that is determine the output y for a given input
+u, one must know the initial conditions of y and its first n-1 derivatives. For example if a
+projectile is falling under gravity, that is constant acceleration, so that D2y= constant, where y is
+the height, then in order to find the time taken to fall to a lower height, one must know not only
+the initial height, normally assumed to be at time zero, but the initial velocity, dy/dt, that is two
+initial conditions as the equation is second order (n = 2). Control engineers typically study
+solutions to differential equations using either Laplace transforms or a state space representation.
+A short introduction to the Laplace transformation is given in Appendix A for the reader who is
+not familiar with its use. It is an integral transformation and its major, but not sole use, is for
+differential equations where the independent time variable t is transformed to the complex
+variable s by the expression
+Since the exponential term has no units the units of s are seconds-1, that is using mks notation s
+has units of s-1. If denotes the Laplace transform then one may write
+[f(t)] = F(s) and -1[F(s)] = f(t). The relationship is unique in that for every f(t), [F(s)], there is a
+unique F(s), [f(t)]. It is shown in Appendix A that when the n-1 initial conditions, Dn-1y(0) are
+zero the Laplace transform of Dny(t) is snY(s). Thus the Laplace transform of the differential
+equation (2.1) with zero initial conditions can be written
+with the assumed notation that signals as functions of time are denoted by lower case letters and
+as functions of s by the corresponding capital letter.
+If equation (2.8) is written
+then this is known as the transfer function, G(s), between the input and output of the ‘system’,
+that is whatever is modelled by equation (2.1). B(s), of order m, is referred to as the numerator
+polynomial and A(s), of order n, as the denominator polynomial and are from equations (2.2) and
+(2.3)
+Since the a and b coefficients of the polynomials are real numbers the roots of the polynomials
+are either real or complex pairs. The transfer function is zero for those values of s which are the
+roots of B(s), so these values of s are called the zeros of the transfer function. Similarly, the
+transfer function will be infinite at the roots of the denominator polynomial A(s), and these values
+are called the poles of the transfer function. The general transfer function (2.9) thus has m zeros
+and n poles and is said to have a relative degree of n-m, which can be shown from physical
+realisation considerations cannot be negative. Further for n > m it is referred to as a strictly
+proper transfer function and for n   m as a proper transfer function.
+When the input u(t) to the differential equation of (2.1) is constant the output y(t) becomes
+constant when all the derivatives of the output are zero. Thus the steady state gain, or since the
+input is often thought of as a signal the term d.c. gain (although it is more often a voltage than a
+current!) is used, and is given by
+If the n roots of A(s) are  i , i = 1….n and of B(s) are  j, j = 1….m, then the transfer function may
+be written in the zero-pole form
+When the transfer function is known in the zero-pole form then the location of its zeros and poles
+can be shown on an s plane zero-pole plot, where the zeros are marked with a circle and the poles
+by a cross. The information on this plot then completely defines the transfer function apart from
+the gain K. In most instances engineers prefer to keep any complex roots in quadratic form, thus
+for example writing

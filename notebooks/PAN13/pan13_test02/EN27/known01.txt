@@ -1,0 +1,71 @@
+﻿A regular feature in the New Scientist magazine is Enigma, a weekly puzzle entry which readers are invited to
+solve. In the 8 February 2003 issue [1] the following puzzle was published.
+First, draw a chessboard. Now number the horizontal rows 1, 2, ..., 8, from top to bottom and
+number the vertical columns 1, 2, ..., 8, from left to right.You have to put a whole number in each of
+the sixty-four squares, subject to the following:
+1. No two rows are exactly the same.
+2. Each row is equal to one of the columns, but not to the column with the same number as the
+row.
+3. If N is the largest number you write on the chessboard then you must also write 1, 2, ...,N −1
+on the chessboard.
+The sum of the sixty-four numbers you write on the chessboard is called your total. What is the
+largest total you can obtain?
+We are going to solve this puzzle here using Prolog. The solution to be described will illustrate two techniques:
+unification and generate-and-test.
+Unification is a built-in pattern matching mechanism in Prolog which has been used in [9]; for example, the
+difference list technique essentially depended on it. For our approach here, unification will again be crucial in
+that the proposed method of solution hinges on the availability of built-in unification. It will be used as a kind
+of concise symbolic pattern generating facility without which the current approach wouldn’t be viable.
+Generate-and-test is easily implemented in Prolog. Prolog’s backtracking mechanism is used to generate candidate
+solutions to the problem which then are tested to see whether certain of the problem-specific constraints
+are satisfied.
+Fig. 1.1 shows a board arrangement with all required constraints satisfied. It is seen that the first requirement
+is satisfied since the rows are all distinct. The second condition is also seen to hold whereby rows and columns
+are interrelated in the following fashion:
+We use the permutation
+to denote the corresponding column–to–row transformation. The board also satisfies the latter part of the second
+condition since no row is mapped to a column in the same position. In terms of permutations, this requirement
+implies that no entry remains fixed; these are those permutations which in our context are permissible. 2 The
+third condition is obviously also satisfied with N = 6. The board’s total is 301, not the maximum, which, as
+we shall see later, is 544.
+The solution scheme described below in i–v is based on first generating all feasible solutions (an example of
+which was seen in Sect. 1.2) and then choosing a one with the maximum total.
+i. Take an admissible permutation, such as π in (1.1).
+ii. Find an 8 ×8 matrix with symbolic entries whose rows and columns are interrelated by the permutation
+in i. As an example, let us consider for the permutation π two such matrices, M1 and M2, with
+M1 and M2 both satisfy conditions 1 and 2. We also observe that the pattern of M2 may be obtained
+from that of M1 by specialization (by matching the variables X1 and X6). Thus, any total achievable for
+M2 is also achievable for M1. For any given permissible permutation, we can therefore concentrate on
+the most general pattern of variables, M. (We term a pattern of variables most general if it cannot be
+obtained by specialization from a more general one.) All this is reminiscent of ‘unification’ and the ‘most
+general unifier’, and we will indeed be using Prolog’s unification mechanism in this step.
+iii. Verify condition 1 for the symbolic matrix M. 3 Once this test is passed, we are sure that also the latter
+part of condition 2 is satisfied. 4
+iv. We now evaluate the pattern M. If N symbols have been used in M, assign the values 1, ...,N to them
+in reverse order by first assigning N to the most frequently occurring symbol, N − 1 to the second most
+frequently occurring symbol etc. The total thus achieved will be a maximum for the given pattern M.
+v. The problem is finally solved by generating and evaluating all patterns according to i–iv and selecting a
+one with the maximum total.
+The original formulation from the New Scientist uses a chessboard but the problem can be equally set with
+a square board of any size. In our implementation, we shall allow for any board size since this will allow the
+limitations of the method employed to be explored.
+We write matrices in Prolog as lists of their rows which themselves are lists. Permutations will be represented
+by the list of the bottom entries of their two-line representation; thus, [2, 3, 1, 5, 6, 7, 8, 4] stands for
+π in (1.1).
+First, we want to generate all permutations of a list. Let us assume that we want to do this by the predicate
+permute(+List,-Perm) and let us see how List = [1, 2, 3, 4] might be permuted. A permuted list, Perm
+= [3, 4, 1, 2] say, may be obtained by
+• Removing from List the entry E = 3, leaving the reduced list
+R = [1, 2, 4]
+• Permuting the reduced list R to get P = [4, 1, 2]
+• Assembling the permuted list as [E|P] = [3, 4, 1, 2] .
+Lists with a single entry are left unchanged. This gives rise to the definition
+with the predicate remove one(+List,?Entry,?Reduced) defined by
+(Here we remove either the head or an entry from the tail.) For a permutation to be admissible, all entries must
+have changed position. We implement this by
+To generate a list of N unbound variables, L, we use var list(+N,-L) which is defined in terms of length(-L,+N)
+By
+Matrices with distinct symbolic entries may now be produced by mapping; for
+example, a 3 × 2 matrix is obtained by
+It is now that Prolog shows its true strength: we use unification to generate symbolic square matrices with
+certain patterns.5 For example, we may produce a 3 × 3 symmetric matrix thus
